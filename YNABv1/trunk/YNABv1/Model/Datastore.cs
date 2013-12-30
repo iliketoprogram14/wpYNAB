@@ -43,8 +43,26 @@ namespace YNABv1.Model
             var result = new SaveResult();
             transactions.Add(t);
             result.SaveSuccessful = true;
+            SaveTransactions(errorCallback);
             // after save, look for new payees, categories, and accounts
             // save if necessary
+            return result;
+        }
+
+        public static SaveResult DeleteTransaction(Transaction t, Action errorCallback)
+        {
+            var result = new SaveResult();
+            transactions.Remove(t);
+            result.SaveSuccessful = true;
+            SaveTransactions(errorCallback);
+            return result;
+        }
+
+        public static SaveResult SaveTransaction(Transaction t, Action errorCallback)
+        {
+            var result = new SaveResult();
+            result.SaveSuccessful = true;
+            SaveTransactions(errorCallback);
             return result;
         }
 

@@ -23,5 +23,10 @@ namespace YNABv1.Model
             subCategories = new List<String>();
             subCategories.Add(subCategory);
         }
+
+        public Boolean Equals(Category c)
+        {
+            return masterCategory.Equals(c.masterCategory);
+        }
     }
 }

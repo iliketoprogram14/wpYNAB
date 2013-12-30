@@ -15,11 +15,13 @@ namespace YNABv1.Model
         private DateTime date;
         private String payee;
         private String category;
+        private String subcategory;
         private String memo;
         private float amount;
         private String account;
         private Boolean transfer;
 
+        #region Get/Set
         public DateTime Date
         {
             get { return date; }
@@ -75,6 +77,17 @@ namespace YNABv1.Model
             }
         }
 
+        public String Account
+        {
+            get { return account; }
+            set
+            {
+                if (account.Equals(value)) return;
+                account = value;
+                NotifyPropertyChanged("Account");
+            }
+        }
+
         public Boolean Outflow
         {
             get { return (dir == DIRECTION.OUT); }
@@ -107,7 +120,16 @@ namespace YNABv1.Model
                 NotifyPropertyChanged("Transfer");
             }
         }
-       
+        #endregion
+
+        public Boolean Equals(Transaction t2)
+        {
+            return (Outflow == t2.Outflow) && (date.Equals(t2.Date)) && (payee.Equals(t2.Payee)) &&
+                (category.Equals(t2.Category)) && (subcategory.Equals(t2.subcategory)) &&
+                (memo.Equals(t2.Memo)) && (amount == t2.Amount) && (account.Equals(t2.Account)) &&
+                (transfer == t2.Transfer);
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 

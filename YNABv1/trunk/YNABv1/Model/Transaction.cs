@@ -17,9 +17,22 @@ namespace YNABv1.Model
         private String category;
         private String subcategory;
         private String memo;
-        private float amount;
+        private double amount;
         private String account;
         private Boolean transfer;
+
+        public Transaction()
+        {
+            date = new DateTime();
+            payee = "";
+            category = "";
+            subcategory = "";
+            memo = "";
+            account = "";
+            amount = 0.0;
+            dir = DIRECTION.OUT;
+            transfer = false;
+        }
 
         #region Get/Set
         public DateTime Date
@@ -55,6 +68,17 @@ namespace YNABv1.Model
             }
         }
 
+        public String Subcategory
+        {
+            get { return subcategory; }
+            set
+            {
+                if (subcategory.Equals(value)) return;
+                subcategory = value;
+                NotifyPropertyChanged("Subcategory");
+            }
+        }
+
         public String Memo
         {
             get { return memo; }
@@ -66,7 +90,7 @@ namespace YNABv1.Model
             }
         }
 
-        public float Amount
+        public double Amount
         {
             get { return amount; }
             set
@@ -80,9 +104,9 @@ namespace YNABv1.Model
         public String Account
         {
             get { return account; }
-            set
-            {
-                if (account.Equals(value)) return;
+            set {
+                if (account.Equals(value))
+                    return;
                 account = value;
                 NotifyPropertyChanged("Account");
             }

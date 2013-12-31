@@ -5,9 +5,10 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:model="clr-namespace:YNABv1.Model"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:YNABv1.Model" 
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -15,7 +16,8 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="True">
 
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <Grid x:Name="LayoutRoot" Background="Transparent" 
+          d:DataContext="{d:DesignInstance Type=model:Transactions}">
 
         <!--TitlePanel contains the name of the application and page title-->
         <!--<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
@@ -25,10 +27,11 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
         </Grid>-->
         <!--Pivot Control-->
+        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed" Navigated="MainBrowser_Navigated"/>
         <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot">
 
             <!--Pivot item one-->
-            <controls:PivotItem Header="transactions" Margin="0,100,0,0" >
+            <controls:PivotItem Header="transactions" Margin="0,0,0,0" >
                 <Grid Height="425" Width="467">
 
                     <Grid.Resources>
@@ -55,25 +58,34 @@
                         </Style>
                     </Grid.Resources>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="date" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" />
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Width="100" />
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Width="100" />
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="category" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" Width="80"/>
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" />
                     </StackPanel>
                     <ScrollViewer Margin="-5,13,3,36" Height="558">
-                        <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}"
-                                 ItemsSource="{Binding FillupHistory}" Height="380" HorizontalAlignment="Left" 
-                                 Margin="5,25,0,0" VerticalAlignment="Top" Width="444" >
+                        <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
+                                 Height="380" HorizontalAlignment="Left" 
+                                 Margin="5,25,0,0" VerticalAlignment="Top" Width="465" ItemsSource="{Binding TransactionHistory}" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu>
+                                                <toolkit:MenuItem Header="Edit" Click="EditMenuItem_Click" />
+                                                <toolkit:MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
                                         <TextBlock Style="{StaticResource SummaryStyle}" 
                                                    Text="{Binding Date, StringFormat=\{0:d\} }" 
-                                                   Width="105" TextWrapping="Wrap"/>
-                                        <TextBlock Style="{StaticResource SummaryStyle}" Text="{Binding FuelQuantity}" TextWrapping="Wrap" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}" Text="{Binding DistanceDriven}" TextWrapping="Wrap" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}" Text="{Binding PricePerFuelUnit, StringFormat=\{0:c\} }" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}" Text="{Binding FuelEfficiency, StringFormat=\{0:F\}}" TextWrapping="Wrap"  />
+                                                   TextWrapping="Wrap" Width="100" />
+                                        <TextBlock Style="{StaticResource SummaryStyle}"
+                                                   Text="{Binding Payee}" TextWrapping="Wrap" Width="100" />
+                                        <TextBlock Style="{StaticResource SummaryStyle}"
+                                                   Text="{Binding FullCategory}" />
+                                        <TextBlock Style="{StaticResource SummaryStyle}"
+                                                   Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
+                                                   TextWrapping="Wrap"  />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

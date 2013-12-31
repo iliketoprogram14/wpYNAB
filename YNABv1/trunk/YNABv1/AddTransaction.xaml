@@ -17,8 +17,7 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent"
-          d:DataContext="{d:DesignInstance Type=model:Transaction}">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -33,7 +32,8 @@
         <!--Content Panel-->
         <ScrollViewer x:Name="ScrollViewerGrid" Grid.Row="1" Margin="12,0,12,0" Height="550"
                       VerticalScrollBarVisibility="Visible">
-            <Grid x:Name="ContentPanel" Height="710">
+            <Grid x:Name="ContentPanel" Height="710"
+                  d:DataContext="{d:DesignInstance Type=model:Transaction}">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -86,12 +86,12 @@
                 <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
                              HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" />
                 <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="7"  Grid.Column="1"
-                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}"/>
+                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}" Checked="Checked_Event"/>
                 <TextBlock Grid.Row="8" Grid.Column="0"
                            Text="amount:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="8" Grid.Column="1" x:Name="AmountTextBox" 
-                         InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" TabIndex="5" />
+                         InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" TabIndex="5" KeyDown="KeyDown_Typed" />
             </Grid>
         </ScrollViewer>
     </Grid>

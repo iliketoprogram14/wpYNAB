@@ -79,6 +79,21 @@ namespace YNABv1.Model
             }
         }
 
+        public String FullCategory
+        {
+            get { return category + ": " + subcategory; }
+            set {
+                String fullCategory = category + ": " + subcategory;
+                if (fullCategory.Equals(value))
+                    return;
+                String[] splitString = value.Split(':');
+                category = splitString[0].Trim(' ');
+                subcategory = splitString[1].Trim(' ');
+                NotifyPropertyChanged("Category");
+                NotifyPropertyChanged("SubCategory");
+            }
+        }
+
         public String Memo
         {
             get { return memo; }
@@ -101,6 +116,19 @@ namespace YNABv1.Model
             }
         }
 
+        public double SignedAmount
+        {
+            get { return (dir == DIRECTION.OUT ? -1 : 1) * amount; }
+            set {
+                if (((dir == DIRECTION.OUT ? -1 : 1) * amount) == value)
+                    return;
+                amount = (value < 0) ? value * -1 : value;
+                dir = (value < 0) ? DIRECTION.OUT : DIRECTION.IN;
+                NotifyPropertyChanged("Amount");
+                NotifyPropertyChanged("Direction");
+            }
+        }
+
         public String Account
         {
             get { return account; }
@@ -115,9 +143,9 @@ namespace YNABv1.Model
         public Boolean Outflow
         {
             get { return (dir == DIRECTION.OUT); }
-            set
-            {
-                if (dir == DIRECTION.OUT) return;
+            set {
+                if (dir == DIRECTION.OUT)
+                    return;
                 dir = DIRECTION.OUT;
                 NotifyPropertyChanged("Outflow");
             }
@@ -126,9 +154,9 @@ namespace YNABv1.Model
         public Boolean Inflow
         {
             get { return (dir == DIRECTION.IN); }
-            set
-            {
-                if (dir == DIRECTION.IN) return;
+            set {
+                if (dir == DIRECTION.IN)
+                    return;
                 dir = DIRECTION.IN;
                 NotifyPropertyChanged("Inflow");
             }
@@ -145,6 +173,21 @@ namespace YNABv1.Model
             }
         }
         #endregion
+
+        public Transaction DeepCopy()
+        {
+            Transaction t = new Transaction();
+            t.dir = dir;
+            t.date = date;
+            t.payee = payee;
+            t.category = category;
+            t.subcategory = subcategory;
+            t.memo = memo;
+            t.amount = amount;
+            t.account = account;
+            t.transfer = transfer;
+            return t;
+        }
 
         public Boolean Equals(Transaction t2)
         {

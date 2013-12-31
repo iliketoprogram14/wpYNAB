@@ -17,23 +17,60 @@ namespace YNABv1.Model
         private const string ACCOUNTS_KEY = "YNABcompanion.Accounts";
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        private static List<Transaction> transactions;
+        private static Transactions transactions;
         private static List<Payee> payees;
         private static List<Category> categories;
         private static List<String> accounts;
 
-        private static event EventHandler TransactionsUpdated;
+        public static event EventHandler TransactionsUpdated;
 
+        public static void Init()
+        {
+            transactions =
+                (appSettings.Contains(TRANSACTION_KEY)) ?
+                (Transactions)appSettings[TRANSACTION_KEY] :
+                new Transactions();
+            payees =
+                (appSettings.Contains(PAYEE_KEY)) ?
+                (List<Payee>)appSettings[PAYEE_KEY] :
+                new List<Payee>();
+            categories =
+                (appSettings.Contains(CATEGORIES_KEY)) ?
+                (List<Category>)appSettings[CATEGORIES_KEY] :
+                new List<Category>();
+            accounts =
+                (appSettings.Contains(ACCOUNTS_KEY)) ?
+                (List<String>)appSettings[ACCOUNTS_KEY] :
+                new List<String>();
+        }
+
+        public static Transactions Transactions
+        {
+            get
+            {
+                if (transactions == null) {
+                    if (appSettings.Contains(TRANSACTION_KEY)) {
+                        transactions = (Transactions)appSettings[TRANSACTION_KEY];
+                    } else {
+                        transactions = new Transactions();
+                    }
+                }
+                return transactions;
+            }
+            set
+            {
+                transactions = value;
+                NotifyTransactionsUpdated();
+            }
+        }
+        
         private static void SaveTransactions(Action errorCallback)
         {
-            try
-            {
+            try {
                 appSettings[TRANSACTION_KEY] = transactions;
                 appSettings.Save();
                 NotifyTransactionsUpdated();
-            }
-            catch (IsolatedStorageException)
-            {
+            } catch (IsolatedStorageException) {
                 errorCallback();
             }
         }
@@ -53,14 +90,6 @@ namespace YNABv1.Model
         {
             var result = new SaveResult();
             transactions.Remove(t);
-            result.SaveSuccessful = true;
-            SaveTransactions(errorCallback);
-            return result;
-        }
-
-        public static SaveResult SaveTransaction(Transaction t, Action errorCallback)
-        {
-            var result = new SaveResult();
             result.SaveSuccessful = true;
             SaveTransactions(errorCallback);
             return result;

@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Resources;
+using YNABv1.Model;
 
 namespace YNABv1
 {
@@ -61,6 +62,7 @@ namespace YNABv1
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            Datastore.Init();
         }
 
         // Code to execute when the application is activated (brought to foreground)

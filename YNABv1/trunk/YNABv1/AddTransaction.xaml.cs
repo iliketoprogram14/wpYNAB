@@ -21,6 +21,7 @@ namespace YNABv1
         private bool hasUnsavedChanges;
         private TextBox textboxWithFocus;
         private RadioButton buttonWithFocus;
+        private Transaction transactionToEdit;
 
         public AddTransaction()
         {
@@ -38,10 +39,13 @@ namespace YNABv1
 
         private void InitializePageState()
         {
-            DataContext = currentTransaction =
-                State.ContainsKey(CURRENT_TRANS_KEY) ?
-                (Transaction)State[CURRENT_TRANS_KEY] :
-                new Transaction { Date = DateTime.Now };
+            if (State.ContainsKey(CURRENT_TRANS_KEY))
+                currentTransaction = State[CURRENT_TRANS_KEY] as Transaction;
+            else if (transactionToEdit != null)
+                currentTransaction = transactionToEdit.DeepCopy();
+            else
+                currentTransaction = new Transaction { Date = DateTime.Now };
+            DataContext = currentTransaction;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
         }
 
@@ -53,6 +57,12 @@ namespace YNABv1
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (PhoneApplicationService.Current.State.ContainsKey("AddTransactionParam")) {
+                transactionToEdit = PhoneApplicationService.Current.State["AddTransactionParam"] as Transaction;
+                PhoneApplicationService.Current.State.Remove("AddTransactionParam");
+            } else 
+                transactionToEdit = null;
 
             // Initialize the page state only if it is not already initialized,
             // and not when the application was deactivated but not tombstoned (returning from being dormant).
@@ -140,15 +150,21 @@ namespace YNABv1
                 return;
             }
 
-            SaveResult result = Datastore.AddTransaction(currentTransaction,
-                delegate {
-                    MessageBox.Show("There is not enough space on your phone to " +
-                        "save your fill-up data. Free some space and try again.");
-                });
+            SaveResult result = new SaveResult();
+            if (transactionToEdit != null) {
+                result = Datastore.DeleteTransaction(transactionToEdit, delegate { MessageBox.Show(Constants.DELETE_MSG); });
+                if (!result.SaveSuccessful)
+                    goto Failure;
+            }
+
+            result = Datastore.AddTransaction(currentTransaction, delegate { MessageBox.Show(Constants.NO_SPACE_MSG); });
             if (result.SaveSuccessful) {
                 Microsoft.Phone.Shell.PhoneApplicationService.Current.State[Constants.TRANSACTION_SAVED_KEY] = true;
                 NavigationService.GoBack();
-            } else {
+            }
+
+Failure:
+            if (!result.SaveSuccessful) {
                 string errorMessages = String.Join(
                     Environment.NewLine + Environment.NewLine,
                     result.ErrorMessages.ToArray());
@@ -212,6 +228,13 @@ namespace YNABv1
                     AmountTextBox.Focus();
                     break;
             }
+        }
+
+        private void Checked_Event(object sender, RoutedEventArgs e)
+        {
+            if (AmountTextBox.Text == "0")
+                AmountTextBox.Text = "";
+            AmountTextBox.Focus();
         }
     }
 }

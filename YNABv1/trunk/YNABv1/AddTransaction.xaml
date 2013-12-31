@@ -21,7 +21,7 @@
           d:DataContext="{d:DesignInstance Type=model:Transaction}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -31,65 +31,69 @@
         </StackPanel>
 
         <!--Content Panel-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
+        <ScrollViewer x:Name="ScrollViewerGrid" Grid.Row="1" Margin="12,0,12,0" Height="550"
+                      VerticalScrollBarVisibility="Visible">
+            <Grid x:Name="ContentPanel" Height="710">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" 
-                       Text="date:" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
-                                Value="{Binding Date}"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" 
-                       Text="account:"
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" 
-                     Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
-                     InputScope="Text" />
-            <TextBlock Grid.Row="2" Grid.Column="0" 
-                       Text="payee:"
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
-                     Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
-                     InputScope="Text" />
-            <TextBlock Grid.Row="3" Grid.Column="0"
-                       Text="category:" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="1" x:Name="CategoryTextBox"
-                     InputScope="Text" Text="{Binding Category, Mode=TwoWay}" />
-            <TextBlock Grid.Row="4" Grid.Column="0"
-                       Text="subcategory:" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox" 
-                     InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}" />
-            <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
-                       Text="memo:" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
-                     InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" />
-            <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
-                         HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" />
-            <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="7"  Grid.Column="1"
-                         HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="8" Grid.Column="0"
-                       Text="amount:" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="8" Grid.Column="1" x:Name="AmountTextBox" 
-                     InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" />
-        </Grid>
+                <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="date:" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
+                                    Value="{Binding Date}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" 
+                           Text="account:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" 
+                         Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
+                         InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" />
+                <TextBlock Grid.Row="2" Grid.Column="0" 
+                           Text="payee:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
+                         Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
+                         InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" />
+                <TextBlock Grid.Row="3" Grid.Column="0"
+                           Text="category:" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="CategoryTextBox"
+                         InputScope="Text" Text="{Binding Category, Mode=TwoWay}" TabIndex="4" KeyDown="KeyDown_Typed" />
+                <TextBlock Grid.Row="4" Grid.Column="0"
+                           Text="subcategory:" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox" 
+                         InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}" TabIndex="3" KeyDown="KeyDown_Typed" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
+                           Text="memo:" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
+                         InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" KeyDown="KeyDown_Typed" />
+                <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
+                             HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" />
+                <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="7"  Grid.Column="1"
+                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="8" Grid.Column="0"
+                           Text="amount:" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="8" Grid.Column="1" x:Name="AmountTextBox" 
+                         InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" TabIndex="5" />
+            </Grid>
+        </ScrollViewer>
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>

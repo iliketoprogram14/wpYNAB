@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Model;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace YNABv1
 {
@@ -19,6 +20,7 @@ namespace YNABv1
         private Transaction currentTransaction;
         private bool hasUnsavedChanges;
         private TextBox textboxWithFocus;
+        private RadioButton buttonWithFocus;
 
         public AddTransaction()
         {
@@ -28,7 +30,10 @@ namespace YNABv1
 
         void AddTransactionPage_GotFocus(object sender, RoutedEventArgs e)
         {
-            textboxWithFocus = e.OriginalSource as TextBox;
+            if (Object.ReferenceEquals(e.OriginalSource.GetType(), PayeeTextBox.GetType()))
+                textboxWithFocus = e.OriginalSource as TextBox;
+            else if (Object.ReferenceEquals(e.OriginalSource.GetType(), OutflowButton.GetType()))
+                buttonWithFocus = e.OriginalSource as RadioButton;
         }
 
         private void InitializePageState()
@@ -73,7 +78,7 @@ namespace YNABv1
             if (e.Uri.OriginalString.Equals("//MainPage.xaml") || !hasUnsavedChanges) 
                 return;
 
-            CommitTextBoxWithFocus();
+            CommitItemWithFocus();
             State[CURRENT_TRANS_KEY] = currentTransaction;
             State[HAS_UNSAVED_CHANGES_KEY] = hasUnsavedChanges;
         }
@@ -101,7 +106,7 @@ namespace YNABv1
             // normally committed to the data source only when the text box 
             // loses focus. However, application bar buttons do not receive or 
             // change focus because they are not Silverlight controls. 
-            CommitTextBoxWithFocus();
+            CommitItemWithFocus();
 
             if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
                 MessageBox.Show("The account is required.");
@@ -165,13 +170,48 @@ namespace YNABv1
         /// <summary>
         /// Ensures that any changes to text box values are committed. 
         /// </summary>
-        private void CommitTextBoxWithFocus()
+        private void CommitItemWithFocus()
         {
-            if (textboxWithFocus == null) return;
+            if (textboxWithFocus == null)
+                return;
 
             BindingExpression expression = textboxWithFocus.GetBindingExpression(TextBox.TextProperty);
             if (expression != null) 
                 expression.UpdateSource();
+
+            if (buttonWithFocus == null)
+                return;
+
+            expression = buttonWithFocus.GetBindingExpression(RadioButton.IsCheckedProperty);
+            if (expression != null)
+                expression.UpdateSource();
+        }
+
+        private void KeyDown_Typed(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter && e.PlatformKeyCode != 0x0A)
+                return;
+            switch (textboxWithFocus.Name) {
+                case "AccountTextBox":
+                    PayeeTextBox.Focus();
+                    break;
+                case "PayeeTextBox":
+                    CategoryTextBox.Focus();
+                    break;
+                case "CategoryTextBox":
+                    SubCategoryTextBox.Focus();
+                    break;
+                case "SubCategoryTextBox":
+                    MemoTextBox.Focus();
+                    break;
+                case "MemoTextBox":
+                    OutflowButton.Focus();
+                    ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 75);
+                    break;
+                case "AmountTextBox":
+                    AmountTextBox.Focus();
+                    break;
+            }
         }
     }
 }

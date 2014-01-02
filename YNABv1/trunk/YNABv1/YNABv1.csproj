@@ -97,6 +97,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="FileExplorer.xaml.cs">
+      <DependentUpon>FileExplorer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DropboxHelper.cs" />
     <Compile Include="Helpers\ExportHelper.cs" />
     <Compile Include="LocalizedStrings.cs" />
@@ -105,6 +108,7 @@
     </Compile>
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Datastore.cs" />
+    <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\Payee.cs" />
     <Compile Include="Model\SaveResult.cs" />
     <Compile Include="Model\Transaction.cs" />
@@ -125,6 +129,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FileExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -138,6 +146,40 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\DropboxIcons\excel48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_app48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_camera48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_gray48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_public48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_star48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_user48.gif" />
+    <Resource Include="Assets\DropboxIcons\folder_user_gray48.gif" />
+    <Resource Include="Assets\DropboxIcons\music48.gif" />
+    <Resource Include="Assets\DropboxIcons\package48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_acrobat48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_actionscript48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_c48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_code48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_cplusplus48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_csharp.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_cup48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_dvd.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_flash48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_gear48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_h48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_paint48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_php48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_picture48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_ruby48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_text48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_tux48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_vector48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_visualstudio48.gif" />
+    <Resource Include="Assets\DropboxIcons\page_white_zip48.gif" />
+    <Resource Include="Assets\DropboxIcons\powerpoint48.gif" />
+    <Resource Include="Assets\DropboxIcons\word48.gif" />
     <Content Include="Assets\add.png" />
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\ApplicationIcon.png">
@@ -178,15 +220,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AppLimit.CloudComputing.SharpBox">
-      <HintPath>..\packages\AppLimit.CloudComputing.SharpBox.1.2.0.542\lib\sl3-wp\AppLimit.CloudComputing.SharpBox.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Silverlight">
-      <HintPath>..\packages\AppLimit.CloudComputing.SharpBox.1.2.0.542\lib\sl3-wp\Newtonsoft.Json.Silverlight.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
@@ -199,4 +247,9 @@
   </Target>
   -->
   <ProjectExtensions />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
 </Project>

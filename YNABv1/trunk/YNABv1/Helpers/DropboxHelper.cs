@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,42 +39,21 @@ namespace YNABv1.Helpers
             exportAfterCompletedSetup = export;
         }
 
-        public static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
+        public async static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
             String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename;
             url += "?overwrite=false";
-            var uri = new Uri(url);
 
-            var request = (WebRequest)WebRequest.Create(new Uri(url));
-            request.Method = "PUT";
-            request.ContentLength = Encoding.UTF8.GetByteCount(data);
-            request.Headers["Authorization"] = "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN];
+            HttpClient client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Put, new Uri(url));
+            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+            request.Content = new StringContent(data);
+            var response = await client.SendAsync(request);
 
-            request.BeginGetRequestStream(new AsyncCallback(r => {
-                var request2 = (HttpWebRequest)r.AsyncState;
-                Stream postStream = request2.EndGetRequestStream(r);
-
-                // Create the post data
-                string postData = data;
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-                // Add the post data to the web request
-                postStream.Write(byteArray, 0, byteArray.Length);
-                postStream.Close();
-
-                request2.BeginGetResponse(new AsyncCallback(r2 => {
-                    var request3 = (HttpWebRequest)r2.AsyncState;
-                    HttpWebResponse response = (HttpWebResponse)request3.EndGetResponse(r2);
-                    using (StreamReader httpwebStreamReader = new StreamReader(response.GetResponseStream())) {
-                        string result = httpwebStreamReader.ReadToEnd();
-                        Debug.WriteLine(result);
-                        if (last)
-                            callback();
-                    }
-                }), request2);
-
-            }), request);
-
+            String result = response.Content.ReadAsStringAsync().Result;
+            Debug.WriteLine(result);
+            if (last)
+                callback();
         }
 
         private static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
@@ -88,49 +68,42 @@ namespace YNABv1.Helpers
                 mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;}
         }
 
-        private static void GetAccessToken(string code)
+        private async static Task GetAccessToken(string code)
         {
-            var request = (WebRequest)WebRequest.Create(new Uri("https://api.dropbox.com/1/oauth2/token"));
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.BeginGetRequestStream(new AsyncCallback(r => {
-                var request2 = (HttpWebRequest)r.AsyncState;
-                Stream postStream = request2.EndGetRequestStream(r);
+            string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
+                Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
+            
+            HttpClient client = new HttpClient();
+            HttpContent content = new StringContent(postData);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+            var response = await client.PostAsync(new Uri("https://api.dropbox.com/1/oauth2/token"), content);
 
-                // Create the post data
-                string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
-                    Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            String result = await response.Content.ReadAsStringAsync();
+            result = result.Trim('}').Trim('{').Replace(" ", "");
+            string[] parts = result.Split(new char[] { ':', ',' }, StringSplitOptions.None);
+            string accessToken = parts[1].Trim('\"'); // parts[0] == "access_token"
+            string tokenType = parts[3].Trim('\"'); // parts[2] == "token_type"
+            string userID = parts[5].Trim('\"'); // parts[4] == "uid"
 
-                // Add the post data to the web request
-                postStream.Write(byteArray, 0, byteArray.Length);
-                postStream.Close();
+            appSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
+            appSettings[Constants.DROPBOX_UID] = userID;
+            appSettings.Save();
 
-                request2.BeginGetResponse(new AsyncCallback(r2 => {
-                    var request3 = (HttpWebRequest)r2.AsyncState;
-                    HttpWebResponse response = (HttpWebResponse)request3.EndGetResponse(r2);
-                    using (StreamReader httpwebStreamReader = new StreamReader(response.GetResponseStream())) {
-                        string result = httpwebStreamReader.ReadToEnd();
-                        Debug.WriteLine(result);
-                        
-                        result = result.Trim('}').Trim('{').Replace(" ", "");
-                        string[] parts = result.Split(new char[] { ':', ',' }, StringSplitOptions.None);
-                        string accessToken = parts[1].Trim('\"'); // parts[0] == "access_token"
-                        string tokenType = parts[3].Trim('\"'); // parts[2] == "token_type"
-                        string userID = parts[5].Trim('\"'); // parts[4] == "uid"
-                        
-                        appSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
-                        appSettings[Constants.DROPBOX_UID] = userID;
-                        appSettings.Save();                        
-
-                        if (exportAfterCompletedSetup) {
-                            exportAfterCompletedSetup = false;
-                            mainPage.ExportButton_Click(null, new RoutedEventArgs());
-                        }
-                    }
-                }), request2);
-            }), request);
+            if (exportAfterCompletedSetup) {
+                exportAfterCompletedSetup = false;
+                mainPage.ExportButton_Click(null, new RoutedEventArgs());
+            }
         }
 
+        public async static Task<String> GetMetaData(string path)
+        {
+            String url = "https://api.dropbox.com/1/metadata/dropbox/" + path;
+            HttpClient c = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+            var response = await c.SendAsync(request);
+            String result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }

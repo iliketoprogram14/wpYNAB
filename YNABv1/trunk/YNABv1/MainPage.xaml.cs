@@ -10,8 +10,6 @@ using Microsoft.Phone.Shell;
 using YNABv1.Resources;
 using YNABv1.Model;
 using YNABv1.Helpers;
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 using System.IO.IsolatedStorage;
 using System.Text;
 using System.IO;
@@ -54,9 +52,8 @@ namespace YNABv1
             if (!DropboxHelper.IsSetup()) {
                 DropboxHelper.Setup(this, false);
             } else {
-
+                NavigationService.Navigate(new Uri("//FileExplorer.xaml", UriKind.Relative));
             }
-
         }
 
         public void ExportButton_Click(object sender, EventArgs e)
@@ -69,6 +66,7 @@ namespace YNABv1
             ProgressBar.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
             ProgressBar.Visibility = Visibility.Visible;
+
             if (!DropboxHelper.IsSetup()) {
                 DropboxHelper.Setup(this, true);
             } else {

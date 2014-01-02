@@ -197,6 +197,17 @@ namespace YNABv1.Model
                 (transfer == t2.Transfer);
         }
 
+        public String GetCsv()
+        {
+            //Date,Payee,Category,Memo,Outflow,Inflow
+            String dateStr = String.Format("{0:d}", date.ToString());
+            String fullCategory = this.FullCategory;
+            String outflowStr = this.Outflow ? amount.ToString() : "";
+            String inflowStr = this.Inflow ? amount.ToString() : "";
+            return dateStr + "," + payee + "," + FullCategory + "," + memo + "," +
+                outflowStr + "," + inflowStr + "\n";
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 

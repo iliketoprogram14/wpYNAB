@@ -98,7 +98,7 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\DropboxHelper.cs" />
-    <Compile Include="Helpers\OAuthBase.cs" />
+    <Compile Include="Helpers\ExportHelper.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Windows;
 
 namespace YNABv1.Model
 {
@@ -63,7 +64,13 @@ namespace YNABv1.Model
                 NotifyTransactionsUpdated();
             }
         }
-        
+
+        public static void ClearAllTransactions()
+        {
+            transactions.RemoveAll();
+            SaveTransactions(null);
+        }
+
         private static void SaveTransactions(Action errorCallback)
         {
             try {
@@ -71,7 +78,10 @@ namespace YNABv1.Model
                 appSettings.Save();
                 NotifyTransactionsUpdated();
             } catch (IsolatedStorageException) {
-                errorCallback();
+                if (errorCallback != null)
+                    errorCallback();
+                else
+                    MessageBox.Show(Constants.DELETE_MSG);
             }
         }
 

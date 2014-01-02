@@ -41,6 +41,11 @@ namespace YNABv1.Model
             transactions.Remove(t);
         }
 
+        public void RemoveAll()
+        {
+            transactions.Clear();
+        }
+
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;

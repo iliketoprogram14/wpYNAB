@@ -27,7 +27,11 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
         </Grid>-->
         <!--Pivot Control-->
-        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed" Navigated="MainBrowser_Navigated"/>
+        
+        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed"/>
+        <ProgressBar IsEnabled="False" Name="ProgressBar" IsIndeterminate="True" 
+                     Height="10" Margin="0,10,0,676" Width="480" 
+                     HorizontalAlignment="Center" Foreground="#FF0049E5" Visibility="Collapsed"/>
         <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot">
 
             <!--Pivot item one-->
@@ -57,6 +61,7 @@
                             </Setter>
                         </Style>
                     </Grid.Resources>
+                    <toolkit:PerformanceProgressBar />
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Width="100" />
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Width="100" />

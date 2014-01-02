@@ -1,112 +1,135 @@
-﻿using System;
+﻿using Microsoft.Phone.Controls;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Navigation;
 
 namespace YNABv1.Helpers
 {
     public static class DropboxHelper
     {
-        private static string key = DropboxApi.KEY;
-        private static string secret = DropboxApi.SECRET;
-        private static string oauthToken = "";
-        private static string oauthTokenSecret = "";
-        private static string accessToken = "";
-        private static string accessTokenSecret = "";
-        private static MainPage p;
+        private static readonly IsolatedStorageSettings appSettings = 
+            IsolatedStorageSettings.ApplicationSettings;
+        private static MainPage mainPage;
+        private static bool exportAfterCompletedSetup = false;
 
-        public static void Setup(MainPage page)
+        public static bool IsSetup()
         {
-            p = page;
-            var uri = new Uri("https://api.dropbox.com/1/oauth/request_token");
-
-            // Generate a signature
-            OAuthBase oAuth = new OAuthBase();
-            string nonce = oAuth.GenerateNonce();
-            string timeStamp = oAuth.GenerateTimeStamp();
-            string parameters;
-            string normalizedUrl;
-            string signature = oAuth.GenerateSignature(uri, key, secret,
-                String.Empty, String.Empty, "GET", timeStamp, nonce, OAuthBase.SignatureTypes.HMACSHA1,
-                out normalizedUrl, out parameters);
-
-            signature = Uri.EscapeUriString(signature);
-
-            StringBuilder requestUri = new StringBuilder(uri.ToString());
-            requestUri.AppendFormat("?oauth_consumer_key={0}&", key);
-            requestUri.AppendFormat("oauth_nonce={0}&", nonce);
-            requestUri.AppendFormat("oauth_timestamp={0}&", timeStamp);
-            requestUri.AppendFormat("oauth_signature_method={0}&", "HMAC-SHA1");
-            requestUri.AppendFormat("oauth_version={0}&", "1.0");
-            requestUri.AppendFormat("oauth_signature={0}", signature);
-
-            var request = (HttpWebRequest)WebRequest.Create(new Uri(requestUri.ToString()));
-            request.Method = "GET";
-
-            request.BeginGetResponse(r => {
-                var response = request.EndGetResponse(r);
-
-                var queryString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                var parts = queryString.Split('&');
-                oauthToken = parts[1].Substring(parts[1].IndexOf('=') + 1);
-                oauthTokenSecret = parts[0].Substring(parts[0].IndexOf('=') + 1);
-                //p.DropboxSetupCallback();
-            }, null);
+            bool herp = appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
+            return appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
         }
 
-        public static string GetAuthUrl()
+        public static void Setup(MainPage p, bool export)
         {
-            string queryString = String.Format("oauth_token={0}", oauthToken);
-            string authorizeUrl = "https://www.dropbox.com/1/oauth/authorize?" + queryString + "&style=mobile";
-            return authorizeUrl;
+            string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
+            p.MainBrowser.Visibility = System.Windows.Visibility.Visible;
+            p.MainBrowser.IsScriptEnabled = true;
+            p.DefaultPivot.Visibility = System.Windows.Visibility.Collapsed;
+            p.MainBrowser.Navigated += DropboxMainBrowser_Navigated;
+            p.MainBrowser.Navigate(new Uri(url, UriKind.Absolute));
+            mainPage = p;
+            exportAfterCompletedSetup = export;
         }
 
-        public static void Finish(string uri)
+        public static void ExportTextFile(String path, String filename, String data, Action callback)
         {
-            OAuthBase oAuth = new OAuthBase();
+            String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename;
+            url += "?overwrite=false";
+            var uri = new Uri(url);
 
-            var nonce = oAuth.GenerateNonce();           
-            var timeStamp = oAuth.GenerateTimeStamp();
-            string parameters;
-            string normalizedUrl;
-            var signature = oAuth.GenerateSignature(new Uri(uri), key, secret,
-                oauthToken, oauthTokenSecret, "GET", timeStamp, nonce, 
-                OAuthBase.SignatureTypes.HMACSHA1, out normalizedUrl, out parameters);
-            signature = HttpUtility.UrlEncode(signature);
+            var request = (WebRequest)WebRequest.Create(new Uri(url));
+            request.Method = "PUT";
+            request.ContentLength = Encoding.UTF8.GetByteCount(data);
+            request.Headers["Authorization"] = "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN];
 
-            //  Now you can send the request.
-            var requestUri = new StringBuilder(uri);
-            requestUri.AppendFormat("?oauth_consumer_key={0}&", key);
-            requestUri.AppendFormat("oauth_token={0}&", oauthToken);
-            requestUri.AppendFormat("oauth_nonce={0}&", nonce);
-            requestUri.AppendFormat("oauth_timestamp={0}&", timeStamp);
-            requestUri.AppendFormat("oauth_signature_method={0}&", "HMAC-SHA1");
-            requestUri.AppendFormat("oauth_version={0}&", "1.0");
-            requestUri.AppendFormat("oauth_signature={0}", signature);
+            request.BeginGetRequestStream(new AsyncCallback(r => {
+                var request2 = (HttpWebRequest)r.AsyncState;
+                Stream postStream = request2.EndGetRequestStream(r);
 
-            var request = (HttpWebRequest) WebRequest.Create(requestUri.ToString());
-            request.Method = "GET";
+                // Create the post data
+                string postData = data;
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-            // Parsing the response will give you a return value which resembles this:
-            // oauth_token_secret=95grkd9na7hm&oauth_token=ccl4li5n1q9b
-            request.BeginGetResponse(r => {
-                var response = request.EndGetResponse(r);
-                var reader = new StreamReader(response.GetResponseStream());
-                var accessTokenAndSecret = reader.ReadToEnd();
+                // Add the post data to the web request
+                postStream.Write(byteArray, 0, byteArray.Length);
+                postStream.Close();
 
-                var parts = accessTokenAndSecret.Split('&');
-                accessToken = parts[1].Substring(parts[1].IndexOf('=') + 1);
-                accessTokenSecret = parts[0].Substring(parts[0].IndexOf('=') + 1);
-                //p.DropboxFinishCallback();
-            }, null);
+                request2.BeginGetResponse(new AsyncCallback(r2 => {
+                    var request3 = (HttpWebRequest)r2.AsyncState;
+                    HttpWebResponse response = (HttpWebResponse)request3.EndGetResponse(r2);
+                    using (StreamReader httpwebStreamReader = new StreamReader(response.GetResponseStream())) {
+                        string result = httpwebStreamReader.ReadToEnd();
+                        Debug.WriteLine(result);
+                        callback();
+                    }
+                }), request2);
+
+            }), request);
+
         }
 
-        public static Tuple<string, string> GetAccessTokenAndSecret()
+        private static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
         {
-            return new Tuple<string, string>(accessToken, accessTokenSecret);
+            string html = mainPage.MainBrowser.SaveToString();
+            if (html.Contains("Enter this code into")) {
+                // THIS IS HARD-CODED SO BEWARE
+                string[] parts = html.Split(new string[] { "auth-code" }, StringSplitOptions.None);
+                string code = parts[1].Split('<')[0].Trim('\\').Trim('"').Trim('>');
+                GetAccessToken(code);
+                mainPage.MainBrowser.Visibility = System.Windows.Visibility.Collapsed;
+                mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;}
         }
+
+        private static void GetAccessToken(string code)
+        {
+            var request = (WebRequest)WebRequest.Create(new Uri("https://api.dropbox.com/1/oauth2/token"));
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.BeginGetRequestStream(new AsyncCallback(r => {
+                var request2 = (HttpWebRequest)r.AsyncState;
+                Stream postStream = request2.EndGetRequestStream(r);
+
+                // Create the post data
+                string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
+                    Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+                // Add the post data to the web request
+                postStream.Write(byteArray, 0, byteArray.Length);
+                postStream.Close();
+
+                request2.BeginGetResponse(new AsyncCallback(r2 => {
+                    var request3 = (HttpWebRequest)r2.AsyncState;
+                    HttpWebResponse response = (HttpWebResponse)request3.EndGetResponse(r2);
+                    using (StreamReader httpwebStreamReader = new StreamReader(response.GetResponseStream())) {
+                        string result = httpwebStreamReader.ReadToEnd();
+                        Debug.WriteLine(result);
+                        
+                        result = result.Trim('}').Trim('{').Replace(" ", "");
+                        string[] parts = result.Split(new char[] { ':', ',' }, StringSplitOptions.None);
+                        string accessToken = parts[1].Trim('\"'); // parts[0] == "access_token"
+                        string tokenType = parts[3].Trim('\"'); // parts[2] == "token_type"
+                        string userID = parts[5].Trim('\"'); // parts[4] == "uid"
+                        
+                        appSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
+                        appSettings[Constants.DROPBOX_UID] = userID;
+                        appSettings.Save();                        
+
+                        if (exportAfterCompletedSetup) {
+                            exportAfterCompletedSetup = false;
+                            mainPage.ExportButton_Click(null, new RoutedEventArgs());
+                        }
+                    }
+                }), request2);
+            }), request);
+        }
+
     }
 }

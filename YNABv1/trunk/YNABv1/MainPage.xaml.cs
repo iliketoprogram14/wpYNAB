@@ -61,6 +61,11 @@ namespace YNABv1
 
         public void ExportButton_Click(object sender, EventArgs e)
         {
+            if (Datastore.Transactions.TransactionHistory.Count == 0) {
+                MessageBox.Show("There are no transactions to export");
+                return;
+            }
+
             ProgressBar.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
             ProgressBar.Visibility = Visibility.Visible;
@@ -68,9 +73,11 @@ namespace YNABv1
                 DropboxHelper.Setup(this, true);
             } else {
                 Dictionary<String, String> csvStrings = ExportHelper.GetCsvStrings();
+                int i = 0;
                 foreach (KeyValuePair<String, String> pair in csvStrings) {
+                    i++;
                     String path = "YNABcompanion";
-                    DropboxHelper.ExportTextFile(path, pair.Key + ".csv", pair.Value, delegate { ExportCompleted(); });
+                    DropboxHelper.ExportTextFile(path, pair.Key + ".csv", pair.Value, delegate { ExportCompleted(); }, i == csvStrings.Count);
                 }
             }
         }

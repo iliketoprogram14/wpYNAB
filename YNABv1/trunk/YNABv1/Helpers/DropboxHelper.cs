@@ -38,7 +38,7 @@ namespace YNABv1.Helpers
             exportAfterCompletedSetup = export;
         }
 
-        public static void ExportTextFile(String path, String filename, String data, Action callback)
+        public static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
             String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename;
             url += "?overwrite=false";
@@ -67,7 +67,8 @@ namespace YNABv1.Helpers
                     using (StreamReader httpwebStreamReader = new StreamReader(response.GetResponseStream())) {
                         string result = httpwebStreamReader.ReadToEnd();
                         Debug.WriteLine(result);
-                        callback();
+                        if (last)
+                            callback();
                     }
                 }), request2);
 

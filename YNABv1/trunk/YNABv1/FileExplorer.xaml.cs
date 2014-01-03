@@ -43,7 +43,10 @@ namespace YNABv1
         private async void ImportCsvAndPopulateDataStructures(String path)
         {
             String csvString = await DropboxHelper.ImportTextFile(path);
-            Datastore.ParseRegister(csvString);
+            if (csvString != "")
+                Datastore.ParseRegister(csvString);
+            else
+                MessageBox.Show("Import failed.  Please close the app and try again in a bit.");
             NavigationService.GoBack();
         }
 

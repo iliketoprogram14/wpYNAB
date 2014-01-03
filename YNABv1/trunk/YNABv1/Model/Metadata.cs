@@ -21,6 +21,11 @@ namespace YNABv1.Model
 
         public Metadata(string json)
         {
+            if (json == "") {
+                modified = new DateTime();
+                contents = new List<Metadata>();
+                return;
+            }
             JObject obj = JObject.Parse(json);
             size = (String)obj["size"];
             bytes = (int)obj["bytes"];

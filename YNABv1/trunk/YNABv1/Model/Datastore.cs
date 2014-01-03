@@ -21,11 +21,13 @@ namespace YNABv1.Model
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         private static Transactions transactions;
-        private static List<Payee> payees;
+        private static Payees payees;
         private static Categories categories;
         private static List<String> accounts;
 
         public static event EventHandler TransactionsUpdated;
+        public static event EventHandler PayeesUpdated;
+        public static event EventHandler CategoriesUpdated;
 
         public static void Init()
         {
@@ -35,8 +37,10 @@ namespace YNABv1.Model
                 new Transactions();
             payees =
                 (appSettings.Contains(PAYEE_KEY)) ?
-                (List<Payee>)appSettings[PAYEE_KEY] :
-                new List<Payee>();
+                (Payees)appSettings[PAYEE_KEY] :
+                new Payees();
+            bool derp = appSettings.Contains(CATEGORIES_KEY);
+            bool herp = appSettings.Contains(PAYEE_KEY);
             categories =
                 (appSettings.Contains(CATEGORIES_KEY)) ?
                 (Categories)appSettings[CATEGORIES_KEY] :
@@ -66,6 +70,10 @@ namespace YNABv1.Model
                 NotifyTransactionsUpdated();
             }
         }
+
+        public static List<String> MasterCategories() { return categories.MasterCategories(); }
+
+        public static List<String> SubCategories(String category) {  return categories.SubCategories(category); }
 
         public static void ClearAllTransactions()
         {
@@ -98,24 +106,27 @@ namespace YNABv1.Model
                     var payee = reader.GetField("Payee");
 
                     categories.AddFullCategory(category, subcategory);
-
-                    Payee p = new Payee(payee);
-                    if (payees.Contains(p)) {
-                        int i = payees.IndexOf(p);
-                        p = payees.ElementAt(i);
-                        payees.RemoveAt(i);
-                        p.AddFullCategory(category, subcategory);
-                        payees.Add(p);
-                    } else
-                        payees.Add(new Payee(payee, category, subcategory));
+                    payees.AddFullCategory(payee, category, subcategory);
 
                     if (!accounts.Contains(account))
                         accounts.Add(account);
                 }
-                appSettings[PAYEE_KEY] = payees;
-                appSettings[CATEGORIES_KEY] = categories;
+
+                categories.Sort();
+                accounts.Sort();
+                payees.Sort();
+
                 appSettings[ACCOUNTS_KEY] = accounts;
                 appSettings.Save();
+                appSettings[CATEGORIES_KEY] = categories;
+                appSettings.Save();
+                appSettings[PAYEE_KEY] = payees;
+                appSettings.Save();
+                NotifyCategoriesUpdated();
+                NotifyPayeesUpdated();
+                Deployment.Current.Dispatcher.BeginInvoke(() => {
+                    MessageBox.Show("Import of register successful!");
+                });
             });
         }
 
@@ -143,6 +154,20 @@ namespace YNABv1.Model
         {
             var handler = TransactionsUpdated;
             if (handler != null) 
+                handler(null, null);
+        }
+
+        private static void NotifyPayeesUpdated()
+        {
+            var handler = PayeesUpdated;
+            if (handler != null)
+                handler(null, null);
+        }
+        
+        private static void NotifyCategoriesUpdated()
+        {
+            var handler = CategoriesUpdated;
+            if (handler != null)
                 handler(null, null);
         }
     }

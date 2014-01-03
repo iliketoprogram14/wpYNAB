@@ -111,6 +111,7 @@
     <Compile Include="Model\Datastore.cs" />
     <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\Payee.cs" />
+    <Compile Include="Model\Payees.cs" />
     <Compile Include="Model\SaveResult.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Model\Transactions.cs" />

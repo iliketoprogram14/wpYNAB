@@ -47,6 +47,20 @@ namespace YNABv1
                 currentTransaction = new Transaction { Date = DateTime.Now };
             DataContext = currentTransaction;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
+
+            List<String> masterCats = Datastore.MasterCategories();
+            if (Datastore.MasterCategories().Count == 0) {
+                CategoryTextBox.Visibility = Visibility.Visible;
+                SubCategoryTextBox.Visibility = Visibility.Visible;
+                CategoryListPicker.Visibility = Visibility.Collapsed;
+                SubCategoryListPicker.Visibility = Visibility.Collapsed;
+            } else {
+                CategoryListPicker.ItemsSource = Datastore.MasterCategories();
+                CategoryListPicker.Visibility = Visibility.Visible;
+                SubCategoryListPicker.Visibility = Visibility.Visible;
+                CategoryTextBox.Visibility = Visibility.Collapsed;
+                SubCategoryTextBox.Visibility = Visibility.Collapsed;
+            }
         }
 
         /// <summary>
@@ -130,10 +144,7 @@ namespace YNABv1
                 MessageBox.Show("The category is required.");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(SubCategoryTextBox.Text)) {
-                MessageBox.Show("The subcategory is required.");
-                return;
-            }
+            
             bool outflow = (bool)OutflowButton.IsChecked;
             bool inflow = (bool)InflowButton.IsChecked;
             if ((!outflow && !inflow) || (outflow && inflow)) {
@@ -232,9 +243,21 @@ Failure:
 
         private void Checked_Event(object sender, RoutedEventArgs e)
         {
+            AmountTextBox.Focus();
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
-            AmountTextBox.Focus();
+        }
+
+        private void Payee_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String item = (String)CategoryListPicker.SelectedItem;
+            if (item != "")
+                SubCategoryListPicker.ItemsSource = Datastore.SubCategories(item);
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
-    public class Categories
+    public class Categories : INotifyPropertyChanged
     {
         private Dictionary<String, Category> categoryObjList;
         private List<String> categoryList;
@@ -16,6 +17,30 @@ namespace YNABv1.Model
             categoryObjList = new Dictionary<String, Category>();
             categoryList = new List<string>();
         }
+
+        public List<String> CategoryList { 
+            get { return categoryList; }
+            set {
+                if (categoryList == value)
+                    return;
+                categoryList = value;
+                NotifyPropertyChanged("CategoryList");
+            } 
+        }
+
+        public Dictionary<String, Category> CategoryObjList {
+            get { return categoryObjList; }
+            set {
+                if (categoryObjList == value)
+                    return;
+                categoryObjList = value;
+                NotifyPropertyChanged("CategoryObjList");
+            } 
+        }
+
+        public List<String> MasterCategories() { return categoryList; }
+
+        public List<String> SubCategories(String category) { return categoryObjList[category].SubCategories(); }
 
         public bool ContainsCategory(String category)
         {
@@ -43,5 +68,20 @@ namespace YNABv1.Model
                 categoryObjList[category] = c;
             }
         }
+
+        public void Sort()
+        {
+            categoryList.Sort();
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

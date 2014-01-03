@@ -15,7 +15,11 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
-
+    <phone:PhoneApplicationPage.Resources>
+        <DataTemplate x:Name="PickerFullModeItemTemplate">
+            <TextBlock Text="{Binding}" Margin="16 0 0 0" FontSize="28" />
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -67,17 +71,26 @@
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
                          Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
-                         InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" />
+                         InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" LostFocus="Payee_LostFocus" />
                 <TextBlock Grid.Row="3" Grid.Column="0"
                            Text="category:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <toolkit:ListPicker Name="CategoryListPicker" Grid.Row="3" Grid.Column="1" 
+                                    Width="280" Height="50" FontSize="24"
+                                    SelectionChanged="CategoryListPicker_SelectionChanged"
+                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="CategoryTextBox"
+                         Visibility="Collapsed"
                          InputScope="Text" Text="{Binding Category, Mode=TwoWay}" TabIndex="4" KeyDown="KeyDown_Typed" />
                 <TextBlock Grid.Row="4" Grid.Column="0"
                            Text="subcategory:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <toolkit:ListPicker Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1" 
+                                    Width="280" Height="50" FontSize="24"
+                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox" 
-                         InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}" TabIndex="3" KeyDown="KeyDown_Typed" />
+                         InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}"
+                         TabIndex="3" KeyDown="KeyDown_Typed" Visibility="Collapsed" />
                 <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
                            Text="memo:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>

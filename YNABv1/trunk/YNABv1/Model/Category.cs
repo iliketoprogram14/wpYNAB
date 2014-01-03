@@ -24,6 +24,15 @@ namespace YNABv1.Model
             subCategories.Add(subCategory);
         }
 
+        public string MainCategory() { return masterCategory; }
+
+        public bool HasSubCategory(String subCategory) { return subCategories.Contains(subCategory); }
+
+        public void AddSubCategory(String subCategory) 
+        {
+            subCategories.Add(subCategory);
+        }
+
         public Boolean Equals(Category c)
         {
             return masterCategory.Equals(c.masterCategory);

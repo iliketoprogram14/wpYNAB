@@ -20,7 +20,7 @@ namespace YNABv1
             InitializeComponent();
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             FillPage("");
@@ -40,15 +40,22 @@ namespace YNABv1
                 ParentFolderTextBox.Visibility = System.Windows.Visibility.Collapsed;
         }
 
+        private async void ImportCsvAndPopulateDataStructures(String path)
+        {
+            String csvString = await DropboxHelper.ImportTextFile(path);
+            Datastore.ParseRegister(csvString);
+            NavigationService.GoBack();
+        }
+
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Metadata m = DropboxListBox.SelectedItem as Metadata;
             if (m != null) {
                 if (m.IsDir)
                     FillPage(m.Path);
-                else if (m.Name.Contains("csv")) {
-                    // download the file
-                } else
+                else if (m.Name.Contains("csv"))
+                    ImportCsvAndPopulateDataStructures(m.Path);
+                else
                     MessageBox.Show("Please select a CSV file.");
             }
         }

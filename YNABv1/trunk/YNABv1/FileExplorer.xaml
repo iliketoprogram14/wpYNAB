@@ -15,12 +15,16 @@
     shell:SystemTray.IsVisible="True">
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="DataTemplate1">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding IconPath}"  Width="40" Height="40"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding IconPath}" Grid.Column="0" Width="40" Height="40"/>
                 <TextBlock Margin="20,0,0,5" TextWrapping="Wrap"
-                           Text="{Binding Name}" 
-                           d:LayoutOverrides="Width, Height" FontSize="28"/>
-            </StackPanel>
+                           Text="{Binding Name}" Grid.Column="1"
+                           d:LayoutOverrides="Width, Height" FontSize="26"/>
+            </Grid>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 

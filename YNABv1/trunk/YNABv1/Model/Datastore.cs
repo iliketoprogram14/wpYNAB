@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Windows;
+using System.Threading;
+using CsvHelper;
 
 namespace YNABv1.Model
 {
@@ -20,7 +22,7 @@ namespace YNABv1.Model
 
         private static Transactions transactions;
         private static List<Payee> payees;
-        private static List<Category> categories;
+        private static Categories categories;
         private static List<String> accounts;
 
         public static event EventHandler TransactionsUpdated;
@@ -37,8 +39,8 @@ namespace YNABv1.Model
                 new List<Payee>();
             categories =
                 (appSettings.Contains(CATEGORIES_KEY)) ?
-                (List<Category>)appSettings[CATEGORIES_KEY] :
-                new List<Category>();
+                (Categories)appSettings[CATEGORIES_KEY] :
+                new Categories();
             accounts =
                 (appSettings.Contains(ACCOUNTS_KEY)) ?
                 (List<String>)appSettings[ACCOUNTS_KEY] :
@@ -83,6 +85,38 @@ namespace YNABv1.Model
                 else
                     MessageBox.Show(Constants.DELETE_MSG);
             }
+        }
+
+        public static void ParseRegister(String csvRegister)
+        {
+            ThreadPool.QueueUserWorkItem(context => {
+                CsvReader reader = new CsvReader(new StringReader(csvRegister));
+                while (reader.Read()) {
+                    var account = reader.GetField("Account");
+                    var category = reader.GetField("Master Category");
+                    var subcategory = reader.GetField("Sub Category");
+                    var payee = reader.GetField("Payee");
+
+                    categories.AddFullCategory(category, subcategory);
+
+                    Payee p = new Payee(payee);
+                    if (payees.Contains(p)) {
+                        int i = payees.IndexOf(p);
+                        p = payees.ElementAt(i);
+                        payees.RemoveAt(i);
+                        p.AddFullCategory(category, subcategory);
+                        payees.Add(p);
+                    } else
+                        payees.Add(new Payee(payee, category, subcategory));
+
+                    if (!accounts.Contains(account))
+                        accounts.Add(account);
+                }
+                appSettings[PAYEE_KEY] = payees;
+                appSettings[CATEGORIES_KEY] = categories;
+                appSettings[ACCOUNTS_KEY] = accounts;
+                appSettings.Save();
+            });
         }
 
         public static SaveResult AddTransaction(Transaction t, Action errorCallback)

@@ -20,6 +20,7 @@ namespace YNABv1.Helpers
             IsolatedStorageSettings.ApplicationSettings;
         private static MainPage mainPage;
         private static bool exportAfterCompletedSetup = false;
+        private static bool importAfterCompletedSetup = false;
 
         public static bool IsSetup()
         {
@@ -27,7 +28,7 @@ namespace YNABv1.Helpers
             return appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
         }
 
-        public static void Setup(MainPage p, bool export)
+        public static void Setup(MainPage p, bool export, bool import)
         {
             string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
             p.MainBrowser.Visibility = System.Windows.Visibility.Visible;
@@ -37,6 +38,19 @@ namespace YNABv1.Helpers
             p.MainBrowser.Navigate(new Uri(url, UriKind.Absolute));
             mainPage = p;
             exportAfterCompletedSetup = export;
+            importAfterCompletedSetup = import;
+        }
+
+        public async static Task<String> ImportTextFile(String path)
+        {
+            String url = "https://api-content.dropbox.com/1/files/dropbox/" + path;
+
+            HttpClient client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+            var response = await client.SendAsync(request);
+            String result = response.Content.ReadAsStringAsync().Result;
+            return result;
         }
 
         public async static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
@@ -63,9 +77,10 @@ namespace YNABv1.Helpers
                 // THIS IS HARD-CODED SO BEWARE
                 string[] parts = html.Split(new string[] { "auth-code" }, StringSplitOptions.None);
                 string code = parts[1].Split('<')[0].Trim('\\').Trim('"').Trim('>');
-                GetAccessToken(code);
                 mainPage.MainBrowser.Visibility = System.Windows.Visibility.Collapsed;
-                mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;}
+                mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;
+                GetAccessToken(code);
+            }
         }
 
         private async static Task GetAccessToken(string code)
@@ -92,6 +107,10 @@ namespace YNABv1.Helpers
             if (exportAfterCompletedSetup) {
                 exportAfterCompletedSetup = false;
                 mainPage.ExportButton_Click(null, new RoutedEventArgs());
+            }
+            if (importAfterCompletedSetup) {
+                importAfterCompletedSetup = false;
+                mainPage.ImportButton_Click(null, new RoutedEventArgs());
             }
         }
 

@@ -47,10 +47,10 @@ namespace YNABv1
             NavigationService.Navigate(new Uri("//AddTransaction.xaml", UriKind.Relative));
         }
 
-        private void ImportButton_Click(object sender, EventArgs e)
+        public void ImportButton_Click(object sender, EventArgs e)
         {
             if (!DropboxHelper.IsSetup()) {
-                DropboxHelper.Setup(this, false);
+                DropboxHelper.Setup(this, false, true);
             } else {
                 NavigationService.Navigate(new Uri("//FileExplorer.xaml", UriKind.Relative));
             }
@@ -68,7 +68,7 @@ namespace YNABv1
             ProgressBar.Visibility = Visibility.Visible;
 
             if (!DropboxHelper.IsSetup()) {
-                DropboxHelper.Setup(this, true);
+                DropboxHelper.Setup(this, true, false);
             } else {
                 Dictionary<String, String> csvStrings = ExportHelper.GetCsvStrings();
                 int i = 0;

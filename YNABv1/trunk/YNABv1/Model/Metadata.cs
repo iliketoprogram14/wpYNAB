@@ -15,7 +15,6 @@ namespace YNABv1.Model
         private String path;
         private bool is_dir;
         private String rev;
-        private String hash;
         private String icon;
         private DateTime modified;
         List<Metadata> contents;

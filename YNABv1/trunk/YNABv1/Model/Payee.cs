@@ -10,67 +10,56 @@ namespace YNABv1.Model
 { 
     public class Payee : INotifyPropertyChanged, IEquatable<Payee>, IComparable
     {
-        private String payee;
-        private Categories categories;
-
+        #region Constructors
         public Payee()
         {
-            payee = "";
-            categories = new Categories();
+            PayeeName = "";
+            CategoryList = new Categories();
         }
 
         public Payee(String _payee)
         {
-            payee = _payee;
-            categories = new Categories();
+            PayeeName = _payee;
+            CategoryList = new Categories();
         }
 
         public Payee(String _payee, String category, String subcategory)
         {
-            payee = _payee;
-            categories = new Categories();
-            categories.AddFullCategory(category, subcategory);
+            PayeeName = _payee;
+            CategoryList = new Categories();
+            CategoryList.AddFullCategory(category, subcategory);
         }
+        #endregion
 
-        public String ThePayee
+        #region Get/Set
+        public String PayeeName
         {
-            get { return payee; }
-            set {
-                if (payee == value)
-                    return;
-                payee = value;
-                NotifyPropertyChanged("ThePayee");
-            }
+            get; set;
         }
 
         public Categories CategoryList
         {
-            get { return categories; }
-            set {
-                if (categories == value)
-                    return;
-                categories = value;
-                NotifyPropertyChanged("CategoryList");
-            }
+            get; set;
         }
+        #endregion
 
         public void AddFullCategory(String category, String subcategory)
         {
-            if (!categories.ContainsFullCategory(category, subcategory))
-                categories.AddFullCategory(category, subcategory);
+            if (!CategoryList.ContainsFullCategory(category, subcategory))
+                CategoryList.AddFullCategory(category, subcategory);
         }
 
         public bool Equals(Payee p2)
         {
             if (p2 == null)
                 return false;
-            return payee.Equals(p2.payee);
+            return PayeeName.Equals(p2.PayeeName);
         }
 
         int IComparable.CompareTo(object obj)
         {
             Payee p = (Payee)obj;
-            return String.Compare(payee, p.payee);
+            return String.Compare(PayeeName, p.PayeeName);
         }
 
         #region INotifyPropertyChanged

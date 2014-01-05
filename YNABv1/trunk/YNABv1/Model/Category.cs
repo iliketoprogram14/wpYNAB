@@ -9,62 +9,53 @@ namespace YNABv1.Model
 {
     public class Category : INotifyPropertyChanged, IEquatable<Category>
     {
-        private String masterCategory;
-        private List<String> subCategories;
-
+        #region Constructors
         public Category()
         {
-            masterCategory = "";
-            subCategories = new List<string>();
+            MasterCategory = "";
+            SubCategories = new List<string>();
         }
 
         public Category(String category)
         {
-            masterCategory = category;
-            subCategories = new List<String>();
+            MasterCategory = category;
+            SubCategories = new List<String>();
         }
 
         public Category(String category, String subCategory)
         {
-            masterCategory = category;
-            subCategories = new List<String>();
-            subCategories.Add(subCategory);
+            MasterCategory = category;
+            SubCategories = new List<String>();
+            SubCategories.Add(subCategory);
         }
+        #endregion
 
-        public String TheMasterCategory { 
-            get { return masterCategory; } 
-            set {
-                if (masterCategory == value)
-                    return;
-                masterCategory = value;
-                NotifyPropertyChanged("TheMasterCategory");
-            }
+        #region Get/Set
+        public String MasterCategory { get; set; }
+
+        public List<String> SubCategories { get; set;  }
+        #endregion
+
+        #region Public Interface
+        public bool HasSubCategory(String subCategory) 
+        { 
+            return SubCategories.Contains(subCategory);
         }
-
-        public List<String> SubCategoryList { 
-            get { return subCategories; } 
-            set {
-                if (subCategories == value)
-                    return;
-                subCategories = value;
-                NotifyPropertyChanged("SubCategoryList");
-            } 
-        }
-
-        public List<String> SubCategories() { return subCategories; }
-            
-        public string MainCategory() { return masterCategory; }
-
-        public bool HasSubCategory(String subCategory) { return subCategories.Contains(subCategory); }
 
         public void AddSubCategory(String subCategory) 
         {
-            subCategories.Add(subCategory);
+            SubCategories.Add(subCategory);
         }
+
+        public void RemoveSubCategory(String subCategory)
+        {
+            SubCategories.Remove(subCategory);
+        }
+        #endregion
 
         public Boolean Equals(Category c)
         {
-            return masterCategory.Equals(c.masterCategory);
+            return MasterCategory.Equals(c.MasterCategory);
         }
 
         #region INotifyPropertyChanged

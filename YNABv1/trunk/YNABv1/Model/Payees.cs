@@ -9,56 +9,49 @@ namespace YNABv1.Model
 {
     public class Payees : INotifyPropertyChanged
     {
-        List<Payee> payeeList;
-
         public Payees()
         {
-            payeeList = new List<Payee>();
+            PayeeList = new List<Payee>();
         }
 
-        public int Count() { return payeeList.Count; }
-
+        #region Public Interface
         public List<Payee> PayeeList
         {
-            get { return payeeList; }
-            set {
-                if (payeeList == value)
-                    return;
-                payeeList = value;
-                NotifyPropertyChanged("PayeeList");
-            }
+            get; set;
         }
+
+        public int Count() { return PayeeList.Count; }
 
         public bool ContainsPayee(string payee)
         {
-            Payee p = new Payee(payee);
-            return payeeList.Contains(p);
+            return PayeeList.Contains(new Payee(payee));
         }
 
         public void AddPayee(string payee)
         {
             if (!ContainsPayee(payee))
-                payeeList.Add(new Payee(payee));
+                PayeeList.Add(new Payee(payee));
         }
 
         public void AddFullCategory(string payee, string category, string subcategory)
         {
             if (!ContainsPayee(payee))
-                payeeList.Add(new Payee(payee, category, subcategory));
+                PayeeList.Add(new Payee(payee, category, subcategory));
             else {
                 Payee p = new Payee(payee);
-                int i = payeeList.IndexOf(p);
-                p = payeeList.ElementAt(i);
-                payeeList.RemoveAt(i);
+                int i = PayeeList.IndexOf(p);
+                p = PayeeList.ElementAt(i);
+                PayeeList.RemoveAt(i);
                 p.AddFullCategory(category, subcategory);
-                payeeList.Add(p);
+                PayeeList.Add(p);
             }
         }
 
         public void Sort()
         {
-            payeeList.Sort();
+            PayeeList.Sort();
         }
+        #endregion
 
         #region INotifyPropertyChanged
 

@@ -38,7 +38,7 @@ namespace YNABv1.Helpers
         /// <param name="callback"></param>
         public static void Setup(MainPage p, Action callback)
         {
-            if (!IsSetup())
+            if (IsSetup())
                 return;
 
             string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
@@ -60,7 +60,7 @@ namespace YNABv1.Helpers
         public async static Task<String> ImportTextFile(String path)
         {
             String url = "https://api-content.dropbox.com/1/files/dropbox/" + path;
-            String result = await MakeAuthorizedRequest(url, HttpMethod.Get);            
+            String result = await MakeRequest(url, HttpMethod.Get, true);            
             return result;
         }
 
@@ -75,7 +75,7 @@ namespace YNABv1.Helpers
         public async static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
             String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename + "?overwrite=false";
-            await MakeAuthorizedRequest(url, HttpMethod.Put, data);
+            await MakeRequest(url, HttpMethod.Put, true, data);
             if (last)
                 callback();
         }
@@ -88,7 +88,7 @@ namespace YNABv1.Helpers
         public async static Task<String> GetMetaData(string path)
         {
             String url = "https://api.dropbox.com/1/metadata/dropbox/" + path;
-            String result = await MakeAuthorizedRequest(url, HttpMethod.Get);
+            String result = await MakeRequest(url, HttpMethod.Get, true);
             return result;
         }
         #endregion
@@ -99,7 +99,7 @@ namespace YNABv1.Helpers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
+        private static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
         {
             string html = mainPage.MainBrowser.SaveToString();
             if (html.Contains("Enter this code into")) {
@@ -110,7 +110,7 @@ namespace YNABv1.Helpers
                 mainPage.MainBrowser.Visibility = System.Windows.Visibility.Collapsed;
                 mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;
 
-                await GetAccessToken(code);
+                GetAccessToken(code);
             }
         }
         #endregion
@@ -127,7 +127,7 @@ namespace YNABv1.Helpers
             string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
                 Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
 
-            String result = await MakeAuthorizedRequest(url, HttpMethod.Post, postData, true);
+            String result = await MakeRequest(url, HttpMethod.Post, false, postData, true);
             JObject obj = JObject.Parse(result);
             string accessToken = (string)obj["access_token"];
             string tokenType = (string)obj["token_type"];
@@ -149,11 +149,12 @@ namespace YNABv1.Helpers
         /// <param name="method"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        private async static Task<String> MakeAuthorizedRequest(String url, HttpMethod method, String content="", bool contentTypeUrl=false)
+        private async static Task<String> MakeRequest(String url, HttpMethod method, bool authorized, String content="", bool contentTypeUrl=false)
         {
             HttpClient c = new HttpClient();
             var request = new HttpRequestMessage(method, new Uri(url));
-            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+            if (authorized)
+                request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
             if (content != "")
                 request.Content = new StringContent(content);
             if (contentTypeUrl == true)

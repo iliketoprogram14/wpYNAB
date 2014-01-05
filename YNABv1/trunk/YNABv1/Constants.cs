@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
+        // For current phone state
         public const string SAVED_KEY_TRANSACTIONS = "SavedTransactions";
         public const string SAVED_KEY_PAYEES = "SavedPayees";
         public const string SAVED_KEY_CATEGORIES = "SavedCategories";
@@ -15,6 +16,7 @@
         public const string DROPBOX_ACCESS_TOKEN = "DropboxAccessToken";
         public const string DROPBOX_UID = "DropboxUID";
 
+        // For passing params while navigating
         public const string NAV_PARAM_TRANSACTION = "AddTransactionParam";
         public const string NAV_PARAM_TRANSFER = "AddTransferParam";
     }

@@ -40,7 +40,7 @@ namespace YNABv1
             else if (transactionToEdit != null)
                 currentTransaction = transactionToEdit.DeepCopy();
             else
-                currentTransaction = new Transaction { Date = DateTime.Now };
+                currentTransaction = new Transaction();
             DataContext = currentTransaction;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
 

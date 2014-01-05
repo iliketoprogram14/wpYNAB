@@ -9,70 +9,62 @@ namespace YNABv1.Model
 {
     public class Categories : INotifyPropertyChanged
     {
-        private Dictionary<String, Category> categoryObjList;
-        private List<String> categoryList;
-
         public Categories()
         {
-            categoryObjList = new Dictionary<String, Category>();
-            categoryList = new List<string>();
+            CategoryObjList = new Dictionary<String, Category>();
+            CategoryList = new List<string>();
         }
 
-        public List<String> CategoryList { 
-            get { return categoryList; }
-            set {
-                if (categoryList == value)
-                    return;
-                categoryList = value;
-                NotifyPropertyChanged("CategoryList");
-            } 
+        #region Get/Set
+        public List<String> CategoryList
+        {
+            get; set;
         }
 
-        public Dictionary<String, Category> CategoryObjList {
-            get { return categoryObjList; }
-            set {
-                if (categoryObjList == value)
-                    return;
-                categoryObjList = value;
-                NotifyPropertyChanged("CategoryObjList");
-            } 
+        public Dictionary<String, Category> CategoryObjList
+        {
+            get; set;
         }
+        #endregion
 
-        public List<String> MasterCategories() { return categoryList; }
-
-        public List<String> SubCategories(String category) { return categoryObjList[category].SubCategories(); }
+        #region Public Interface
+        public List<String> SubCategories(String category) 
+        { 
+            return CategoryObjList[category].SubCategories; 
+        }
 
         public bool ContainsCategory(String category)
         {
-            return categoryList.Contains(category);
+            return CategoryList.Contains(category);
         }
 
         public bool ContainsFullCategory(String category, String subCategory)
         {
-            return ContainsCategory(category) && categoryObjList[category].HasSubCategory(subCategory);
+            return ContainsCategory(category) && CategoryObjList[category].HasSubCategory(subCategory);
         }
 
         public void AddCategory(String category)
         {
-            categoryObjList[category] = new Category(category);
-            categoryList.Add(category);
+            CategoryObjList[category] = new Category(category);
+            CategoryList.Add(category);
         }
 
         public void AddFullCategory(String category, String subcategory)
         {
             if (!ContainsCategory(category))
                 AddCategory(category);
-            Category c = categoryObjList[category];
+            Category c = CategoryObjList[category];
             if (!c.HasSubCategory(subcategory)) {
                 c.AddSubCategory(subcategory);
-                categoryObjList[category] = c;
+                CategoryObjList[category] = c;
             }
         }
 
         public void Sort()
         {
-            categoryList.Sort();
+            CategoryList.Sort();
         }
+        #endregion
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

@@ -39,10 +39,8 @@ namespace YNABv1
                 currentTransfer = State[CURRENT_TRANSFER_KEY] as Transaction;
             else if (transferToEdit != null)
                 currentTransfer = transferToEdit.DeepCopy();
-            else {
-                currentTransfer = new Transaction { Date = DateTime.Now };
-                currentTransfer.Transfer = true;
-            }
+            else
+                currentTransfer = new Transaction(true);
             DataContext = currentTransfer;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
         }

@@ -12,10 +12,7 @@ namespace YNABv1.Model
     {
         private String size;
         private int bytes;
-        private String path;
-        private bool is_dir;
         private String rev;
-        private String icon;
         private DateTime modified;
         List<Metadata> contents;
 
@@ -29,16 +26,16 @@ namespace YNABv1.Model
             JObject obj = JObject.Parse(json);
             size = (String)obj["size"];
             bytes = (int)obj["bytes"];
-            path = (String)obj["path"];
-            is_dir = (bool)obj["is_dir"];
+            Path = (String)obj["path"];
+            IsDir = (bool)obj["is_dir"];
             rev = (String)obj["rev"];
-            icon = (String)obj["icon"];
+            Icon = (String)obj["icon"];
 
             JToken outVal;
             if (obj.TryGetValue("modified", out outVal))
                 modified = DateTime.Parse((String)obj["modified"]);
 
-            if (is_dir && obj.TryGetValue("contents", out outVal)) {
+            if (IsDir && obj.TryGetValue("contents", out outVal)) {
                 contents = new List<Metadata>();
                 Array contentsArray = obj["contents"].ToArray();
                 foreach (JToken temp in contentsArray)
@@ -49,45 +46,27 @@ namespace YNABv1.Model
         #region Get/Set
         public String Path
         {
-            get { return path; }
-            set {
-                if (path == value)
-                    return;
-                path = value;
-                NotifyPropertyChanged("Path");
-            }
+            get; set;
         }
 
         public String Icon
         {
-            get { return icon; }
-            set {
-                if (icon == value)
-                    return;
-                icon = value;
-                NotifyPropertyChanged("Icon");
-            }
+            get; set;
         }
 
         public bool IsDir
         {
-            get { return is_dir; }
-            set {
-                if (is_dir == value)
-                    return;
-                is_dir = value;
-                NotifyPropertyChanged("IsDir");
-            }
+            get; set;
         }
 
         public String Name
         {
             get {
-                string[] parts = path.Split('/');
+                string[] parts = Path.Split('/');
                 return parts[parts.Length - 1];
             }
             set {
-                string[] parts = path.Split('/');
+                string[] parts = Path.Split('/');
                 string name = parts[parts.Length - 1];
                 if (name == value || value == "")
                     return;
@@ -96,14 +75,14 @@ namespace YNABv1.Model
                 for (int i = 0; i < parts.Length - 1; i++)
                     newPath += "/" + parts[i];
                 newPath += value;
-                path = newPath;
+                Path = newPath;
                 NotifyPropertyChanged("Path");
             }
         }
 
         public String IconPath
         {
-            get { return "Assets/DropboxIcons/" + icon + "48.gif"; }
+            get { return "Assets/DropboxIcons/" + Icon + "48.gif"; }
             set { }
         }
 

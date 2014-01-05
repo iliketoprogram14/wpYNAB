@@ -40,6 +40,13 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
+                     Height="10" Margin="0,0,0,0" Width="480" 
+                     HorizontalAlignment="Center">
+                <ProgressBar.Foreground>
+                    <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+                </ProgressBar.Foreground>
+            </ProgressBar>
             <TextBlock Text="YNAB COMPANION" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock Text="import" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>

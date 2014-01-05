@@ -51,9 +51,7 @@ namespace YNABv1
         {
             Deployment.Current.Dispatcher.BeginInvoke(() => {
                 Datastore.ClearAllTransactions();
-                ProgressBar.Visibility = Visibility.Collapsed;
                 ProgressBar.IsIndeterminate = false;
-                ProgressBar.IsEnabled = false;
                 MessageBox.Show("Export(s) complete to the YNABcompanion folder!");
             });
         }
@@ -116,9 +114,11 @@ namespace YNABv1
         /// <param name="e"></param>
         private void ImportButton_Click(object sender, EventArgs e)
         {
-            if (!DropboxHelper.IsSetup())
+            ProgressBar.IsIndeterminate = false;
+            if (!DropboxHelper.IsSetup()) {
+                ProgressBar.IsIndeterminate = true;
                 DropboxHelper.Setup(this, delegate { ImportButton_Click(sender, e); });
-            else
+            } else
                 NavigationService.Navigate(new Uri("//FileExplorer.xaml", UriKind.Relative));
         }
 
@@ -134,9 +134,7 @@ namespace YNABv1
                 return;
             }
 
-            ProgressBar.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
-            ProgressBar.Visibility = Visibility.Visible;
 
             if (!DropboxHelper.IsSetup())
                 DropboxHelper.Setup(this, delegate { ExportButton_Click(sender, e); });

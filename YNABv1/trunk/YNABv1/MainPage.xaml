@@ -23,9 +23,9 @@
 
         <!-- Miscellaneous -->
         <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed"/>
-        <ProgressBar IsEnabled="False" Name="ProgressBar" IsIndeterminate="True" 
+        <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
                      Height="10" Margin="0,10,0,676" Width="480" 
-                     HorizontalAlignment="Center" Visibility="Collapsed">
+                     HorizontalAlignment="Center">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             </ProgressBar.Foreground>

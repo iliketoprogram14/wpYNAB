@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,87 +13,70 @@ namespace YNABv1.Model
         private enum DIRECTION { OUT, IN };
 
         private DIRECTION dir;
-        private DateTime date;
-        private String payee;
-        private String category;
-        private String subcategory;
-        private String memo;
-        private double amount;
-        private String account;
-        private Boolean transfer;
 
+        #region Constructors
         public Transaction()
         {
-            date = new DateTime();
-            payee = "";
-            category = "";
-            subcategory = "";
-            memo = "";
-            account = "";
-            amount = 0.0;
+            Date = DateTime.Now;
+            Payee = "";
+            Category = "";
+            Subcategory = "";
+            Memo = "";
+            Account = "";
+            Amount = 0.0;
             dir = DIRECTION.OUT;
-            transfer = false;
+            Transfer = false;
         }
+
+        public Transaction(bool transfer)
+        {
+            Date = DateTime.Now;
+            Payee = "";
+            Category = "";
+            Subcategory = "";
+            Memo = "";
+            Account = "";
+            Amount = 0.0;
+            dir = DIRECTION.OUT;
+            Transfer = transfer;
+        }
+        #endregion
 
         #region Get/Set
         public DateTime Date
         {
-            get { return date; }
-            set
-            {
-                if (date.Equals(value)) return;
-                date = value;
-                NotifyPropertyChanged("Date");
-            }
+            get; set;
         }
 
         public String Payee
         {
-            get { return payee; }
-            set
-            {
-                if (payee.Equals(value)) return;
-                payee = value;
-                NotifyPropertyChanged("Payee");
-            }
+            get; set;
         }
 
         public String Category
         {
-            get { return category; }
-            set
-            {
-                if (category.Equals(value)) return;
-                category = value;
-                NotifyPropertyChanged("Category");
-            }
+            get; set;
         }
 
         public String Subcategory
         {
-            get { return subcategory; }
-            set
-            {
-                if (subcategory.Equals(value)) return;
-                subcategory = value;
-                NotifyPropertyChanged("Subcategory");
-            }
+            get; set;
         }
 
         public String FullCategory
         {
-            get { return (category == "") ? "" : category + ": " + subcategory; }
+            get { return (Category == "") ? "" : Category + ": " + Subcategory; }
             set {
-                String fullCategory = category + ": " + subcategory;
+                String fullCategory = Category + ": " + Subcategory;
                 if (fullCategory.Equals(value))
                     return;
                 if (value == "") {
-                    category = "";
-                    subcategory = "";
+                    Category = "";
+                    Subcategory = "";
                 } else {
                     String[] splitString = value.Split(':');
-                    category = splitString[0].Trim(' ');
-                    subcategory = splitString[1].Trim(' ');
+                    Category = splitString[0].Trim(' ');
+                    Subcategory = splitString[1].Trim(' ');
                 }
                 NotifyPropertyChanged("Category");
                 NotifyPropertyChanged("SubCategory");
@@ -101,33 +85,21 @@ namespace YNABv1.Model
 
         public String Memo
         {
-            get { return memo; }
-            set
-            {
-                if (memo.Equals(value)) return;
-                memo  = value;
-                NotifyPropertyChanged("Memo");
-            }
+            get; set;
         }
 
         public double Amount
         {
-            get { return amount; }
-            set
-            {
-                if (amount == value) return;
-                amount = value;
-                NotifyPropertyChanged("Amount");
-            }
+            get; set;
         }
 
         public double SignedAmount
         {
-            get { return (dir == DIRECTION.OUT ? -1 : 1) * amount; }
+            get { return (dir == DIRECTION.OUT ? -1 : 1) * Amount; }
             set {
-                if (((dir == DIRECTION.OUT ? -1 : 1) * amount) == value)
+                if (((dir == DIRECTION.OUT ? -1 : 1) * Amount) == value)
                     return;
-                amount = (value < 0) ? value * -1 : value;
+                Amount = (value < 0) ? value * -1 : value;
                 dir = (value < 0) ? DIRECTION.OUT : DIRECTION.IN;
                 NotifyPropertyChanged("Amount");
                 NotifyPropertyChanged("Direction");
@@ -136,13 +108,7 @@ namespace YNABv1.Model
 
         public String Account
         {
-            get { return account; }
-            set {
-                if (account.Equals(value))
-                    return;
-                account = value;
-                NotifyPropertyChanged("Account");
-            }
+            get; set;
         }
 
         public Boolean Outflow
@@ -165,14 +131,7 @@ namespace YNABv1.Model
 
         public Boolean Transfer
         {
-            get { return transfer; }
-            set
-            {
-                if (transfer == value)
-                    return;
-                transfer = value;
-                NotifyPropertyChanged("Transfer");
-            }
+            get; set;
         }
         #endregion
 
@@ -185,14 +144,14 @@ namespace YNABv1.Model
         {
             Transaction t = new Transaction();
             t.dir = dir;
-            t.date = date;
-            t.payee = payee;
-            t.category = category;
-            t.subcategory = subcategory;
-            t.memo = memo;
-            t.amount = amount;
-            t.account = account;
-            t.transfer = transfer;
+            t.Date = Date;
+            t.Payee = Payee;
+            t.Category = Category;
+            t.Subcategory = Subcategory;
+            t.Memo = Memo;
+            t.Amount = Amount;
+            t.Account = Account;
+            t.Transfer = Transfer;
             return t;
         }
 
@@ -207,7 +166,7 @@ namespace YNABv1.Model
         public Transaction InverseTransfer()
         {
             Transaction inverse = DeepCopy();
-            if (!transfer)
+            if (!Transfer)
                 return inverse;
 
             String fromAccount = inverse.Account;
@@ -226,27 +185,27 @@ namespace YNABv1.Model
         public String GetCsv()
         {
             // Structure: Date,Payee,Category,Memo,Outflow,Inflow
-            String dateStr = String.Format("{0:d}", date.ToString());
+            String dateStr = String.Format("{0:d}", Date.ToString());
             String fullCategory = this.FullCategory;
-            String outflowStr = this.Outflow ? amount.ToString() : "";
-            String inflowStr = this.Inflow ? amount.ToString() : "";
-            return dateStr + "," + payee + "," + FullCategory + "," + memo + "," +
+            String outflowStr = this.Outflow ? Amount.ToString() : "";
+            String inflowStr = this.Inflow ? Amount.ToString() : "";
+            return dateStr + "," + Payee + "," + FullCategory + "," + Memo + "," +
                 outflowStr + "," + inflowStr + "\n";
         }
         #endregion
 
         public Boolean Equals(Transaction t2)
         {
-            return (Outflow == t2.Outflow) && (date.Equals(t2.Date)) && (payee.Equals(t2.Payee)) &&
-                (category.Equals(t2.Category)) && (subcategory.Equals(t2.subcategory)) &&
-                (memo.Equals(t2.Memo)) && (amount == t2.Amount) && (account.Equals(t2.Account)) &&
-                (transfer == t2.Transfer);
+            return (Outflow == t2.Outflow) && (Date.Equals(t2.Date)) && (Payee.Equals(t2.Payee)) &&
+                (Category.Equals(t2.Category)) && (Subcategory.Equals(t2.Subcategory)) &&
+                (Memo.Equals(t2.Memo)) && (Amount == t2.Amount) && (Account.Equals(t2.Account)) &&
+                (Transfer == t2.Transfer);
         }
 
         int IComparable.CompareTo(object obj)
         {
             Transaction t2 = obj as Transaction;
-            return date.CompareTo(t2.date);
+            return Date.CompareTo(t2.Date);
         }
 
         #region INotifyPropertyChanged

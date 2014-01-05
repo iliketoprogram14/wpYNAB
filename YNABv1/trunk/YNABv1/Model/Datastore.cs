@@ -29,6 +29,7 @@ namespace YNABv1.Model
         public static event EventHandler PayeesUpdated;
         public static event EventHandler CategoriesUpdated;
 
+        #region Public Interface
         public static void Init()
         {
             transactions =
@@ -39,8 +40,6 @@ namespace YNABv1.Model
                 (appSettings.Contains(PAYEE_KEY)) ?
                 (Payees)appSettings[PAYEE_KEY] :
                 new Payees();
-            bool derp = appSettings.Contains(CATEGORIES_KEY);
-            bool herp = appSettings.Contains(PAYEE_KEY);
             categories =
                 (appSettings.Contains(CATEGORIES_KEY)) ?
                 (Categories)appSettings[CATEGORIES_KEY] :
@@ -53,46 +52,26 @@ namespace YNABv1.Model
 
         public static Transactions Transactions
         {
-            get
-            {
-                if (transactions == null) {
-                    if (appSettings.Contains(TRANSACTION_KEY)) {
-                        transactions = (Transactions)appSettings[TRANSACTION_KEY];
-                    } else {
-                        transactions = new Transactions();
-                    }
-                }
+            get {
+                if (transactions == null)
+                    transactions = (appSettings.Contains(TRANSACTION_KEY)) ?
+                        (Transactions)appSettings[TRANSACTION_KEY] : new Transactions();
                 return transactions;
             }
-            set
-            {
+            set {
                 transactions = value;
                 NotifyTransactionsUpdated();
             }
         }
 
-        public static List<String> MasterCategories() { return categories.MasterCategories(); }
+        public static List<String> MasterCategories() { return categories.CategoryList; }
 
         public static List<String> SubCategories(String category) {  return categories.SubCategories(category); }
 
         public static void ClearAllTransactions()
         {
             transactions.RemoveAll();
-            SaveTransactions(null);
-        }
-
-        private static void SaveTransactions(Action errorCallback)
-        {
-            try {
-                appSettings[TRANSACTION_KEY] = transactions;
-                appSettings.Save();
-                NotifyTransactionsUpdated();
-            } catch (IsolatedStorageException) {
-                if (errorCallback != null)
-                    errorCallback();
-                else
-                    MessageBox.Show(Constants.MSG_DELETE);
-            }
+            SaveTransactions();
         }
 
         public static void ParseRegister(String csvRegister)
@@ -117,13 +96,13 @@ namespace YNABv1.Model
                 payees.Sort();
 
                 appSettings[ACCOUNTS_KEY] = accounts;
-                appSettings.Save();
                 appSettings[CATEGORIES_KEY] = categories;
-                appSettings.Save();
                 appSettings[PAYEE_KEY] = payees;
                 appSettings.Save();
+
                 NotifyCategoriesUpdated();
                 NotifyPayeesUpdated();
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() => {
                     MessageBox.Show("Import of register successful!");
                 });
@@ -149,7 +128,23 @@ namespace YNABv1.Model
             SaveTransactions(errorCallback);
             return result;
         }
+        #endregion
 
+        private static void SaveTransactions(Action errorCallback=null)
+        {
+            try {
+                appSettings[TRANSACTION_KEY] = transactions;
+                appSettings.Save();
+                NotifyTransactionsUpdated();
+            } catch (IsolatedStorageException) {
+                if (errorCallback != null)
+                    errorCallback();
+                else
+                    MessageBox.Show(Constants.MSG_DELETE);
+            }
+        }
+
+        #region Notification Functions
         private static void NotifyTransactionsUpdated()
         {
             var handler = TransactionsUpdated;
@@ -170,5 +165,6 @@ namespace YNABv1.Model
             if (handler != null)
                 handler(null, null);
         }
+        #endregion
     }
 }

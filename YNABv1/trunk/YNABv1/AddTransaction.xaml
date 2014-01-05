@@ -62,7 +62,7 @@
                            Text="date:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
-                                    Value="{Binding Date}"/>
+                                    Value="{Binding Date, Mode=TwoWay}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" 
                            Text="account:"
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>

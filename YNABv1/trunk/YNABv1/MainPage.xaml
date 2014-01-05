@@ -69,36 +69,33 @@
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" />
                     </StackPanel>
 
-                    <ScrollViewer Margin="-5,13,3,36" Height="558"
-                                  VerticalScrollBarVisibility="Auto">
-                        <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
-                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                 Margin="5,25,0,0" Height="380" Width="465" 
-                                 ItemsSource="{Binding TransactionHistory}" >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu>
-                                                <toolkit:MenuItem Header="Edit" Click="EditMenuItem_Click" />
-                                                <toolkit:MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
-                                            </toolkit:ContextMenu>
-                                        </toolkit:ContextMenuService.ContextMenu>
-                                        <TextBlock Style="{StaticResource SummaryStyle}" 
-                                                   Text="{Binding Date, StringFormat=\{0:d\} }" 
-                                                   TextWrapping="Wrap" Width="100" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}"
-                                                   Text="{Binding Payee}" TextWrapping="Wrap" Width="100" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}"
-                                                   Text="{Binding FullCategory}" />
-                                        <TextBlock Style="{StaticResource SummaryStyle}"
-                                                   Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
-                                                   TextWrapping="Wrap"  />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </ScrollViewer>
+                    <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
+                                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                Margin="0,35,0,0" Height="495" Width="465" 
+                                ItemsSource="{Binding TransactionHistory}" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu>
+                                            <toolkit:MenuItem Header="Edit" Click="EditMenuItem_Click" />
+                                            <toolkit:MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
+                                    <TextBlock Style="{StaticResource SummaryStyle}" 
+                                                Text="{Binding Date, StringFormat=\{0:d\} }" 
+                                                TextWrapping="Wrap" Width="100" />
+                                    <TextBlock Style="{StaticResource SummaryStyle}"
+                                                Text="{Binding Payee}" TextWrapping="Wrap" Width="100" />
+                                    <TextBlock Style="{StaticResource SummaryStyle}"
+                                                Text="{Binding FullCategory}" />
+                                    <TextBlock Style="{StaticResource SummaryStyle}"
+                                                Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
+                                                TextWrapping="Wrap"  />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

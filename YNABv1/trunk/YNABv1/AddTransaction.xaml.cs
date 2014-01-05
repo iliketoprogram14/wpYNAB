@@ -44,6 +44,15 @@ namespace YNABv1
             DataContext = currentTransaction;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
 
+            if (Datastore.Accounts.Count == 0) {
+                AccountTextBox.Visibility = Visibility.Visible;
+                AccountListPicker.Visibility = Visibility.Collapsed;
+            } else {
+                AccountListPicker.ItemsSource = Datastore.Accounts;
+                AccountListPicker.Visibility = Visibility.Visible;
+                AccountTextBox.Visibility = Visibility.Collapsed;
+            }
+
             List<String> masterCats = Datastore.MasterCategories();
             if (Datastore.MasterCategories().Count == 0) {
                 CategoryTextBox.Visibility = Visibility.Visible;
@@ -156,14 +165,24 @@ namespace YNABv1
             // change focus because they are not Silverlight controls. 
             CommitItemWithFocus();
 
-            if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
-                MessageBox.Show("The account is required.");
-                return;
+            if (AccountTextBox.Visibility == Visibility.Visible) {
+                if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
+                    MessageBox.Show("The account is required.");
+                    return;
+                }
+            } else {
+                if (((String)AccountListPicker.SelectedItem).Equals("")) {
+                    MessageBox.Show("The account is required.");
+                    return;
+                }
+                currentTransaction.Account = (String)AccountListPicker.SelectedItem;
             }
+
             if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
                 MessageBox.Show("The payee is required.");
                 return;
             }
+
             if (CategoryTextBox.Visibility == Visibility.Visible) {
                 if (string.IsNullOrWhiteSpace(CategoryTextBox.Text)) {
                     MessageBox.Show("The category is required.");
@@ -184,10 +203,12 @@ namespace YNABv1
                 MessageBox.Show("The transaction must be an outflow or an inflow.");
                 return;
             }
+
             if (string.IsNullOrWhiteSpace(AmountTextBox.Text)) {
                 MessageBox.Show("The amount is required.");
                 return;
             }
+
             double amountVal;
             if (!double.TryParse(AmountTextBox.Text, out amountVal)) {
                 MessageBox.Show("The amount could not be parsed.");
@@ -268,6 +289,7 @@ Failure:
         private void Checked_Event(object sender, RoutedEventArgs e)
         {
             AmountTextBox.Focus();
+            ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 40);
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
         }

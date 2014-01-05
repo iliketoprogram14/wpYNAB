@@ -23,7 +23,7 @@ namespace YNABv1.Model
         private static Transactions transactions;
         private static Payees payees;
         private static Categories categories;
-        private static List<String> accounts;
+        //private static List<String> accounts;
 
         public static event EventHandler TransactionsUpdated;
         public static event EventHandler PayeesUpdated;
@@ -44,7 +44,7 @@ namespace YNABv1.Model
                 (appSettings.Contains(CATEGORIES_KEY)) ?
                 (Categories)appSettings[CATEGORIES_KEY] :
                 new Categories();
-            accounts =
+            Accounts =
                 (appSettings.Contains(ACCOUNTS_KEY)) ?
                 (List<String>)appSettings[ACCOUNTS_KEY] :
                 new List<String>();
@@ -64,6 +64,11 @@ namespace YNABv1.Model
             }
         }
 
+        public static List<String> Accounts
+        {
+            get; set;
+        }
+
         public static List<String> MasterCategories() { return categories.CategoryList; }
 
         public static List<String> SubCategories(String category) {  return categories.SubCategories(category); }
@@ -74,28 +79,34 @@ namespace YNABv1.Model
             SaveTransactions();
         }
 
-        public static void ParseRegister(String csvRegister)
+        public static void Parse(String csvRegister)
         {
             ThreadPool.QueueUserWorkItem(context => {
                 CsvReader reader = new CsvReader(new StringReader(csvRegister));
-                while (reader.Read()) {
-                    var account = reader.GetField("Account");
-                    var category = reader.GetField("Master Category");
-                    var subcategory = reader.GetField("Sub Category");
-                    var payee = reader.GetField("Payee");
 
-                    categories.AddFullCategory(category, subcategory);
-                    payees.AddFullCategory(payee, category, subcategory);
-
-                    if (!accounts.Contains(account))
-                        accounts.Add(account);
+                reader.Read();
+                List<String> headers = new List<String>(reader.FieldHeaders);
+                bool isBudget = true; // false if isRegister
+                bool hasAccount = headers.Contains("Account");
+                bool hasMasterCategory = headers.Contains("Master Category");
+                if (hasAccount && hasMasterCategory) {
+                    ParseRegister(reader);
+                    isBudget = false;
+                } else if (hasMasterCategory) {
+                    ParseBudget(reader);
+                    isBudget = true;
+                } else {
+                    Deployment.Current.Dispatcher.BeginInvoke(() => {
+                        MessageBox.Show("Import not successful.  Please import either an exported YNAB budget or register.");
+                    });
+                    return;
                 }
 
                 categories.Sort();
-                accounts.Sort();
+                Accounts.Sort();
                 payees.Sort();
 
-                appSettings[ACCOUNTS_KEY] = accounts;
+                appSettings[ACCOUNTS_KEY] = Accounts;
                 appSettings[CATEGORIES_KEY] = categories;
                 appSettings[PAYEE_KEY] = payees;
                 appSettings.Save();
@@ -104,7 +115,8 @@ namespace YNABv1.Model
                 NotifyPayeesUpdated();
                 
                 Deployment.Current.Dispatcher.BeginInvoke(() => {
-                    MessageBox.Show("Import of register successful!");
+                    MessageBox.Show("Import of YNAB " + ((isBudget) ? "budget" : "register") +
+                        " was successful! Consider also importing the " + ((!isBudget) ? "budget" : "register") + " as well.");
                 });
             });
         }
@@ -129,6 +141,33 @@ namespace YNABv1.Model
             return result;
         }
         #endregion
+
+        private static void ParseRegister(CsvReader reader)
+        {
+            do {
+                var account = reader.GetField("Account");
+                var category = reader.GetField("Master Category");
+                var subcategory = reader.GetField("Sub Category");
+                var payee = reader.GetField("Payee");
+
+                categories.AddFullCategory(category, subcategory);
+                payees.AddFullCategory(payee, category, subcategory);
+
+                if (!Accounts.Contains(account))
+                    Accounts.Add(account);
+            } while (reader.Read());
+
+        }
+
+        private static void ParseBudget(CsvReader reader)
+        {
+            do {
+                var category = reader.GetField("Master Category");
+                var subcategory = reader.GetField("Sub Category");
+
+                categories.AddFullCategory(category, subcategory);
+            } while (reader.Read());
+        }
 
         private static void SaveTransactions(Action errorCallback=null)
         {

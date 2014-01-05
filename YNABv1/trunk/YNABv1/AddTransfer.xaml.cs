@@ -43,6 +43,22 @@ namespace YNABv1
                 currentTransfer = new Transaction(true);
             DataContext = currentTransfer;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
+
+            if (Datastore.Accounts.Count == 0) {
+                AccountTextBox.Visibility = Visibility.Visible;
+                PayeeTextBox.Visibility = Visibility.Visible;
+                AccountListPicker.Visibility = Visibility.Collapsed;
+                PayeeListPicker.Visibility = Visibility.Collapsed;
+            } else {
+                AccountListPicker.ItemsSource = Datastore.Accounts;
+                PayeeListPicker.ItemsSource = Datastore.Accounts;
+                if (Datastore.Accounts.Count > 1)
+                    PayeeListPicker.SelectedItem = Datastore.Accounts.ElementAt(1);
+                AccountListPicker.Visibility = Visibility.Visible;
+                PayeeListPicker.Visibility = Visibility.Visible;
+                AccountTextBox.Visibility = Visibility.Collapsed;
+                PayeeTextBox.Visibility = Visibility.Collapsed;
+            }
         }
 
         #region Navigation Events
@@ -135,13 +151,30 @@ namespace YNABv1
             // change focus because they are not Silverlight controls. 
             CommitItemWithFocus();
 
-            if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
-                MessageBox.Show("The account is required.");
-                return;
+            if (AccountTextBox.Visibility == Visibility.Visible) {
+                if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
+                    MessageBox.Show("The account is required.");
+                    return;
+                }
+            } else {
+                if (((String)AccountListPicker.SelectedItem).Equals("")) {
+                    MessageBox.Show("The account is required.");
+                    return;
+                }
+                currentTransfer.Account = (String)AccountListPicker.SelectedItem;
             }
-            if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
-                MessageBox.Show("The payee is required.");
-                return;
+
+            if (PayeeTextBox.Visibility == Visibility.Visible) {
+                if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
+                    MessageBox.Show("The payee is required.");
+                    return;
+                }
+            } else {
+                if (((String)PayeeListPicker.SelectedItem).Equals("")) {
+                    MessageBox.Show("The payee is required.");
+                    return;
+                }
+                currentTransfer.Payee = (String)PayeeListPicker.SelectedItem;
             }
 
             bool outflow = (bool)OutflowButton.IsChecked;
@@ -150,19 +183,15 @@ namespace YNABv1
                 MessageBox.Show("The transaction must be an outflow or an inflow.");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(AmountTextBox.Text)) {
-                MessageBox.Show("The amount is required.");
-                return;
-            }
+
             double amountVal;
             if (!double.TryParse(AmountTextBox.Text, out amountVal)) {
                 MessageBox.Show("The amount could not be parsed.");
                 return;
             }
 
-            // Now that everything has cleared, modify the payee field
-            String toAccount = currentTransfer.Payee;
-            currentTransfer.Payee = "Transfer : " + toAccount;
+            // Now that everything has cleared, it's safe to modify the payee field
+            currentTransfer.Payee = "Transfer : " + currentTransfer.Payee;
 
             SaveResult result = new SaveResult();
             if (transferToEdit != null) {

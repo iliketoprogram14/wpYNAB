@@ -66,7 +66,11 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" 
                            Text="account:"
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" 
+                <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1" 
+                                    Height="50" FontSize="24"
+                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
+                                    ExpansionMode="FullScreenOnly" />
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" Visibility="Collapsed"
                          Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
                          InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" />
                 <TextBlock Grid.Row="2" Grid.Column="0" 
@@ -100,9 +104,11 @@
                 <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
                          InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" KeyDown="KeyDown_Typed" />
                 <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
-                             HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" />
+                             HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" 
+                             Checked="Checked_Event" Click="Checked_Event"/>
                 <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="7"  Grid.Column="1"
-                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}" Checked="Checked_Event"/>
+                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}" 
+                             Checked="Checked_Event" Click="Checked_Event"/>
                 <TextBlock Grid.Row="8" Grid.Column="0"
                            Text="amount:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>

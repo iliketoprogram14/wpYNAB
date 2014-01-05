@@ -30,6 +30,7 @@ namespace YNABv1
         private void InitializePageState()
         {
             Datastore.TransactionsUpdated += Transactions_Updated;
+            Datastore.Transactions.SortByDate();
             DataContext = Datastore.Transactions;
         }
 
@@ -40,6 +41,10 @@ namespace YNABv1
 
             if (DataContext == null)
                 InitializePageState();
+            if (TransactionListBox.Items.Count > 0) {
+                UpdateLayout();
+                TransactionListBox.ScrollIntoView(TransactionListBox.Items.First());
+            }
         }
         #endregion
 
@@ -63,6 +68,7 @@ namespace YNABv1
         /// <param name="e"></param>
         private void Transactions_Updated(object sender, EventArgs e)
         {
+            Datastore.Transactions.SortByDate();
             DataContext = Datastore.Transactions;
         }
         #endregion

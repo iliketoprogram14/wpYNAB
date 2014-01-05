@@ -57,7 +57,7 @@ namespace YNABv1
             ProgressBar.IsIndeterminate = true;
             String csvString = await DropboxHelper.ImportTextFile(path);
             if (csvString != "")
-                Datastore.ParseRegister(csvString);
+                Datastore.Parse(csvString);
             else
                 MessageBox.Show("Import failed.  Please close the app and try again in a bit.");
             ProgressBar.IsIndeterminate = false;

@@ -20,26 +20,35 @@ namespace YNABv1
             InitializeComponent();
         }
 
+        #region Navigation Events
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            FillPage("");
+            FillPage();
         }
+        #endregion
 
-        private async void FillPage(String path)
+        #region Helpers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        private async void FillPage(String path="")
         {
             if (DropboxListBox.Items.Count > 0)
                 DropboxListBox.ScrollIntoView(DropboxListBox.Items[0]);
+
             String jsonMetadata = await DropboxHelper.GetMetaData(path);
             Metadata meta = new Metadata(jsonMetadata);
             DataContext = meta;
 
-            if (meta.Path != "/")
-                ParentFolderTextBox.Visibility = System.Windows.Visibility.Visible;
-            else
-                ParentFolderTextBox.Visibility = System.Windows.Visibility.Collapsed;
+            ParentFolderTextBox.Visibility = (meta.Path != "/") ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
         private async void ImportCsvAndPopulateDataStructures(String path)
         {
             String csvString = await DropboxHelper.ImportTextFile(path);
@@ -49,7 +58,14 @@ namespace YNABv1
                 MessageBox.Show("Import failed.  Please close the app and try again in a bit.");
             NavigationService.GoBack();
         }
+        #endregion
 
+        #region UI Events
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Metadata m = DropboxListBox.SelectedItem as Metadata;
@@ -63,6 +79,11 @@ namespace YNABv1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Parent_Tapped(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Metadata m = DataContext as Metadata;
@@ -71,9 +92,15 @@ namespace YNABv1
             FillPage(parent);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_Click(object sender, EventArgs e)
         {
             NavigationService.GoBack();
         }
+        #endregion
     }
 }

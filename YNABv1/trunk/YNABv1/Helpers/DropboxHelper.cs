@@ -11,118 +11,158 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using Newtonsoft.Json.Linq;
 
 namespace YNABv1.Helpers
 {
     public static class DropboxHelper
     {
-        private static readonly IsolatedStorageSettings appSettings = 
-            IsolatedStorageSettings.ApplicationSettings;
+        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
         private static MainPage mainPage;
-        private static bool exportAfterCompletedSetup = false;
-        private static bool importAfterCompletedSetup = false;
+        private static Action callbackAfterSetup = null;
 
+        #region Public Interface
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool IsSetup()
         {
-            bool herp = appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
             return appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
         }
 
-        public static void Setup(MainPage p, bool export, bool import)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="callback"></param>
+        public static void Setup(MainPage p, Action callback)
         {
+            if (!IsSetup())
+                return;
+
             string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
+            p.DefaultPivot.Visibility = System.Windows.Visibility.Collapsed;
+            /****** Later on, create mainbrowser in here and add it to mainPage */
             p.MainBrowser.Visibility = System.Windows.Visibility.Visible;
             p.MainBrowser.IsScriptEnabled = true;
-            p.DefaultPivot.Visibility = System.Windows.Visibility.Collapsed;
             p.MainBrowser.Navigated += DropboxMainBrowser_Navigated;
             p.MainBrowser.Navigate(new Uri(url, UriKind.Absolute));
             mainPage = p;
-            exportAfterCompletedSetup = export;
-            importAfterCompletedSetup = import;
+            callbackAfterSetup = callback;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public async static Task<String> ImportTextFile(String path)
         {
             String url = "https://api-content.dropbox.com/1/files/dropbox/" + path;
-
-            HttpClient client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
-            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
-            var response = await client.SendAsync(request);
-            String result = response.Content.ReadAsStringAsync().Result;
+            String result = await MakeAuthorizedRequest(url, HttpMethod.Get);            
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="filename"></param>
+        /// <param name="data"></param>
+        /// <param name="callback"></param>
+        /// <param name="last"></param>
         public async static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
-            String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename;
-            url += "?overwrite=false";
-
-            HttpClient client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Put, new Uri(url));
-            request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
-            request.Content = new StringContent(data);
-            var response = await client.SendAsync(request);
-
-            String result = response.Content.ReadAsStringAsync().Result;
-            Debug.WriteLine(result);
+            String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename + "?overwrite=false";
+            await MakeAuthorizedRequest(url, HttpMethod.Put, data);
             if (last)
                 callback();
         }
 
-        private static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async static Task<String> GetMetaData(string path)
+        {
+            String url = "https://api.dropbox.com/1/metadata/dropbox/" + path;
+            String result = await MakeAuthorizedRequest(url, HttpMethod.Get);
+            return result;
+        }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async static void DropboxMainBrowser_Navigated(object sender, NavigationEventArgs e)
         {
             string html = mainPage.MainBrowser.SaveToString();
             if (html.Contains("Enter this code into")) {
                 // THIS IS HARD-CODED SO BEWARE
                 string[] parts = html.Split(new string[] { "auth-code" }, StringSplitOptions.None);
                 string code = parts[1].Split('<')[0].Trim('\\').Trim('"').Trim('>');
+
                 mainPage.MainBrowser.Visibility = System.Windows.Visibility.Collapsed;
                 mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;
-                GetAccessToken(code);
+
+                await GetAccessToken(code);
             }
         }
+        #endregion
 
+        #region Helpers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         private async static Task GetAccessToken(string code)
         {
+            String url = "https://api.dropbox.com/1/oauth2/token";
             string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
                 Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
-            
-            HttpClient client = new HttpClient();
-            HttpContent content = new StringContent(postData);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-            var response = await client.PostAsync(new Uri("https://api.dropbox.com/1/oauth2/token"), content);
 
-            String result = await response.Content.ReadAsStringAsync();
-            result = result.Trim('}').Trim('{').Replace(" ", "");
-            string[] parts = result.Split(new char[] { ':', ',' }, StringSplitOptions.None);
-            string accessToken = parts[1].Trim('\"'); // parts[0] == "access_token"
-            string tokenType = parts[3].Trim('\"'); // parts[2] == "token_type"
-            string userID = parts[5].Trim('\"'); // parts[4] == "uid"
+            String result = await MakeAuthorizedRequest(url, HttpMethod.Post, postData, true);
+            JObject obj = JObject.Parse(result);
+            string accessToken = (string)obj["access_token"];
+            string tokenType = (string)obj["token_type"];
+            string userID = (string)obj["uid"];
 
             appSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
             appSettings[Constants.DROPBOX_UID] = userID;
             appSettings.Save();
 
-            if (exportAfterCompletedSetup) {
-                exportAfterCompletedSetup = false;
-                mainPage.ExportButton_Click(null, new RoutedEventArgs());
-            }
-            if (importAfterCompletedSetup) {
-                importAfterCompletedSetup = false;
-                mainPage.ImportButton_Click(null, new RoutedEventArgs());
-            }
+            Action callback = callbackAfterSetup;
+            callbackAfterSetup = null;
+            callback();
         }
 
-        public async static Task<String> GetMetaData(string path)
+        /// <summary>
+        /// Generalized method for making an authorized request.  
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private async static Task<String> MakeAuthorizedRequest(String url, HttpMethod method, String content="", bool contentTypeUrl=false)
         {
-            String url = "https://api.dropbox.com/1/metadata/dropbox/" + path;
             HttpClient c = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+            var request = new HttpRequestMessage(method, new Uri(url));
             request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+            if (content != "")
+                request.Content = new StringContent(content);
+            if (contentTypeUrl == true)
+                request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
             var response = await c.SendAsync(request);
-            String result = response.Content.ReadAsStringAsync().Result;
-            return result;
+            return response.Content.ReadAsStringAsync().Result;
+
         }
+        #endregion
     }
 }

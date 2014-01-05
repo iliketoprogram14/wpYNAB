@@ -13,94 +13,76 @@ using System.Windows.Input;
 
 namespace YNABv1
 {
-    public partial class AddTransaction : PhoneApplicationPage
+    public partial class AddTransfer : PhoneApplicationPage
     {
-        private const string CURRENT_TRANS_KEY = "CurrentTransaction";
+        private const string CURRENT_TRANSFER_KEY = "CurrentTransfer";
         private const string HAS_UNSAVED_CHANGES_KEY = "HasUnsavedChanges";
-        private Transaction currentTransaction;
+        private Transaction currentTransfer;
         private bool hasUnsavedChanges;
         private TextBox textboxWithFocus;
         private RadioButton buttonWithFocus;
-        private Transaction transactionToEdit;
+        private Transaction transferToEdit;
         private IDictionary<string, object> phoneState = PhoneApplicationService.Current.State;
 
-        public AddTransaction()
+        public AddTransfer()
         {
             InitializeComponent();
-            GotFocus += AddTransactionPage_GotFocus;
+            GotFocus += AddTransferPage_GotFocus;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private void InitializePageState()
+        private void InitializePageState() 
         {
-            if (State.ContainsKey(CURRENT_TRANS_KEY))
-                currentTransaction = State[CURRENT_TRANS_KEY] as Transaction;
-            else if (transactionToEdit != null)
-                currentTransaction = transactionToEdit.DeepCopy();
-            else
-                currentTransaction = new Transaction { Date = DateTime.Now };
-            DataContext = currentTransaction;
-            hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
-
-            List<String> masterCats = Datastore.MasterCategories();
-            if (Datastore.MasterCategories().Count == 0) {
-                CategoryTextBox.Visibility = Visibility.Visible;
-                SubCategoryTextBox.Visibility = Visibility.Visible;
-                CategoryListPicker.Visibility = Visibility.Collapsed;
-                SubCategoryListPicker.Visibility = Visibility.Collapsed;
-            } else {
-                CategoryListPicker.ItemsSource = Datastore.MasterCategories();
-                CategoryListPicker.Visibility = Visibility.Visible;
-                SubCategoryListPicker.Visibility = Visibility.Visible;
-                CategoryTextBox.Visibility = Visibility.Collapsed;
-                SubCategoryTextBox.Visibility = Visibility.Collapsed;
+            if (State.ContainsKey(CURRENT_TRANSFER_KEY))
+                currentTransfer = State[CURRENT_TRANSFER_KEY] as Transaction;
+            else if (transferToEdit != null)
+                currentTransfer = transferToEdit.DeepCopy();
+            else {
+                currentTransfer = new Transaction { Date = DateTime.Now };
+                currentTransfer.Transfer = true;
             }
+            DataContext = currentTransfer;
+            hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
         }
 
         #region Navigation Events
         /// <summary>
-        /// Called when navigating to this page; loads the car data from storage 
-        /// and then initializes the page state.
+        /// 
         /// </summary>
-        /// <param name="e">The event data.</param>
+        /// <param name="e"></param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(Constants.NAV_PARAM_TRANSACTION)) {
-                transactionToEdit = phoneState[Constants.NAV_PARAM_TRANSACTION] as Transaction;
-                phoneState.Remove(Constants.NAV_PARAM_TRANSACTION);
-            } else 
-                transactionToEdit = null;
+            if (PhoneApplicationService.Current.State.ContainsKey("AddTransferParam")) {
+                transferToEdit = PhoneApplicationService.Current.State["AddTransferParam"] as Transaction;
+                PhoneApplicationService.Current.State.Remove("AddTransferParam");
+            } else
+                transferToEdit = null;
 
-            // Initialize the page state only if it is not already initialized,
-            // and not when the application was deactivated but not tombstoned 
-            // (returning from being dormant).
             if (DataContext == null)
                 InitializePageState();
 
-            // Delete temporary storage to avoid unnecessary storage costs.
             State.Clear();
         }
 
         /// <summary>
-        /// Called when navigating away from this page; stores the fill-up data
-        /// values and a value that indicates whether there are unsaved changes. 
+        /// 
         /// </summary>
-        /// <param name="e">The event data.</param>
+        /// <param name="e"></param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
 
             // Do not cache the page state when navigating backward 
             // or when there are no unsaved changes.
-            if (e.Uri.OriginalString.Equals("//MainPage.xaml") || !hasUnsavedChanges) 
+            if (e.Uri.OriginalString.Equals("//MainPage.xaml") || !hasUnsavedChanges)
                 return;
 
             CommitItemWithFocus();
-            State[CURRENT_TRANS_KEY] = currentTransaction;
+            State[CURRENT_TRANSFER_KEY] = currentTransfer;
             State[HAS_UNSAVED_CHANGES_KEY] = hasUnsavedChanges;
         }
 
@@ -113,7 +95,7 @@ namespace YNABv1
         {
             base.OnBackKeyPress(e);
 
-            if (!hasUnsavedChanges) 
+            if (!hasUnsavedChanges)
                 return;
 
             var result = MessageBox.Show("You are about to discard your " +
@@ -134,12 +116,11 @@ namespace YNABv1
             if (expression != null)
                 expression.UpdateSource();
 
-            if (buttonWithFocus == null)
-                return;
-
-            expression = buttonWithFocus.GetBindingExpression(RadioButton.IsCheckedProperty);
-            if (expression != null)
-                expression.UpdateSource();
+            if (buttonWithFocus != null) {
+                expression = buttonWithFocus.GetBindingExpression(RadioButton.IsCheckedProperty);
+                if (expression != null)
+                    expression.UpdateSource();
+            }
         }
 
         #region UI events
@@ -164,20 +145,7 @@ namespace YNABv1
                 MessageBox.Show("The payee is required.");
                 return;
             }
-            if (CategoryTextBox.Visibility == Visibility.Visible) {
-                if (string.IsNullOrWhiteSpace(CategoryTextBox.Text)) {
-                    MessageBox.Show("The category is required.");
-                    return;
-                }
-            } else {
-                if (((String)CategoryListPicker.SelectedItem).Equals("")) {
-                    MessageBox.Show("The category is required.");
-                    return;
-                }
-                currentTransaction.Category = (String)CategoryListPicker.SelectedItem;
-                currentTransaction.Subcategory = (String)SubCategoryListPicker.SelectedItem;
-            }
-            
+
             bool outflow = (bool)OutflowButton.IsChecked;
             bool inflow = (bool)InflowButton.IsChecked;
             if ((!outflow && !inflow) || (outflow && inflow)) {
@@ -194,24 +162,47 @@ namespace YNABv1
                 return;
             }
 
+            // Now that everything has cleared, modify the payee field
+            String toAccount = currentTransfer.Payee;
+            currentTransfer.Payee = "Transfer : " + toAccount;
+
             SaveResult result = new SaveResult();
-            if (transactionToEdit != null) {
-                result = Datastore.DeleteTransaction(transactionToEdit, delegate { MessageBox.Show(Constants.MSG_DELETE); });
+            if (transferToEdit != null) {
+                result = Datastore.DeleteTransaction(transferToEdit, delegate { MessageBox.Show(Constants.MSG_DELETE); });
                 if (!result.SaveSuccessful)
                     goto Failure;
             }
 
-            result = Datastore.AddTransaction(currentTransaction, delegate { MessageBox.Show(Constants.MSG_NO_SPACE); });
+            result = Datastore.AddTransaction(currentTransfer, delegate { MessageBox.Show(Constants.MSG_NO_SPACE); });
+            if (result.SaveSuccessful) {
+                Microsoft.Phone.Shell.PhoneApplicationService.Current.State[Constants.SAVED_KEY_TRANSACTIONS] = true;
+            }
+
+            // Perform the same functions for the inverse of this transfer
+            if (transferToEdit != null) {
+                // delete the transaction here
+                Transaction inverseTransferToEdit = transferToEdit.InverseTransfer();
+                result = Datastore.DeleteTransaction(inverseTransferToEdit, delegate { MessageBox.Show(Constants.MSG_DELETE); });
+                if (!result.SaveSuccessful)
+                    goto Failure;
+            }
+
+            Transaction inverseTransfer = currentTransfer.InverseTransfer();
+            result = Datastore.AddTransaction(inverseTransfer, delegate { MessageBox.Show(Constants.MSG_NO_SPACE); });
             if (result.SaveSuccessful) {
                 Microsoft.Phone.Shell.PhoneApplicationService.Current.State[Constants.SAVED_KEY_TRANSACTIONS] = true;
                 NavigationService.GoBack();
             }
 
-Failure:
+        Failure:
             if (!result.SaveSuccessful) {
-                string errorMessages = String.Join(Environment.NewLine + Environment.NewLine, result.ErrorMessages.ToArray());
-                if (!String.IsNullOrEmpty(errorMessages))
-                    MessageBox.Show(errorMessages, "Warning: Invalid Values", MessageBoxButton.OK);
+                string errorMessages = String.Join(
+                    Environment.NewLine + Environment.NewLine,
+                    result.ErrorMessages.ToArray());
+                if (!String.IsNullOrEmpty(errorMessages)) {
+                    MessageBox.Show(errorMessages,
+                        "Warning: Invalid Values", MessageBoxButton.OK);
+                }
             }
         }
 
@@ -233,6 +224,19 @@ Failure:
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        void AddTransferPage_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (Object.ReferenceEquals(e.OriginalSource.GetType(), PayeeTextBox.GetType()))
+                textboxWithFocus = e.OriginalSource as TextBox;
+            else if (Object.ReferenceEquals(e.OriginalSource.GetType(), OutflowButton.GetType()))
+                buttonWithFocus = e.OriginalSource as RadioButton;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void KeyDown_Typed(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key != Key.Enter && e.PlatformKeyCode != 0x0A)
@@ -242,17 +246,10 @@ Failure:
                     PayeeTextBox.Focus();
                     break;
                 case "PayeeTextBox":
-                    CategoryTextBox.Focus();
-                    break;
-                case "CategoryTextBox":
-                    SubCategoryTextBox.Focus();
-                    break;
-                case "SubCategoryTextBox":
                     MemoTextBox.Focus();
                     break;
                 case "MemoTextBox":
                     OutflowButton.Focus();
-                    ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 75);
                     break;
                 case "AmountTextBox":
                     AmountTextBox.Focus();
@@ -270,41 +267,6 @@ Failure:
             AmountTextBox.Focus();
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void AddTransactionPage_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (Object.ReferenceEquals(e.OriginalSource.GetType(), PayeeTextBox.GetType()))
-                textboxWithFocus = e.OriginalSource as TextBox;
-            else if (Object.ReferenceEquals(e.OriginalSource.GetType(), OutflowButton.GetType()))
-                buttonWithFocus = e.OriginalSource as RadioButton;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Payee_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            String item = (String)CategoryListPicker.SelectedItem;
-            if (item != "")
-                SubCategoryListPicker.ItemsSource = Datastore.SubCategories(item);
         }
         #endregion
     }

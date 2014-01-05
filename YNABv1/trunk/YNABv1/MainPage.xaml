@@ -20,14 +20,8 @@
           d:DataContext="{d:DesignInstance Type=model:Transactions}">
 
         <!--TitlePanel contains the name of the application and page title-->
-        <!--<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="YNAB COMPANION" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
-            <TextBlock Text="transactions" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-        </StackPanel>
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-        </Grid>-->
-        <!--Pivot Control-->
 
+        <!-- Miscellaneous -->
         <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed"/>
         <ProgressBar IsEnabled="False" Name="ProgressBar" IsIndeterminate="True" 
                      Height="10" Margin="0,10,0,676" Width="480" 
@@ -36,11 +30,13 @@
                 <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             </ProgressBar.Foreground>
         </ProgressBar>
+
+        <!--Pivot Control-->
         <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot">
 
             <!--Pivot item one-->
             <controls:PivotItem Header="transactions" Margin="0,0,0,0" >
-                <Grid Height="425" Width="467">
+                <Grid Width="467">
 
                     <Grid.Resources>
                         <Style x:Key="SummaryStyle" TargetType="TextBlock">
@@ -65,17 +61,20 @@
                             </Setter>
                         </Style>
                     </Grid.Resources>
-                    <toolkit:PerformanceProgressBar />
+
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Width="100" />
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Width="100" />
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="category" />
                         <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" />
                     </StackPanel>
-                    <ScrollViewer Margin="-5,13,3,36" Height="558">
+
+                    <ScrollViewer Margin="-5,13,3,36" Height="558"
+                                  VerticalScrollBarVisibility="Auto">
                         <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
-                                 Height="380" HorizontalAlignment="Left" 
-                                 Margin="5,25,0,0" VerticalAlignment="Top" Width="465" ItemsSource="{Binding TransactionHistory}" >
+                                 HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                 Margin="5,25,0,0" Height="380" Width="465" 
+                                 ItemsSource="{Binding TransactionHistory}" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -105,9 +104,11 @@
         </controls:Pivot>
     </Grid>
 
+    <!-- Application Bar -->
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Assets/add.png" Text="add transaction" Click="AddTransactionButton_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/transfer.png" Text="transfer" Click="AddTransferButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/download.png" Text="import" Click="ImportButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/upload.png" Text="export" Click="ExportButton_Click" />
         </shell:ApplicationBar>

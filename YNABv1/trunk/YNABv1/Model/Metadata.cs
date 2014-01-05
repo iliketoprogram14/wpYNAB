@@ -33,10 +33,11 @@ namespace YNABv1.Model
             is_dir = (bool)obj["is_dir"];
             rev = (String)obj["rev"];
             icon = (String)obj["icon"];
+
             JToken outVal;
-            if (obj.TryGetValue("modified", out outVal)) {
+            if (obj.TryGetValue("modified", out outVal))
                 modified = DateTime.Parse((String)obj["modified"]);
-            }
+
             if (is_dir && obj.TryGetValue("contents", out outVal)) {
                 contents = new List<Metadata>();
                 Array contentsArray = obj["contents"].ToArray();
@@ -45,6 +46,7 @@ namespace YNABv1.Model
             }
         }
 
+        #region Get/Set
         public String Path
         {
             get { return path; }
@@ -89,6 +91,7 @@ namespace YNABv1.Model
                 string name = parts[parts.Length - 1];
                 if (name == value || value == "")
                     return;
+
                 string newPath = "";
                 for (int i = 0; i < parts.Length - 1; i++)
                     newPath += "/" + parts[i];
@@ -100,24 +103,17 @@ namespace YNABv1.Model
 
         public String IconPath
         {
-            get {
-                String derp = "Assets/DropboxIcons/" + icon + ".gif";
-                return "Assets/DropboxIcons/" + icon + "48.gif";
-            }
-            set
-            {
-
-            }
+            get { return "Assets/DropboxIcons/" + icon + "48.gif"; }
+            set { }
         }
 
         public List<Metadata> Contents
         {
             get { return contents; }
-            set {
-
-            }
+            set { }
         }
-        
+        #endregion
+
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;

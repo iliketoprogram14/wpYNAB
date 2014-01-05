@@ -15,36 +15,57 @@ namespace YNABv1.Model
         public Transactions() {
             transactions = new ObservableCollection<Transaction>();
         }
-        
+
+        #region Get/Set
         public ObservableCollection<Transaction> TransactionHistory
         {
             get { return transactions; }
-            set
-            {
+            set {
                 if (transactions == value)
                     return;
                 transactions = value;
-                /*if (transactions != null) {
-                    transactions.CollectionChanged += delegate { };
-                }*/
                 NotifyPropertyChanged("TransactionHistory");
             }
         }
+        #endregion
 
+        #region Public Interface
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public void Add(Transaction t)
         {
             transactions.Add(t);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public void Remove(Transaction t)
         {
             transactions.Remove(t);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void RemoveAll()
         {
             transactions.Clear();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SortByDate()
+        {
+            List<Transaction> transactionList = transactions.ToList<Transaction>();
+            transactionList.Sort();
+            TransactionHistory = new ObservableCollection<Transaction>(transactionList);
+        }
+        #endregion
 
         #region INotifyPropertyChanged
 

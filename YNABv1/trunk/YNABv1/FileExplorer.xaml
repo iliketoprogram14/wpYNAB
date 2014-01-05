@@ -13,6 +13,8 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
+    
+    <!-- Resources -->
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="DataTemplate1">
             <Grid>
@@ -42,32 +44,29 @@
             <TextBlock Text="import" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
+        <!--ContentPanel -->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="15*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="{Binding Path}" Margin="0" Grid.Row="0">
+            <TextBlock Text="{Binding Path}" Margin="0" Grid.Row="0" FontSize="26">
                 <TextBlock.Foreground>
                     <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
                 </TextBlock.Foreground>
             </TextBlock>
             <TextBlock Name="ParentFolderTextBox" Text="Parent folder"
-                       Grid.Row="1" Visibility="Collapsed" Tap="Parent_Tapped" FontSize="28"/>
+                       Grid.Row="1" Visibility="Collapsed" Tap="Parent_Tapped" FontSize="26"/>
             <ListBox Name="DropboxListBox" Grid.Row="2" ItemsSource="{Binding Contents}" Margin="5" 
                         ItemTemplate="{StaticResource DataTemplate1}" SelectionChanged="ListBox_SelectionChanged"/>
         </Grid>
     </Grid>
+    
+    <!-- Application Bar -->
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Assets/cancel.png" Text="cancel" Click="CancelButton_Click" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Assets/cancel.png" Text="cancel" Click="CancelButton_Click" />
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
 </phone:PhoneApplicationPage>

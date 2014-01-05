@@ -91,7 +91,7 @@ namespace YNABv1.Model
                 if (errorCallback != null)
                     errorCallback();
                 else
-                    MessageBox.Show(Constants.DELETE_MSG);
+                    MessageBox.Show(Constants.MSG_DELETE);
             }
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
-    public class Transaction : INotifyPropertyChanged
+    public class Transaction : INotifyPropertyChanged, IEquatable<Transaction>, IComparable
     {
         private enum DIRECTION { OUT, IN };
 
@@ -81,14 +81,19 @@ namespace YNABv1.Model
 
         public String FullCategory
         {
-            get { return category + ": " + subcategory; }
+            get { return (category == "") ? "" : category + ": " + subcategory; }
             set {
                 String fullCategory = category + ": " + subcategory;
                 if (fullCategory.Equals(value))
                     return;
-                String[] splitString = value.Split(':');
-                category = splitString[0].Trim(' ');
-                subcategory = splitString[1].Trim(' ');
+                if (value == "") {
+                    category = "";
+                    subcategory = "";
+                } else {
+                    String[] splitString = value.Split(':');
+                    category = splitString[0].Trim(' ');
+                    subcategory = splitString[1].Trim(' ');
+                }
                 NotifyPropertyChanged("Category");
                 NotifyPropertyChanged("SubCategory");
             }
@@ -144,22 +149,18 @@ namespace YNABv1.Model
         {
             get { return (dir == DIRECTION.OUT); }
             set {
-                if (dir == DIRECTION.OUT)
+                if (value && dir == DIRECTION.OUT)
                     return;
-                dir = DIRECTION.OUT;
+                dir = (value) ? DIRECTION.OUT : DIRECTION.IN;
                 NotifyPropertyChanged("Outflow");
+                NotifyPropertyChanged("Inflow");
             }
         }
 
         public Boolean Inflow
         {
             get { return (dir == DIRECTION.IN); }
-            set {
-                if (dir == DIRECTION.IN)
-                    return;
-                dir = DIRECTION.IN;
-                NotifyPropertyChanged("Inflow");
-            }
+            set { Outflow = !value; }
         }
 
         public Boolean Transfer
@@ -167,13 +168,19 @@ namespace YNABv1.Model
             get { return transfer; }
             set
             {
-                if (transfer == value) return;
+                if (transfer == value)
+                    return;
                 transfer = value;
                 NotifyPropertyChanged("Transfer");
             }
         }
         #endregion
 
+        #region Public Interface
+        /// <summary>
+        /// Returns a deep copy of this transaction.
+        /// </summary>
+        /// <returns>A deep copy of this transaxtion.</returns>
         public Transaction DeepCopy()
         {
             Transaction t = new Transaction();
@@ -189,6 +196,45 @@ namespace YNABv1.Model
             return t;
         }
 
+        /// <summary>
+        /// If this is a transfer, returns the inverse transaction of this 
+        /// transaction.  For example, for a transfer from A to B of an 
+        /// outflow of $50, a transfer from B to A of an inflow of $50 is 
+        /// returned.  For transactions that aren't transfer, this returns an
+        /// unmodified deep copy.
+        /// </summary>
+        /// <returns>The inverse transaction of this object</returns>
+        public Transaction InverseTransfer()
+        {
+            Transaction inverse = DeepCopy();
+            if (!transfer)
+                return inverse;
+
+            String fromAccount = inverse.Account;
+            String toAccount = inverse.Account.Replace("Transfer : ", "");
+            inverse.Account = toAccount;
+            inverse.Payee = "Transfer : " + fromAccount;
+            inverse.Outflow = !Outflow;
+
+            return inverse;
+        }
+
+        /// <summary>
+        /// Return the csv equivalent of the transaction.
+        /// </summary>
+        /// <returns>A csv string representation of the transaction</returns>
+        public String GetCsv()
+        {
+            // Structure: Date,Payee,Category,Memo,Outflow,Inflow
+            String dateStr = String.Format("{0:d}", date.ToString());
+            String fullCategory = this.FullCategory;
+            String outflowStr = this.Outflow ? amount.ToString() : "";
+            String inflowStr = this.Inflow ? amount.ToString() : "";
+            return dateStr + "," + payee + "," + FullCategory + "," + memo + "," +
+                outflowStr + "," + inflowStr + "\n";
+        }
+        #endregion
+
         public Boolean Equals(Transaction t2)
         {
             return (Outflow == t2.Outflow) && (date.Equals(t2.Date)) && (payee.Equals(t2.Payee)) &&
@@ -197,15 +243,10 @@ namespace YNABv1.Model
                 (transfer == t2.Transfer);
         }
 
-        public String GetCsv()
+        int IComparable.CompareTo(object obj)
         {
-            //Date,Payee,Category,Memo,Outflow,Inflow
-            String dateStr = String.Format("{0:d}", date.ToString());
-            String fullCategory = this.FullCategory;
-            String outflowStr = this.Outflow ? amount.ToString() : "";
-            String inflowStr = this.Inflow ? amount.ToString() : "";
-            return dateStr + "," + payee + "," + FullCategory + "," + memo + "," +
-                outflowStr + "," + inflowStr + "\n";
+            Transaction t2 = obj as Transaction;
+            return date.CompareTo(t2.date);
         }
 
         #region INotifyPropertyChanged

@@ -50,8 +50,10 @@ namespace YNABv1
                 AccountListPicker.Visibility = Visibility.Collapsed;
                 PayeeListPicker.Visibility = Visibility.Collapsed;
             } else {
-                AccountListPicker.ItemsSource = Datastore.Accounts;
-                PayeeListPicker.ItemsSource = Datastore.Accounts;
+                List<String> accts = new List<String>(Datastore.Accounts);
+                accts.Add("New...");
+                AccountListPicker.ItemsSource = accts;
+                PayeeListPicker.ItemsSource = accts;
                 if (Datastore.Accounts.Count > 1)
                     PayeeListPicker.SelectedItem = Datastore.Accounts.ElementAt(1);
                 AccountListPicker.Visibility = Visibility.Visible;
@@ -190,6 +192,15 @@ namespace YNABv1
                 return;
             }
 
+            // Save the account(s) if necessary
+            if (AccountTextBox.Visibility == Visibility.Visible)
+                if (!Datastore.Accounts.Contains(AccountTextBox.Text))
+                    Datastore.Accounts.Add(AccountTextBox.Text);
+
+            if (PayeeTextBox.Visibility == Visibility.Visible)
+                if (!Datastore.Accounts.Contains(PayeeTextBox.Text))
+                    Datastore.Accounts.Add(PayeeTextBox.Text);
+
             // Now that everything has cleared, it's safe to modify the payee field
             currentTransfer.Payee = "Transfer : " + currentTransfer.Payee;
 
@@ -296,5 +307,23 @@ namespace YNABv1
                 AmountTextBox.Text = "";
         }
         #endregion
+
+        private void AccountListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String item = (String)AccountListPicker.SelectedItem;
+            if (item == "New...") {
+                AccountListPicker.Visibility = Visibility.Collapsed;
+                AccountTextBox.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void PayeeListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String item = (String)PayeeListPicker.SelectedItem;
+            if (item == "New...") {
+                PayeeListPicker.Visibility = Visibility.Collapsed;
+                PayeeTextBox.Visibility = Visibility.Visible;
+            }
+        }
     }
 }

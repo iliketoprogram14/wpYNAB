@@ -64,10 +64,11 @@
                      Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
                      InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" 
                      Visibility="Collapsed"/>
-            <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1" 
-                                    Height="60" FontSize="24"
-                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
-                                    ExpansionMode="FullScreenOnly" />
+            <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
+                                Height="60" FontSize="24"
+                                SelectionChanged="AccountListPicker_SelectionChanged"
+                                FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
+                                ExpansionMode="FullScreenOnly" />
             <TextBlock Grid.Row="2" Grid.Column="0" Text="to account:"
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
             <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
@@ -75,9 +76,10 @@
                      InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" 
                      Visibility="Collapsed" />
             <toolkit:ListPicker Name="PayeeListPicker" Grid.Row="2" Grid.Column="1" 
-                                    Height="60" FontSize="24"
-                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
-                                    ExpansionMode="FullScreenOnly" />
+                                Height="60" FontSize="24"
+                                SelectionChanged="PayeeListPicker_SelectionChanged"
+                                FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
+                                ExpansionMode="FullScreenOnly" />
             <TextBlock Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Text="memo:" 
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
             <TextBox Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 

@@ -48,7 +48,9 @@ namespace YNABv1
                 AccountTextBox.Visibility = Visibility.Visible;
                 AccountListPicker.Visibility = Visibility.Collapsed;
             } else {
-                AccountListPicker.ItemsSource = Datastore.Accounts;
+                List<String> accounts = new List<String>(Datastore.Accounts);
+                accounts.Add("New...");
+                AccountListPicker.ItemsSource = accounts;
                 AccountListPicker.Visibility = Visibility.Visible;
                 AccountTextBox.Visibility = Visibility.Collapsed;
             }
@@ -60,7 +62,9 @@ namespace YNABv1
                 CategoryListPicker.Visibility = Visibility.Collapsed;
                 SubCategoryListPicker.Visibility = Visibility.Collapsed;
             } else {
-                CategoryListPicker.ItemsSource = Datastore.MasterCategories();
+                List<String> masterCategories = new List<String>(Datastore.MasterCategories());
+                masterCategories.Add("New...");
+                CategoryListPicker.ItemsSource = masterCategories;
                 CategoryListPicker.Visibility = Visibility.Visible;
                 SubCategoryListPicker.Visibility = Visibility.Visible;
                 CategoryTextBox.Visibility = Visibility.Collapsed;
@@ -215,6 +219,23 @@ namespace YNABv1
                 return;
             }
 
+            // Save the account, category, and/or subcategory if necessary
+            if (AccountTextBox.Visibility == Visibility.Visible)
+                if (!Datastore.Accounts.Contains(AccountTextBox.Text))
+                    Datastore.Accounts.Add(AccountTextBox.Text);
+
+            if (CategoryTextBox.Visibility == Visibility.Visible)
+                if (!Datastore.MasterCategories().Contains(CategoryTextBox.Text))
+                    Datastore.AddCategory(CategoryTextBox.Text);
+
+            if (SubCategoryTextBox.Visibility == Visibility.Visible) {
+                String cat = CategoryTextBox.Text;
+                if (CategoryListPicker.Visibility == Visibility.Visible)
+                    cat = (String)CategoryListPicker.SelectedItem;
+                if (!Datastore.SubCategories(cat).Contains(SubCategoryTextBox.Text))
+                    Datastore.AddSubcategory(cat, SubCategoryTextBox.Text);
+            }
+
             SaveResult result = new SaveResult();
             if (transactionToEdit != null) {
                 result = Datastore.DeleteTransaction(transactionToEdit, delegate { MessageBox.Show(Constants.MSG_DELETE); });
@@ -325,8 +346,44 @@ Failure:
         private void CategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String item = (String)CategoryListPicker.SelectedItem;
-            if (item != "")
-                SubCategoryListPicker.ItemsSource = Datastore.SubCategories(item);
+            if (item == "New...") {
+                CategoryListPicker.Visibility = Visibility.Collapsed;
+                CategoryTextBox.Visibility = Visibility.Visible;
+                SubCategoryListPicker.Visibility = Visibility.Collapsed;
+                SubCategoryTextBox.Visibility = Visibility.Visible;
+            } else if (item != "") {
+                List<String> subcats = new List<String>(Datastore.SubCategories(item));
+                subcats.Add("New...");
+                SubCategoryListPicker.ItemsSource = subcats;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AccountListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String item = (String)AccountListPicker.SelectedItem;
+            if (item == "New...") {
+                AccountListPicker.Visibility = Visibility.Collapsed;
+                AccountTextBox.Visibility = Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SubCategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String item = (String)SubCategoryListPicker.SelectedItem;
+            if (item == "New...") {
+                SubCategoryListPicker.Visibility = Visibility.Collapsed;
+                SubCategoryTextBox.Visibility = Visibility.Visible;
+            }
         }
         #endregion
     }

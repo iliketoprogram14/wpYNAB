@@ -67,7 +67,7 @@
                            Text="account:"
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1" 
-                                    Height="50" FontSize="24"
+                                    Height="50" FontSize="24" SelectionChanged="AccountListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
                                     ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" Visibility="Collapsed"
@@ -94,6 +94,7 @@
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <toolkit:ListPicker Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1" 
                                     Width="280" Height="50" FontSize="24"
+                                    SelectionChanged="SubCategoryListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox" 
                          InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}"

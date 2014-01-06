@@ -23,7 +23,6 @@ namespace YNABv1.Model
         private static Transactions transactions;
         private static Payees payees;
         private static Categories categories;
-        //private static List<String> accounts;
 
         public static event EventHandler TransactionsUpdated;
         public static event EventHandler PayeesUpdated;
@@ -72,6 +71,18 @@ namespace YNABv1.Model
         public static List<String> MasterCategories() { return categories.CategoryList; }
 
         public static List<String> SubCategories(String category) {  return categories.SubCategories(category); }
+
+        public static void AddCategory(String category)
+        {
+            categories.AddCategory(category);
+            SaveCategories();
+        }
+
+        public static void AddSubcategory(String category, String subcategory)
+        {
+            categories.AddFullCategory(category, subcategory);
+            SaveCategories();
+        }
 
         public static void ClearAllTransactions()
         {
@@ -175,6 +186,20 @@ namespace YNABv1.Model
                 appSettings[TRANSACTION_KEY] = transactions;
                 appSettings.Save();
                 NotifyTransactionsUpdated();
+            } catch (IsolatedStorageException) {
+                if (errorCallback != null)
+                    errorCallback();
+                else
+                    MessageBox.Show(Constants.MSG_DELETE);
+            }
+        }
+
+        private static void SaveCategories(Action errorCallback = null)
+        {
+            try {
+                appSettings[CATEGORIES_KEY] = categories;
+                appSettings.Save();
+                NotifyCategoriesUpdated();
             } catch (IsolatedStorageException) {
                 if (errorCallback != null)
                     errorCallback();

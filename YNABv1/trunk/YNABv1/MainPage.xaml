@@ -19,8 +19,29 @@
     <Grid x:Name="LayoutRoot" Background="Transparent" 
           d:DataContext="{d:DesignInstance Type=model:Transactions}">
 
-        <!--TitlePanel contains the name of the application and page title-->
-
+        <Canvas Name="TutorialCanvas" Visibility="Collapsed" Margin="20,30,0,0">
+            <StackPanel>
+                <TextBlock Text="Tutorial" FontSize="48"/>
+                <TextBlock Width="467" TextWrapping="Wrap" FontSize="22" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" 
+                           Margin="0,20,0,20"/>
+                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="1. In YNAB, export your budget and register (aka transations) to Dropbox. This only needs to be done once."
+                           Margin="0,0,0,5"/>
+                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="2. In YNABcompanion, import both files from Dropbox. This only needs to be done once." 
+                           Margin="0,0,0,5"/>
+                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="3. Add, edit, or delete transactions or transfers in YNABcompanion." 
+                           Margin="0,0,0,5"/>
+                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="4. Export the transactions to Dropbox." 
+                           Margin="0,0,0,5"/>
+                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="5. In YNAB, import the transactions for each account from Dropbox." 
+                           Margin="0,0,0,5"/>
+                <TextBlock Width="467" TextWrapping="Wrap" FontSize="22" Text="For more information and help, check out the help page from the menu." 
+                           Margin="0,20,0,30"/>
+                <Button Width="200" Click="TutorialButton_Click">
+                    <TextBlock Text="Got it!"/>
+                </Button>
+            </StackPanel>
+        </Canvas>
+        
         <!-- Miscellaneous -->
         <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed"/>
         <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
@@ -32,7 +53,7 @@
         </ProgressBar>
 
         <!--Pivot Control-->
-        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot">
+        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot" Visibility="Visible">
 
             <!--Pivot item one-->
             <controls:PivotItem Header="transactions" Margin="0,0,0,0" >
@@ -103,7 +124,7 @@
 
     <!-- Application Bar -->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+        <shell:ApplicationBar IsVisible="true" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Assets/add.png" Text="add transaction" Click="AddTransactionButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/transfer.png" Text="transfer" Click="AddTransferButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/download.png" Text="import" Click="ImportButton_Click" />

@@ -32,6 +32,16 @@ namespace YNABv1
             Datastore.TransactionsUpdated += Transactions_Updated;
             Datastore.Transactions.SortByDate();
             DataContext = Datastore.Transactions;
+
+            if (appSettings.Contains(Constants.TUTORIAL_KEY)) {
+                DefaultPivot.Visibility = Visibility.Visible;
+                this.ApplicationBar.IsVisible = true;
+                TutorialCanvas.Visibility = Visibility.Collapsed;
+            } else {
+                DefaultPivot.Visibility = Visibility.Collapsed;
+                this.ApplicationBar.IsVisible = false;
+                TutorialCanvas.Visibility = Visibility.Visible;
+            }
         }
 
         #region Navigation Events
@@ -202,6 +212,21 @@ namespace YNABv1
                         MessageBox.Show(errorMessages, "Warning: Invalid Values", MessageBoxButton.OK);
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TutorialButton_Click(object sender, RoutedEventArgs e)
+        {
+            TutorialCanvas.Visibility = Visibility.Collapsed;
+            DefaultPivot.Visibility = Visibility.Visible;
+            this.ApplicationBar.IsVisible = true;
+
+            appSettings[Constants.TUTORIAL_KEY] = true;
+            appSettings.Save();
         }
         #endregion
     }

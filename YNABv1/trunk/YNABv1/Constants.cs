@@ -11,6 +11,8 @@
         public const string MSG_DELETE = "Something went wrong :( Please close the application and try again.";
         public const string MSG_NO_SPACE = "There is not enough space on your phone to save your fill-up data. Free some space and try again.";
 
+        public const string TUTORIAL_KEY = "TutorialHasBeenShown";
+
         public const string DROPBOX_KEY = DropboxApi.KEY;
         public const string DROPBOX_SECRET = DropboxApi.SECRET;
         public const string DROPBOX_ACCESS_TOKEN = "DropboxAccessToken";

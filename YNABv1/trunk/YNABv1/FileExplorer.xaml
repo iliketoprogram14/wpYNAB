@@ -10,7 +10,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
     
@@ -41,8 +41,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
-                     Height="10" Margin="0,0,0,0" Width="480" 
-                     HorizontalAlignment="Center">
+                     Height="10" Margin="0,0,0,0">
                 <ProgressBar.Foreground>
                     <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
                 </ProgressBar.Foreground>

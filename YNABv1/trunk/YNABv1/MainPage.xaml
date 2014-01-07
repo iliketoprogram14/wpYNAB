@@ -20,10 +20,14 @@
           d:DataContext="{d:DesignInstance Type=model:Transactions}">
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
-        <Grid Name="TutorialCanvas" Visibility="Collapsed" Margin="20,30,0,0" Grid.Row="0" Grid.RowSpan="2">
+        <Grid Name="TutorialCanvas" Visibility="Collapsed" Margin="20,30,0,0" 
+              Grid.Row="0" Grid.RowSpan="2">
             <StackPanel>
                 <TextBlock Text="Tutorial" FontSize="48"/>
                 <TextBlock TextWrapping="Wrap" FontSize="22" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" 
@@ -47,7 +51,8 @@
         </Grid>
         
         <!-- Miscellaneous -->
-        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2"/>
+        <phone:WebBrowser Name="MainBrowser" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="1" 
+                          Visibility="Collapsed" />
         <ProgressBar Name="ProgressBar" IsIndeterminate="False" Grid.Row="0"
                      Height="10" HorizontalAlignment="Center">
             <ProgressBar.Foreground>
@@ -56,7 +61,8 @@
         </ProgressBar>
 
         <!--Pivot Control-->
-        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot" Visibility="Visible" Grid.Row="0" Grid.RowSpan="2">
+        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot" Visibility="Visible"
+                        Grid.Row="0" Grid.RowSpan="2">
 
             <!--Pivot item one-->
             <controls:PivotItem Header="transactions" Margin="0,0,0,0" >

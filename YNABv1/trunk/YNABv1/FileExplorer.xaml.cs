@@ -96,7 +96,9 @@ namespace YNABv1
         {
             Metadata m = DataContext as Metadata;
             string[] parts = m.Path.Split('/');
-            String parent = parts[parts.Length - 2];
+            String parent = "";
+            for (int i = 0; i < parts.Length - 1; i++)
+                parent += "/" + parts[i];
             FillPage(parent);
         }
 

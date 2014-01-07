@@ -144,6 +144,54 @@ namespace YNABv1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckParams()
+        {
+            if (AccountTextBox.Visibility == Visibility.Visible) {
+                if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
+                    MessageBox.Show("The account is required.");
+                    return false;
+                }
+            } else {
+                if (((String)AccountListPicker.SelectedItem).Equals("")) {
+                    MessageBox.Show("The account is required.");
+                    return false;
+                }
+                currentTransfer.Account = (String)AccountListPicker.SelectedItem;
+            }
+
+            if (PayeeTextBox.Visibility == Visibility.Visible) {
+                if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
+                    MessageBox.Show("The payee is required.");
+                    return false;
+                }
+            } else {
+                if (((String)PayeeListPicker.SelectedItem).Equals("")) {
+                    MessageBox.Show("The payee is required.");
+                    return false;
+                }
+                currentTransfer.Payee = (String)PayeeListPicker.SelectedItem;
+            }
+
+            bool outflow = (bool)OutflowButton.IsChecked;
+            bool inflow = (bool)InflowButton.IsChecked;
+            if ((!outflow && !inflow) || (outflow && inflow)) {
+                MessageBox.Show("The transaction must be an outflow or an inflow.");
+                return false;
+            }
+
+            double amountVal;
+            if (!double.TryParse(AmountTextBox.Text, out amountVal)) {
+                MessageBox.Show("The amount could not be parsed.");
+                return false;
+            }
+
+            return true;
+        }
+
         #region UI events
         /// <summary>
         /// 
@@ -158,53 +206,15 @@ namespace YNABv1
             // change focus because they are not Silverlight controls. 
             CommitItemWithFocus();
 
-            if (AccountTextBox.Visibility == Visibility.Visible) {
-                if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
-                    MessageBox.Show("The account is required.");
-                    return;
-                }
-            } else {
-                if (((String)AccountListPicker.SelectedItem).Equals("")) {
-                    MessageBox.Show("The account is required.");
-                    return;
-                }
-                currentTransfer.Account = (String)AccountListPicker.SelectedItem;
-            }
-
-            if (PayeeTextBox.Visibility == Visibility.Visible) {
-                if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
-                    MessageBox.Show("The payee is required.");
-                    return;
-                }
-            } else {
-                if (((String)PayeeListPicker.SelectedItem).Equals("")) {
-                    MessageBox.Show("The payee is required.");
-                    return;
-                }
-                currentTransfer.Payee = (String)PayeeListPicker.SelectedItem;
-            }
-
-            bool outflow = (bool)OutflowButton.IsChecked;
-            bool inflow = (bool)InflowButton.IsChecked;
-            if ((!outflow && !inflow) || (outflow && inflow)) {
-                MessageBox.Show("The transaction must be an outflow or an inflow.");
+            if (!CheckParams())
                 return;
-            }
-
-            double amountVal;
-            if (!double.TryParse(AmountTextBox.Text, out amountVal)) {
-                MessageBox.Show("The amount could not be parsed.");
-                return;
-            }
 
             // Save the account(s) if necessary
-            if (AccountTextBox.Visibility == Visibility.Visible)
-                if (!Datastore.Accounts.Contains(AccountTextBox.Text))
-                    Datastore.Accounts.Add(AccountTextBox.Text);
+            if (AccountTextBox.Visibility == Visibility.Visible && (!Datastore.Accounts.Contains(AccountTextBox.Text)))
+                Datastore.Accounts.Add(AccountTextBox.Text);
 
-            if (PayeeTextBox.Visibility == Visibility.Visible)
-                if (!Datastore.Accounts.Contains(PayeeTextBox.Text))
-                    Datastore.Accounts.Add(PayeeTextBox.Text);
+            if (PayeeTextBox.Visibility == Visibility.Visible && (!Datastore.Accounts.Contains(PayeeTextBox.Text)))
+                Datastore.Accounts.Add(PayeeTextBox.Text);
 
             // Now that everything has cleared, it's safe to modify the payee field
             currentTransfer.Payee = "Transfer : " + currentTransfer.Payee;
@@ -217,13 +227,11 @@ namespace YNABv1
             }
 
             result = Datastore.AddTransaction(currentTransfer, delegate { MessageBox.Show(Constants.MSG_NO_SPACE); });
-            if (result.SaveSuccessful) {
+            if (result.SaveSuccessful)
                 Microsoft.Phone.Shell.PhoneApplicationService.Current.State[Constants.SAVED_KEY_TRANSACTIONS] = true;
-            }
 
             // Perform the same functions for the inverse of this transfer
             if (transferToEdit != null) {
-                // delete the transaction here
                 Transaction inverseTransferToEdit = transferToEdit.InverseTransfer();
                 result = Datastore.DeleteTransaction(inverseTransferToEdit, delegate { MessageBox.Show(Constants.MSG_DELETE); });
                 if (!result.SaveSuccessful)
@@ -239,12 +247,9 @@ namespace YNABv1
 
         Failure:
             if (!result.SaveSuccessful) {
-                string errorMessages = String.Join(
-                    Environment.NewLine + Environment.NewLine,
-                    result.ErrorMessages.ToArray());
-                if (!String.IsNullOrEmpty(errorMessages)) {
+                string errorMessages = String.Join(Environment.NewLine + Environment.NewLine, result.ErrorMessages.ToArray());
+                if (!String.IsNullOrEmpty(errorMessages))
                     MessageBox.Show(errorMessages, "Warning: Invalid Values", MessageBoxButton.OK);
-                }
             }
         }
 
@@ -309,8 +314,12 @@ namespace YNABv1
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
         }
-        #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AccountListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String item = (String)AccountListPicker.SelectedItem;
@@ -320,6 +329,11 @@ namespace YNABv1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PayeeListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String item = (String)PayeeListPicker.SelectedItem;
@@ -328,5 +342,6 @@ namespace YNABv1
                 PayeeTextBox.Visibility = Visibility.Visible;
             }
         }
+        #endregion
     }
 }

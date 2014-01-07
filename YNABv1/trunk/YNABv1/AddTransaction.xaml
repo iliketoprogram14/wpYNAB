@@ -8,32 +8,32 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:model="clr-namespace:YNABv1.Model" 
+    xmlns:model="clr-namespace:YNABv1.Model"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
-    
+
     <!-- Resources -->
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Name="PickerFullModeItemTemplate">
             <TextBlock Text="{Binding}" Margin="16 0 0 0" FontSize="28" />
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="YNAB COMPANION" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="add transaction" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="YNAB COMPANION" Style="{StaticResource PhoneTextNormalStyle}" />
+            <TextBlock Text="add transaction" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" />
         </StackPanel>
 
         <!--Content Panel-->
@@ -54,35 +54,35 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" 
-                           Text="date:" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
-                                    Value="{Binding Date, Mode=TwoWay}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" 
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="date:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1"
+                                    Value="{Binding Date, Mode=TwoWay}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
                            Text="account:"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
                                     Height="50" FontSize="24" SelectionChanged="AccountListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
                                     ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" Visibility="Collapsed"
-                         Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
+                         Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}"
                          InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" />
-                <TextBlock Grid.Row="2" Grid.Column="0" 
+                <TextBlock Grid.Row="2" Grid.Column="0"
                            Text="payee:"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
-                         Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox"
+                         Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}"
                          InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" />
                 <TextBlock Grid.Row="3" Grid.Column="0"
-                           Text="category:" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <toolkit:ListPicker Name="CategoryListPicker" Grid.Row="3" Grid.Column="1" 
+                           Text="category:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <toolkit:ListPicker Name="CategoryListPicker" Grid.Row="3" Grid.Column="1"
                                     Width="280" Height="50" FontSize="24"
                                     SelectionChanged="CategoryListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
@@ -90,30 +90,30 @@
                          Visibility="Collapsed"
                          InputScope="Text" Text="{Binding Category, Mode=TwoWay}" TabIndex="4" KeyDown="KeyDown_Typed" />
                 <TextBlock Grid.Row="4" Grid.Column="0"
-                           Text="subcategory:" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <toolkit:ListPicker Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1" 
+                           Text="subcategory:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <toolkit:ListPicker Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1"
                                     Width="280" Height="50" FontSize="24"
                                     SelectionChanged="SubCategoryListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
-                <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox" 
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox"
                          InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}"
                          TabIndex="3" KeyDown="KeyDown_Typed" Visibility="Collapsed" />
                 <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
-                           Text="memo:" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
+                           Text="memo:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox"
                          InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" KeyDown="KeyDown_Typed" />
                 <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
-                             HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" 
-                             Checked="Checked_Event" Click="Checked_Event"/>
+                             HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72"
+                             Checked="Checked_Event" Click="Checked_Event" />
                 <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="7"  Grid.Column="1"
-                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}" 
-                             Checked="Checked_Event" Click="Checked_Event"/>
+                             HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}"
+                             Checked="Checked_Event" Click="Checked_Event" />
                 <TextBlock Grid.Row="8" Grid.Column="0"
-                           Text="amount:" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="8" Grid.Column="1" x:Name="AmountTextBox" 
+                           Text="amount:"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <TextBox Grid.Row="8" Grid.Column="1" x:Name="AmountTextBox"
                          InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" TabIndex="5" KeyDown="KeyDown_Typed" />
             </Grid>
         </ScrollViewer>
@@ -122,9 +122,9 @@
     <!-- Application Bar -->
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Assets/save.png" 
+            <shell:ApplicationBarIconButton IconUri="/Assets/save.png"
                                             Text="Save" Click="SaveButton_Click" />
-            <shell:ApplicationBarIconButton IconUri="/Assets/cancel.png" 
+            <shell:ApplicationBarIconButton IconUri="/Assets/cancel.png"
                                             Text="Cancel" Click="CancelButton_Click" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

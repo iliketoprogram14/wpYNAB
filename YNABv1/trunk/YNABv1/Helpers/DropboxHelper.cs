@@ -46,11 +46,13 @@ namespace YNABv1.Helpers
 
             string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
             p.DefaultPivot.Visibility = System.Windows.Visibility.Collapsed;
+
             /****** Later on, create mainbrowser in here and add it to mainPage */
             p.MainBrowser.Visibility = System.Windows.Visibility.Visible;
             p.MainBrowser.IsScriptEnabled = true;
             p.MainBrowser.Navigated += DropboxMainBrowser_Navigated;
             p.MainBrowser.Navigate(new Uri(url, UriKind.Absolute));
+
             mainPage = p;
             callbackAfterSetup = callback;
         }

@@ -231,6 +231,11 @@ namespace YNABv1
             AppSettings[Constants.TUTORIAL_KEY] = true;
             AppSettings.Save();
         }
+
+        private void Help_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("//Help.xaml", UriKind.Relative));
+        }
         #endregion
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 using System.Windows.Data;
 using System.Windows.Input;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
+using System.Windows.Navigation;
 using YNABv1.Model;
 
 namespace YNABv1
@@ -25,7 +24,7 @@ namespace YNABv1
         private IDictionary<string, object> phoneState = PhoneApplicationService.Current.State;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public AddTransaction()
         {
@@ -34,7 +33,7 @@ namespace YNABv1
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private void InitializePageState()
         {
@@ -44,6 +43,7 @@ namespace YNABv1
                 currentTransaction = transactionToEdit.DeepCopy();
             else
                 currentTransaction = new Transaction();
+
             DataContext = currentTransaction;
             hasUnsavedChanges = State.ContainsKey(HAS_UNSAVED_CHANGES_KEY) && (bool)State[HAS_UNSAVED_CHANGES_KEY];
 
@@ -76,8 +76,9 @@ namespace YNABv1
         }
 
         #region Navigation Events
+
         /// <summary>
-        /// Called when navigating to this page; loads the car data from storage 
+        /// Called when navigating to this page; loads the car data from storage
         /// and then initializes the page state.
         /// </summary>
         /// <param name="e">The event data.</param>
@@ -88,11 +89,11 @@ namespace YNABv1
             if (PhoneApplicationService.Current.State.ContainsKey(Constants.NAV_PARAM_TRANSACTION)) {
                 transactionToEdit = phoneState[Constants.NAV_PARAM_TRANSACTION] as Transaction;
                 phoneState.Remove(Constants.NAV_PARAM_TRANSACTION);
-            } else 
+            } else
                 transactionToEdit = null;
 
             // Initialize the page state only if it is not already initialized,
-            // and not when the application was deactivated but not tombstoned 
+            // and not when the application was deactivated but not tombstoned
             // (returning from being dormant).
             if (DataContext == null)
                 InitializePageState();
@@ -103,16 +104,16 @@ namespace YNABv1
 
         /// <summary>
         /// Called when navigating away from this page; stores the fill-up data
-        /// values and a value that indicates whether there are unsaved changes. 
+        /// values and a value that indicates whether there are unsaved changes.
         /// </summary>
         /// <param name="e">The event data.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
 
-            // Do not cache the page state when navigating backward 
+            // Do not cache the page state when navigating backward
             // or when there are no unsaved changes.
-            if (e.Uri.OriginalString.Equals("//MainPage.xaml") || !hasUnsavedChanges) 
+            if (e.Uri.OriginalString.Equals("//MainPage.xaml") || !hasUnsavedChanges)
                 return;
 
             CommitItemWithFocus();
@@ -122,23 +123,24 @@ namespace YNABv1
 
         /// <summary>
         /// Displays a warning dialog box if the user presses the back button
-        /// and there are unsaved changes. 
+        /// and there are unsaved changes.
         /// </summary>
         /// <param name="e"></param>
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
 
-            if (!hasUnsavedChanges) 
+            if (!hasUnsavedChanges)
                 return;
 
             var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
             e.Cancel = (result == MessageBoxResult.Cancel);
         }
-        #endregion
+
+        #endregion Navigation Events
 
         /// <summary>
-        /// Ensures that any changes to text box values are committed. 
+        /// Ensures that any changes to text box values are committed.
         /// </summary>
         private void CommitItemWithFocus()
         {
@@ -157,69 +159,77 @@ namespace YNABv1
                 expression.UpdateSource();
         }
 
-        #region UI events
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveButton_Click(object sender, EventArgs e)
+        private bool CheckParams()
         {
-            // Commit any uncommitted changes. Changes in a bound text box are 
-            // normally committed to the data source only when the text box 
-            // loses focus. However, application bar buttons do not receive or 
-            // change focus because they are not Silverlight controls. 
-            CommitItemWithFocus();
-
             if (AccountTextBox.Visibility == Visibility.Visible) {
                 if (string.IsNullOrWhiteSpace(AccountTextBox.Text)) {
                     MessageBox.Show("The account is required.");
-                    return;
+                    return false;
                 }
             } else {
                 if (((String)AccountListPicker.SelectedItem).Equals("")) {
                     MessageBox.Show("The account is required.");
-                    return;
+                    return false;
                 }
                 currentTransaction.Account = (String)AccountListPicker.SelectedItem;
             }
 
             if (string.IsNullOrWhiteSpace(PayeeTextBox.Text)) {
                 MessageBox.Show("The payee is required.");
-                return;
+                return false;
             }
 
             if (CategoryTextBox.Visibility == Visibility.Visible) {
                 if (string.IsNullOrWhiteSpace(CategoryTextBox.Text)) {
                     MessageBox.Show("The category is required.");
-                    return;
+                    return false;
                 }
             } else {
                 if (((String)CategoryListPicker.SelectedItem).Equals("")) {
                     MessageBox.Show("The category is required.");
-                    return;
+                    return false;
                 }
                 currentTransaction.Category = (String)CategoryListPicker.SelectedItem;
                 currentTransaction.Subcategory = (String)SubCategoryListPicker.SelectedItem;
             }
-            
+
             bool outflow = (bool)OutflowButton.IsChecked;
             bool inflow = (bool)InflowButton.IsChecked;
             if ((!outflow && !inflow) || (outflow && inflow)) {
                 MessageBox.Show("The transaction must be an outflow or an inflow.");
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(AmountTextBox.Text)) {
                 MessageBox.Show("The amount is required.");
-                return;
+                return false;
             }
 
             double amountVal;
             if (!double.TryParse(AmountTextBox.Text, out amountVal)) {
                 MessageBox.Show("The amount could not be parsed.");
-                return;
+                return false;
             }
+
+            return true;
+        }
+
+        #region UI events
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            // Commit any uncommitted changes. Changes in a bound text box are
+            // normally committed to the data source only when the text box
+            // loses focus. However, application bar buttons do not receive or
+            // change focus because they are not Silverlight controls.
+            CommitItemWithFocus();
+
+            if (!CheckParams())
+                return;
 
             // Save the account, category, and/or subcategory if necessary
             if (AccountTextBox.Visibility == Visibility.Visible)
@@ -251,7 +261,7 @@ namespace YNABv1
                 NavigationService.GoBack();
             }
 
-Failure:
+        Failure:
             if (!result.SaveSuccessful) {
                 string errorMessages = String.Join(Environment.NewLine + Environment.NewLine, result.ErrorMessages.ToArray());
                 if (!String.IsNullOrEmpty(errorMessages))
@@ -260,7 +270,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -272,7 +282,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -284,19 +294,24 @@ Failure:
                 case "AccountTextBox":
                     PayeeTextBox.Focus();
                     break;
+
                 case "PayeeTextBox":
                     CategoryTextBox.Focus();
                     break;
+
                 case "CategoryTextBox":
                     SubCategoryTextBox.Focus();
                     break;
+
                 case "SubCategoryTextBox":
                     MemoTextBox.Focus();
                     break;
+
                 case "MemoTextBox":
                     OutflowButton.Focus();
                     ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 75);
                     break;
+
                 case "AmountTextBox":
                     AmountTextBox.Focus();
                     break;
@@ -304,7 +319,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -317,7 +332,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -330,7 +345,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -350,7 +365,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -364,7 +379,7 @@ Failure:
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -376,6 +391,6 @@ Failure:
                 SubCategoryTextBox.Visibility = Visibility.Visible;
             }
         }
-        #endregion
+        #endregion UI events
     }
 }

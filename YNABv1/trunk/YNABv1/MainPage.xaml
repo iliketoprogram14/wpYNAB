@@ -13,56 +13,63 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     shell:SystemTray.IsVisible="True">
 
     <Grid x:Name="LayoutRoot" Background="Transparent" 
           d:DataContext="{d:DesignInstance Type=model:Transactions}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <Canvas Name="TutorialCanvas" Visibility="Collapsed" Margin="20,30,0,0">
+        <Grid Name="TutorialCanvas" Visibility="Collapsed" Margin="20,30,0,0" Grid.Row="0" Grid.RowSpan="2">
             <StackPanel>
                 <TextBlock Text="Tutorial" FontSize="48"/>
-                <TextBlock Width="467" TextWrapping="Wrap" FontSize="22" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" 
                            Margin="0,20,0,20"/>
-                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="1. In YNAB, export your budget and register (aka transations) to Dropbox. This only needs to be done once."
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="1. In YNAB, export your budget and register (aka transations) to Dropbox. This only needs to be done once."
                            Margin="0,0,0,5"/>
-                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="2. In YNABcompanion, import both files from Dropbox. This only needs to be done once." 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="2. In YNABcompanion, import both files from Dropbox. This only needs to be done once." 
                            Margin="0,0,0,5"/>
-                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="3. Add, edit, or delete transactions or transfers in YNABcompanion." 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="3. Add, edit, or delete transactions or transfers in YNABcompanion." 
                            Margin="0,0,0,5"/>
-                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="4. Export the transactions to Dropbox." 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="4. Export the transactions to Dropbox." 
                            Margin="0,0,0,5"/>
-                <TextBlock Width="427" TextWrapping="Wrap" FontSize="22" Text="5. In YNAB, import the transactions for each account from Dropbox." 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="5. In YNAB, import the transactions for each account from Dropbox." 
                            Margin="0,0,0,5"/>
-                <TextBlock Width="467" TextWrapping="Wrap" FontSize="22" Text="For more information and help, check out the help page from the menu." 
+                <TextBlock TextWrapping="Wrap" FontSize="22" Text="For more information and help, check out the help page from the menu." 
                            Margin="0,20,0,30"/>
                 <Button Width="200" Click="TutorialButton_Click">
                     <TextBlock Text="Got it!"/>
                 </Button>
             </StackPanel>
-        </Canvas>
+        </Grid>
         
         <!-- Miscellaneous -->
-        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed"/>
-        <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
-                     Height="10" Margin="0,10,0,676" Width="480" 
-                     HorizontalAlignment="Center">
+        <phone:WebBrowser Name="MainBrowser" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2"/>
+        <ProgressBar Name="ProgressBar" IsIndeterminate="False" Grid.Row="0"
+                     Height="10" HorizontalAlignment="Center">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             </ProgressBar.Foreground>
         </ProgressBar>
 
         <!--Pivot Control-->
-        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot" Visibility="Visible">
+        <controls:Pivot Title="YNAB COMPANION" Name="DefaultPivot" Visibility="Visible" Grid.Row="0" Grid.RowSpan="2">
 
             <!--Pivot item one-->
             <controls:PivotItem Header="transactions" Margin="0,0,0,0" >
-                <Grid Width="467">
-
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.Resources>
                         <Style x:Key="SummaryStyle" TargetType="TextBlock">
                             <Setter Property="Margin" Value="5" />
-                            <Setter Property="Width" Value="115" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
                         </Style>
 
@@ -71,8 +78,6 @@
                             <Setter Property="Margin" Value="3,5" />
                             <Setter Property="FontSize" Value="20" />
                             <Setter Property="BorderBrush" Value="{StaticResource PhoneBorderBrush}" />
-                            <!-- Replace the default item template with a basic template 
-                            that does not highlight selected items. -->
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate>
@@ -83,20 +88,24 @@
                         </Style>
                     </Grid.Resources>
 
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Width="100" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Width="100" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="category" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" />
-                    </StackPanel>
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Grid.Column="0" />
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Grid.Column="1" />
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="category" Grid.Column="2" />
+                        <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" Grid.Column="3" />
 
                     <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
-                                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                Margin="0,35,0,0" Height="495" Width="465" 
-                                ItemsSource="{Binding TransactionHistory}" >
+                             HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                             Margin="0,35,0,0" Grid.ColumnSpan="4" Grid.Column="0"
+                             ItemsSource="{Binding TransactionHistory}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
+                                <Grid Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu>
                                             <toolkit:MenuItem Header="Edit" Click="EditMenuItem_Click" />
@@ -104,16 +113,20 @@
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                     <TextBlock Style="{StaticResource SummaryStyle}" 
-                                                Text="{Binding Date, StringFormat=\{0:d\} }" 
-                                                TextWrapping="Wrap" Width="100" />
+                                               Grid.Column="0"
+                                               Text="{Binding Date, StringFormat=\{0:d\} }" 
+                                               TextWrapping="Wrap" />
                                     <TextBlock Style="{StaticResource SummaryStyle}"
-                                                Text="{Binding Payee}" TextWrapping="Wrap" Width="100" />
+                                               Grid.Column="1"
+                                               Text="{Binding Payee}" TextWrapping="Wrap" />
                                     <TextBlock Style="{StaticResource SummaryStyle}"
-                                                Text="{Binding FullCategory}" />
+                                               Grid.Column="2"
+                                               Text="{Binding FullCategory}" />
                                     <TextBlock Style="{StaticResource SummaryStyle}"
-                                                Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
-                                                TextWrapping="Wrap"  />
-                                </StackPanel>
+                                               Grid.Column="3"
+                                               Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
+                                               TextWrapping="Wrap"  />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -129,6 +142,9 @@
             <shell:ApplicationBarIconButton IconUri="/Assets/transfer.png" Text="transfer" Click="AddTransferButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/download.png" Text="import" Click="ImportButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Assets/upload.png" Text="export" Click="ExportButton_Click" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="help" Click="Help_Click" />
+            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

@@ -1,0 +1,269 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="YNABv1.Help"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <!-- Resources -->
+    <phone:PhoneApplicationPage.Resources>
+        <Style x:Key="Level1" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Margin" Value="0,20,0,0"/>
+        </Style>
+        <Style x:Key="Level2" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Margin" Value="15,10,0,0"/>
+        </Style>
+        <Style x:Key="Body" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="30,0,0,0"/>
+        </Style>
+        <Style x:Key="Question" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="15,0,0,0" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style x:Key="Break" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
+            <Setter Property="FontSize" Value="10"/>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="YNAB COMPANION" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="help" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ScrollViewer>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Level1}">Quick Tutorial</TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" />
+                    <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="1. In YNAB, export your budget and register (aka transations) to Dropbox. This only needs to be done once." />
+                    <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="2. In YNABcompanion, import both files from Dropbox. This only needs to be done once." />
+                    <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="3. Add, edit, or delete transactions or transfers in YNABcompanion." />
+                    <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="4. Export the transactions to Dropbox." />
+                    <TextBlock Style="{StaticResource Body}" Margin="45,5,0,5" Text="5. In YNAB, import the transactions for each account from Dropbox." />
+                    <TextBlock Style="{StaticResource Body}" Text="For more information and help, check out the full tutorial and FAQbelow." />
+
+                    <TextBlock Style="{StaticResource Level1}">Full Tutorial</TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        YNABcompanion is an app that allows you to add transactions or transfers on your phone and later transfer them to YNAB on your computer.
+                        It's not a fully-featured YNAB app (that's in development as a separate app), but it's a great way to quickly keep track of transactions.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Level2}">Transaction management</TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        It's easy to add a transaction in YNAB.
+                        Pressing the "plus" symbol in the menu opens up a screen to create a new transaction, and filling it in is straightforward.
+                        If you enter in account, category, or subcategory info into a textbox, that data will appear in a list the next time you add a transaction.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        Long-pressing a transaction from the "Transactions" page allows the user to edit the transaction or delete it.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        YNABcompanion also has supports for transfers between accounts.
+                        Pressing the "transfer" symbol in the menu opens up a screen to create a new transfer, and it's even faster to create a transfer than a transaction!
+                        It's important to note that transfers appear as two transactions in the "Transactions" page: one for the outflow, and another for the inflow.
+                        For example, if I create a transfer of $50 from A to B, there will be a transaction on A for an outflow of $50, and another transaction on B for an inflow of $50.
+                        Editing or deleting one of these transactions will perform the same operation on the other.
+                        And of course, if these transactions/transfers are exported to Dropbox, YNAB will understand them correctly.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Level2}">Syncing YNABcompanion and YNAB</TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        Because YNABcompanion is not a fully-featured YNAB mobile app, it cannot sync transactions automagically with YNAB.
+                        However, syncing transactions between the two apps is still very easy and is done with Dropbox.
+                        In fact, the power of YNABcompanion lies in ability to import and export data to and from Dropbox.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        To sync transactions, it's recommended to import your YNAB budget and register to get access to your account names and budget info.
+                        This only needs to be done once, and ensures that YNAB can read YNABcompanion's transactions correctly.
+                        After that, users can export their transactions from YNABcompanion to Dropbox, which can then be imported into YNAB.
+                        See the sections below for more info.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Level2}">Importing data from Dropbox</TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        If you export your budget and your transaction history to Dropbox, and import the exported files into YNABcompanion, this app will learn your budget's accounts, categories, and subcategories.
+                        This enables YNABcompanion to export proper transaction files for YNAB, so it is highly recommended to do this.
+                        You will only need to do this once to enjoy the benefits, although it's recommended that you perform this process whenever you change account information or the budget's categories.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        Ideally, this step should be done before you do anything else.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        Alternatively, you manually enter in account info and budget info, but a typo can cause errors when importing transactions into YNAB.
+                        Additionally, you can always manually enter in this info even if you've imported the budget and transactions.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        To import this data, tap the "Import" button on the menu. 
+                        If it's the first time you've imported or exported anything, you will be prompted to sign into Dropbox and allow YNABcompanion access.
+                        Once that's done, select the exported budget and register csv files, which are usually located in YNAB/Exports.
+                        You will receive a notification on success or on failure.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Level2}">Exporting data to Dropbox</TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        Getting transactions into YNAB from YNABcompanion is very easy.
+                        As noted above, it's recommended that you import your YNAB budget and register into YNABcompanion, to ensure that YNAB reads YNABcompanion's transactions correctly.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        To export your transactions, tap the "Export" button the menu.
+                        If it's the first time you've imported or exported anything, you will be prompted to sign into Dropbox and allow YNABcompanion access.
+                        Once that's done, YNABcompanion will create a csv file for each account full of its transactions in the YNABcompanion folder in Dropbox.
+                        For example, if you have accounts A and B on YNABcompanion, A.csv and B.csv will be created.
+                        Users can then import these transactions by importing each csv file into each account.
+                        For example, for accounts A and B, a user would navigate to the account A page in YNAB and import A.csv, and do the same for account B in YNAB.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}"/>
+                    <TextBlock Style="{StaticResource Body}">
+                        Please note that exporting transactions from YNABcompanion into Dropbox will clear YNABcompanion of all transactions.
+                        This is done to avoid exporting a transaction more than once (and thereby avoid importing a transaction into YNAB multiple times).
+                        As a result, it's recommended that you delete the csv files from Dropbox after you have imported them into Dropbox.
+                    </TextBlock>
+
+                    <TextBlock Style="{StaticResource Level1}">FAQ</TextBlock>
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: How do I add a transaction or transfer to YNABcompanion?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        To add a transaction, tap the "add" symbol on the menu, fill out the next page, and click the save button.
+                        To add a transfer, tap the symbol with opposing arrows, fill out the next page, and click the save button.
+                        For more info, see the full tutorial above.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: Can I edit or delete transactions?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        Yep. 
+                        Simply long-press a transaction to edit or delete it.
+                        Editing or deleting a transfer transaction will perform the same operation for the other corresponding transfer transaction.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: How can I add a new account to YNABcompanion?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text="Accounts can be added in 3 ways:"/>
+                    <TextBlock Style="{StaticResource Body}" Text=" - Import your YNAB register into YNABcompanion." />
+                    <TextBlock Style="{StaticResource Body}">
+                               - If you have existing accounts, tap the "New..." option in the account selector when adding a transaction/transfer, and type in a new account.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text=" - If you dont, type in an account when adding a transaction/transfer." />
+                    <TextBlock Style="{StaticResource Body}" Text="For both options, that account will automatically be saved, and can be quickly selected when adding a new transaction/transfer." />
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: How can I add a new budget category or subcategory to YNABcompanion?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text="Budget categories and subcategories can be added in 3 ways:" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Import your YNAB budget into YNABcompanion." />
+                    <TextBlock Style="{StaticResource Body}"> - If you have existing categories/subcategories, tap the "New..." option in the corresponding selector when adding a transaction/transfer, and type in a new category or subcategory.</TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text=" - Type in a category and/or subcategory when adding a transaction/transfer." />
+                    <TextBlock Style="{StaticResource Body}" Text="For both options, that category and/or subcategory will automatically be saved, and can be quickly selected when adding a new transaction/transfer, just like a new account!" />
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: How do I sync YNABcompanion with YNAB?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        YNABcompanion must be manually synced with YNAB.
+                        This is done easily by exporting transactions from YNABcompanion to Dropbox with a click of a button, and then by importing the exported files into YNAB into each account.
+                        For a more information or a more detailed walkthrough, see the Full tutorial above.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: Why do you recommend using Dropbox to import YNAB's budget and register?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">Importing YNAB's budget and register into YNABcompanion offers multiple benefits:</TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text=" - Accounts are saved for quick access when adding a new transaction/transfer" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Budget categories and subcategories are saved for quick access when adding a new transaction" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Having the same categories and subcategories in YNABcompanion and YNAB ensures that YNAB can properly import YNABcompanion's transactions" />
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: What data is obtained from the imported files?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        YNABcompanion stores the only budget categories from the budget file, and only the account names from the register file.
+                        No other data (like amounts for each budget category, or the total amount in an account) is stored.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: What files do I import again?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        You can import the budget and the register csv files from Dropbox.
+                        These are usually located in YNAB/Exports and have names like "BLAH budget.csv" and "BLAH register.csv".
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: Where are the files that I exported from YNABcompanion?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        The csv files for each account are located in the YNABcompanion folder in your Dropbox.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: Does YNABcompanion store my Dropbox username and/or password?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        Nope!
+                        YNABcompanion only stores an access token that is specific to this app on this device for your account and is protected by Windows Phone.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: What's the difference between the trial and the full version?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        The trial version has ads, whereas the full version does not.
+                        Otherwise, there are no differences between the two versions.
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Question}">
+                        Q: This is a cool app, but it's missing some things.  Do you have any updates planned?
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}">
+                        Yep!
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Body}" Text=" - Skydrive support instead of Dropbox (next update)" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Filtering transactions by account (next update)" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Viewing the budget (next update)" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Performance improvements (all updates)" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Associating payees with budget categories for YNAB-like auto-complete (if wanted, a few updates down the line)" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - An interactive, optional tutorial (a few updates down the line)" />
+                    <TextBlock Style="{StaticResource Break}" />
+                    <TextBlock Style="{StaticResource Body}" Text=" I'm also currently developing a fully-featured YNAB app, but a release date isn't known at this point." />
+                    <TextBlock Style="{StaticResource Body}" Text=" Features would include:" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Robust auto-syncing with YNAB" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Access to all transactions in YNAB" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Ability to fully manage the budget" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Passcode support" />
+                    <TextBlock Style="{StaticResource Body}" Text=" - Basic visualizations (in future updates)" />
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

@@ -68,6 +68,7 @@ namespace YNABv1
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            Datastore.Init();
         }
 
         // Code to execute when the application is deactivated (sent to background)

@@ -136,7 +136,6 @@ namespace YNABv1
             var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
             e.Cancel = (result == MessageBoxResult.Cancel);
         }
-
         #endregion Navigation Events
 
         /// <summary>
@@ -146,6 +145,8 @@ namespace YNABv1
         {
             if (textboxWithFocus == null)
                 return;
+
+            hasUnsavedChanges = true;
 
             BindingExpression expression = textboxWithFocus.GetBindingExpression(TextBox.TextProperty);
             if (expression != null)

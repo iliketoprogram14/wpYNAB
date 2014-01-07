@@ -5,11 +5,11 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using System.Windows.Data;
+using System.Windows.Input;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Model;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace YNABv1
 {
@@ -24,6 +24,9 @@ namespace YNABv1
         private Transaction transactionToEdit;
         private IDictionary<string, object> phoneState = PhoneApplicationService.Current.State;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AddTransaction()
         {
             InitializeComponent();
@@ -129,8 +132,7 @@ namespace YNABv1
             if (!hasUnsavedChanges) 
                 return;
 
-            var result = MessageBox.Show("You are about to discard your " +
-                "changes. Continue?", "Warning", MessageBoxButton.OKCancel);
+            var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
             e.Cancel = (result == MessageBoxResult.Cancel);
         }
         #endregion
@@ -264,8 +266,7 @@ Failure:
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("You are about to discard your " +
-                "changes. Continue?", "Warning", MessageBoxButton.OKCancel);
+            var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
                 NavigationService.GoBack();
         }
@@ -320,22 +321,12 @@ Failure:
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void AddTransactionPage_GotFocus(object sender, RoutedEventArgs e)
+        private void AddTransactionPage_GotFocus(object sender, RoutedEventArgs e)
         {
             if (Object.ReferenceEquals(e.OriginalSource.GetType(), PayeeTextBox.GetType()))
                 textboxWithFocus = e.OriginalSource as TextBox;
             else if (Object.ReferenceEquals(e.OriginalSource.GetType(), OutflowButton.GetType()))
                 buttonWithFocus = e.OriginalSource as RadioButton;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Payee_LostFocus(object sender, RoutedEventArgs e)
-        {
-
         }
 
         /// <summary>

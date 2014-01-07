@@ -78,7 +78,7 @@
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
                          Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
-                         InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" LostFocus="Payee_LostFocus" />
+                         InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" />
                 <TextBlock Grid.Row="3" Grid.Column="0"
                            Text="category:" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>

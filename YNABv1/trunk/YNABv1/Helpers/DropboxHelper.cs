@@ -1,5 +1,4 @@
-﻿using Microsoft.Phone.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,13 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using Microsoft.Phone.Controls;
 using Newtonsoft.Json.Linq;
 
 namespace YNABv1.Helpers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class DropboxHelper
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        private static readonly IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
         private static MainPage mainPage;
         private static Action callbackAfterSetup = null;
 
@@ -28,7 +31,7 @@ namespace YNABv1.Helpers
         /// <returns></returns>
         public static bool IsSetup()
         {
-            return appSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
+            return AppSettings.Contains(Constants.DROPBOX_ACCESS_TOKEN);
         }
 
         /// <summary>
@@ -133,9 +136,9 @@ namespace YNABv1.Helpers
             string tokenType = (string)obj["token_type"];
             string userID = (string)obj["uid"];
 
-            appSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
-            appSettings[Constants.DROPBOX_UID] = userID;
-            appSettings.Save();
+            AppSettings[Constants.DROPBOX_ACCESS_TOKEN] = accessToken;
+            AppSettings[Constants.DROPBOX_UID] = userID;
+            AppSettings.Save();
 
             Action callback = callbackAfterSetup;
             callbackAfterSetup = null;
@@ -149,12 +152,12 @@ namespace YNABv1.Helpers
         /// <param name="method"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        private async static Task<String> MakeRequest(String url, HttpMethod method, bool authorized, String content="", bool contentTypeUrl=false)
+        private async static Task<String> MakeRequest(String url, HttpMethod method, bool authorized, String content = "", bool contentTypeUrl = false)
         {
             HttpClient c = new HttpClient();
             var request = new HttpRequestMessage(method, new Uri(url));
             if (authorized)
-                request.Headers.Add("Authorization", "Bearer " + appSettings[Constants.DROPBOX_ACCESS_TOKEN]);
+                request.Headers.Add("Authorization", "Bearer " + AppSettings[Constants.DROPBOX_ACCESS_TOKEN]);
             if (content != "")
                 request.Content = new StringContent(content);
             if (contentTypeUrl == true)
@@ -162,7 +165,6 @@ namespace YNABv1.Helpers
 
             var response = await c.SendAsync(request);
             return response.Content.ReadAsStringAsync().Result;
-
         }
         #endregion
     }

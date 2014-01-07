@@ -5,23 +5,26 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using YNABv1.Resources;
-using YNABv1.Model;
-using YNABv1.Helpers;
 using System.IO.IsolatedStorage;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using YNABv1.Resources;
+using YNABv1.Model;
+using YNABv1.Helpers;
 
 namespace YNABv1
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        private static readonly IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MainPage()
         {
             InitializeComponent();
@@ -33,7 +36,7 @@ namespace YNABv1
             Datastore.Transactions.SortByDate();
             DataContext = Datastore.Transactions;
 
-            if (appSettings.Contains(Constants.TUTORIAL_KEY)) {
+            if (AppSettings.Contains(Constants.TUTORIAL_KEY)) {
                 DefaultPivot.Visibility = Visibility.Visible;
                 this.ApplicationBar.IsVisible = true;
                 TutorialCanvas.Visibility = Visibility.Collapsed;
@@ -225,8 +228,8 @@ namespace YNABv1
             DefaultPivot.Visibility = Visibility.Visible;
             this.ApplicationBar.IsVisible = true;
 
-            appSettings[Constants.TUTORIAL_KEY] = true;
-            appSettings.Save();
+            AppSettings[Constants.TUTORIAL_KEY] = true;
+            AppSettings.Save();
         }
         #endregion
     }

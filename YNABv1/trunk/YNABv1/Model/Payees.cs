@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Payees : INotifyPropertyChanged
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Payees()
         {
             PayeeList = new List<Payee>();

@@ -8,21 +8,37 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 { 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Payee : INotifyPropertyChanged, IEquatable<Payee>, IComparable
     {
         #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
         public Payee()
         {
             PayeeName = "";
             CategoryList = new Categories();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_payee"></param>
         public Payee(String _payee)
         {
             PayeeName = _payee;
             CategoryList = new Categories();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_payee"></param>
+        /// <param name="category"></param>
+        /// <param name="subcategory"></param>
         public Payee(String _payee, String category, String subcategory)
         {
             PayeeName = _payee;

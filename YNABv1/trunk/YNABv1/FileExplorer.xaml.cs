@@ -15,6 +15,9 @@ namespace YNABv1
 {
     public partial class FileExplorer : PhoneApplicationPage
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public FileExplorer()
         {
             InitializeComponent();

@@ -7,21 +7,36 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Category : INotifyPropertyChanged, IEquatable<Category>
     {
         #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
         public Category()
         {
             MasterCategory = "";
             SubCategories = new List<string>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="category"></param>
         public Category(String category)
         {
             MasterCategory = category;
             SubCategories = new List<String>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="subCategory"></param>
         public Category(String category, String subCategory)
         {
             MasterCategory = category;
@@ -59,8 +74,15 @@ namespace YNABv1.Model
         }
 
         #region INotifyPropertyChanged
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         private void NotifyPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;

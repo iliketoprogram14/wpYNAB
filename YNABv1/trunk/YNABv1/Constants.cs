@@ -1,5 +1,8 @@
 ﻿namespace YNABv1
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Constants
     {
         // For current phone state

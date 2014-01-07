@@ -18,8 +18,8 @@ namespace YNABv1.Model
         /// </summary>
         public IEnumerable<string> ErrorMessages
         {
-            get { return _errorMessages; }
-            set { _errorMessages = value; }
+            get { return this._errorMessages; }
+            set { this._errorMessages = value; }
         }
 
         /// <summary>

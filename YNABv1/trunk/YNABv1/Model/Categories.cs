@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Categories : INotifyPropertyChanged
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Categories()
         {
             CategoryObjList = new Dictionary<String, Category>();
@@ -67,8 +73,15 @@ namespace YNABv1.Model
         #endregion
 
         #region INotifyPropertyChanged
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         private void NotifyPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;

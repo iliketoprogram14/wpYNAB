@@ -8,10 +8,16 @@ using System.ComponentModel;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Transactions : INotifyPropertyChanged
     {
         private ObservableCollection<Transaction> transactions;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Transactions() {
             transactions = new ObservableCollection<Transaction>();
         }

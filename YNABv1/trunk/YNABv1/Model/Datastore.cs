@@ -12,13 +12,16 @@ using CsvHelper;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Datastore
     {
         private const string TRANSACTION_KEY = "YNABcompanion.Transactions";
         private const string PAYEE_KEY = "YNABcompanion.Payees";
         private const string CATEGORIES_KEY = "YNABcompanion.Categories";
         private const string ACCOUNTS_KEY = "YNABcompanion.Accounts";
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        private static readonly IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
 
         private static Transactions transactions;
         private static Payees payees;
@@ -32,20 +35,20 @@ namespace YNABv1.Model
         public static void Init()
         {
             transactions =
-                (appSettings.Contains(TRANSACTION_KEY)) ?
-                (Transactions)appSettings[TRANSACTION_KEY] :
+                (AppSettings.Contains(TRANSACTION_KEY)) ?
+                (Transactions)AppSettings[TRANSACTION_KEY] :
                 new Transactions();
             payees =
-                (appSettings.Contains(PAYEE_KEY)) ?
-                (Payees)appSettings[PAYEE_KEY] :
+                (AppSettings.Contains(PAYEE_KEY)) ?
+                (Payees)AppSettings[PAYEE_KEY] :
                 new Payees();
             categories =
-                (appSettings.Contains(CATEGORIES_KEY)) ?
-                (Categories)appSettings[CATEGORIES_KEY] :
+                (AppSettings.Contains(CATEGORIES_KEY)) ?
+                (Categories)AppSettings[CATEGORIES_KEY] :
                 new Categories();
             Accounts =
-                (appSettings.Contains(ACCOUNTS_KEY)) ?
-                (List<String>)appSettings[ACCOUNTS_KEY] :
+                (AppSettings.Contains(ACCOUNTS_KEY)) ?
+                (List<String>)AppSettings[ACCOUNTS_KEY] :
                 new List<String>();
         }
 
@@ -53,8 +56,8 @@ namespace YNABv1.Model
         {
             get {
                 if (transactions == null)
-                    transactions = (appSettings.Contains(TRANSACTION_KEY)) ?
-                        (Transactions)appSettings[TRANSACTION_KEY] : new Transactions();
+                    transactions = (AppSettings.Contains(TRANSACTION_KEY)) ?
+                        (Transactions)AppSettings[TRANSACTION_KEY] : new Transactions();
                 return transactions;
             }
             set {
@@ -68,9 +71,13 @@ namespace YNABv1.Model
             get; set;
         }
 
-        public static List<String> MasterCategories() { return categories.CategoryList; }
+        public static List<String> MasterCategories() {
+            return categories.CategoryList;
+        }
 
-        public static List<String> SubCategories(String category) {  return categories.SubCategories(category); }
+        public static List<String> SubCategories(String category) {
+            return categories.SubCategories(category);
+        }
 
         public static void AddCategory(String category)
         {
@@ -117,10 +124,10 @@ namespace YNABv1.Model
                 Accounts.Sort();
                 payees.Sort();
 
-                appSettings[ACCOUNTS_KEY] = Accounts;
-                appSettings[CATEGORIES_KEY] = categories;
-                appSettings[PAYEE_KEY] = payees;
-                appSettings.Save();
+                AppSettings[ACCOUNTS_KEY] = Accounts;
+                AppSettings[CATEGORIES_KEY] = categories;
+                AppSettings[PAYEE_KEY] = payees;
+                AppSettings.Save();
 
                 NotifyCategoriesUpdated();
                 NotifyPayeesUpdated();
@@ -138,8 +145,6 @@ namespace YNABv1.Model
             transactions.Add(t);
             result.SaveSuccessful = true;
             SaveTransactions(errorCallback);
-            // after save, look for new payees, categories, and accounts
-            // save if necessary
             return result;
         }
 
@@ -167,7 +172,6 @@ namespace YNABv1.Model
                 if (!Accounts.Contains(account))
                     Accounts.Add(account);
             } while (reader.Read());
-
         }
 
         private static void ParseBudget(CsvReader reader)
@@ -180,11 +184,11 @@ namespace YNABv1.Model
             } while (reader.Read());
         }
 
-        private static void SaveTransactions(Action errorCallback=null)
+        private static void SaveTransactions(Action errorCallback = null)
         {
             try {
-                appSettings[TRANSACTION_KEY] = transactions;
-                appSettings.Save();
+                AppSettings[TRANSACTION_KEY] = transactions;
+                AppSettings.Save();
                 NotifyTransactionsUpdated();
             } catch (IsolatedStorageException) {
                 if (errorCallback != null)
@@ -197,8 +201,8 @@ namespace YNABv1.Model
         private static void SaveCategories(Action errorCallback = null)
         {
             try {
-                appSettings[CATEGORIES_KEY] = categories;
-                appSettings.Save();
+                AppSettings[CATEGORIES_KEY] = categories;
+                AppSettings.Save();
                 NotifyCategoriesUpdated();
             } catch (IsolatedStorageException) {
                 if (errorCallback != null)

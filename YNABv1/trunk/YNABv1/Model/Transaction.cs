@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Transaction : INotifyPropertyChanged, IEquatable<Transaction>, IComparable
     {
-        private enum DIRECTION { OUT, IN };
+        private enum DIRECTION { OUT, IN }
 
         private DIRECTION dir;
 
         #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
         public Transaction()
         {
             Date = DateTime.Now;
@@ -28,6 +34,10 @@ namespace YNABv1.Model
             Transfer = false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transfer"></param>
         public Transaction(bool transfer)
         {
             Date = DateTime.Now;

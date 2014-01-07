@@ -1,21 +1,28 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace YNABv1.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Metadata : INotifyPropertyChanged
     {
         private String size;
         private int bytes;
         private String rev;
         private DateTime modified;
-        List<Metadata> contents;
+        private List<Metadata> contents;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="json"></param>
         public Metadata(string json)
         {
             if (json == "") {
@@ -89,7 +96,6 @@ namespace YNABv1.Model
         public List<Metadata> Contents
         {
             get { return contents; }
-            set { }
         }
         #endregion
 

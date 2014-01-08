@@ -49,6 +49,7 @@ namespace YNABv1.Helpers
 
             /****** Later on, create mainbrowser in here and add it to mainPage */
             p.MainBrowser.Visibility = System.Windows.Visibility.Visible;
+            p.ApplicationBar.IsVisible = false;
             p.MainBrowser.IsScriptEnabled = true;
             p.MainBrowser.Navigated += DropboxMainBrowser_Navigated;
             p.MainBrowser.Navigate(new Uri(url, UriKind.Absolute));
@@ -114,6 +115,7 @@ namespace YNABv1.Helpers
 
                 mainPage.MainBrowser.Visibility = System.Windows.Visibility.Collapsed;
                 mainPage.DefaultPivot.Visibility = System.Windows.Visibility.Visible;
+                mainPage.ApplicationBar.IsVisible = true;
 
                 GetAccessToken(code);
             }

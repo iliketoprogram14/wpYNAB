@@ -60,6 +60,20 @@ namespace YNABv1
                 TransactionListBox.ScrollIntoView(TransactionListBox.Items.First());
             }
         }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            if (MainBrowser.Visibility == Visibility.Visible) {
+                MainBrowser.Visibility = Visibility.Collapsed;
+                DefaultPivot.Visibility = Visibility.Visible;
+                ApplicationBar.IsVisible = true;
+                ProgressBar.IsIndeterminate = false;
+                ProgressBar.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+            }
+        }
         #endregion
 
         #region Callbacks/Other Events

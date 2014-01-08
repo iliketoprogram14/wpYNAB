@@ -37,6 +37,16 @@
         <Style x:Key="Break" TargetType="TextBlock" BasedOn="{StaticResource PhoneTextNormalStyle}" >
             <Setter Property="FontSize" Value="10"/>
         </Style>
+        <Style x:Key="TOC_Button" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Segoe WP"/>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Foreground" Value="Blue"/>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -54,9 +64,20 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer>
+            <ScrollViewer Name="Scroller">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Level1}">Quick Tutorial</TextBlock>
+                    <TextBlock Style="{StaticResource Level1}" Margin="0">Table of Contents</TextBlock>
+                    <Button Style="{StaticResource TOC_Button}" Click="Quick_Button_Click">
+                        Quick Tutorial
+                    </Button>
+                    <Button Style="{StaticResource TOC_Button}" Click="Full_Button_Click">
+                        Full Tutorial
+                    </Button>
+                    <Button Style="{StaticResource TOC_Button}" Click="FAQ_Button_Click">
+                        FAQ
+                    </Button>
+                    
+                    <TextBlock Name="QuickTextBlock" Style="{StaticResource Level1}">Quick Tutorial</TextBlock>
                     <TextBlock Style="{StaticResource Body}" Text="Using YNABcompanion with YNAB efficiently can be done with 5 steps:" />
                     <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="1. In YNAB, export your budget and register (aka transations) to Dropbox. This only needs to be done once." />
                     <TextBlock Style="{StaticResource Body}" Margin="45,5,0,0" Text="2. In YNABcompanion, import both files from Dropbox. This only needs to be done once." />
@@ -65,7 +86,8 @@
                     <TextBlock Style="{StaticResource Body}" Margin="45,5,0,5" Text="5. In YNAB, import the transactions for each account from Dropbox." />
                     <TextBlock Style="{StaticResource Body}" Text="For more information and help, check out the full tutorial and FAQbelow." />
 
-                    <TextBlock Style="{StaticResource Level1}">Full Tutorial</TextBlock>
+                    
+                    <TextBlock Name="FullTextBlock" Style="{StaticResource Level1}">Full Tutorial</TextBlock>
                     <TextBlock Style="{StaticResource Body}">
                         YNABcompanion is an app that allows you to add transactions or transfers on your phone and later transfer them to YNAB on your computer.
                         It's not a fully-featured YNAB app (that's in development as a separate app), but it's a great way to quickly keep track of transactions.
@@ -145,7 +167,8 @@
                         As a result, it's recommended that you delete the csv files from Dropbox after you have imported them into Dropbox.
                     </TextBlock>
 
-                    <TextBlock Style="{StaticResource Level1}">FAQ</TextBlock>
+
+                    <TextBlock Name="FAQTextBlock" Style="{StaticResource Level1}">FAQ</TextBlock>
                     <TextBlock Style="{StaticResource Question}">
                         Q: How do I add a transaction or transfer to YNABcompanion?
                     </TextBlock>

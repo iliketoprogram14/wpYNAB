@@ -12,7 +12,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 
@@ -27,7 +27,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -37,25 +37,23 @@
         </StackPanel>
 
         <!--Content Panel-->
-        <ScrollViewer x:Name="ScrollViewerGrid" Grid.Row="1" Margin="12,0,12,0" Height="550"
+        <ScrollViewer x:Name="ScrollViewerGrid" Grid.Row="1" Margin="12,0,12,0"
                       VerticalScrollBarVisibility="Visible">
-            <Grid x:Name="ContentPanel" Height="710"
-                  d:DataContext="{d:DesignInstance Type=model:Transaction}">
+            <Grid x:Name="ContentPanel" d:DataContext="{d:DesignInstance Type=model:Transaction}">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0"
@@ -67,9 +65,9 @@
                            Text="account:"
                            HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
-                                    Height="50" FontSize="24" SelectionChanged="AccountListPicker_SelectionChanged"
+                                    FontSize="24" SelectionChanged="AccountListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
-                                    ExpansionMode="FullScreenOnly" />
+                                    ExpansionMode="FullScreenOnly"/>
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" Visibility="Collapsed"
                          Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}"
                          InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" />
@@ -83,7 +81,7 @@
                            Text="category:"
                            HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <toolkit:ListPicker Name="CategoryListPicker" Grid.Row="3" Grid.Column="1"
-                                    Width="280" Height="50" FontSize="24"
+                                    FontSize="24"
                                     SelectionChanged="CategoryListPicker_SelectionChanged"
                                     FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="CategoryTextBox"
@@ -93,17 +91,18 @@
                            Text="subcategory:"
                            HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <toolkit:ListPicker Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1"
-                                    Width="280" Height="50" FontSize="24"
+                                    FontSize="24"
                                     SelectionChanged="SubCategoryListPicker_SelectionChanged"
-                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
+                                    FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" 
+                                    ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox"
                          InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}"
                          TabIndex="3" KeyDown="KeyDown_Typed" Visibility="Collapsed" />
-                <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2"
-                           Text="memo:"
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.RowSpan="2" Text="memo:"
                            HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBox Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox"
-                         InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" KeyDown="KeyDown_Typed" />
+                         InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" 
+                         KeyDown="KeyDown_Typed" />
                 <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="7" Grid.Column="1"
                              HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72"
                              Checked="Checked_Event" Click="Checked_Event" />

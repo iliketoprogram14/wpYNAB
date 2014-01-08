@@ -12,7 +12,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 
@@ -37,63 +37,66 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1"
+        <ScrollViewer x:Name="ScrollViewerGrid" Grid.Row="1" Margin="12,0,12,0"
+                      VerticalScrollBarVisibility="Visible">
+            <Grid x:Name="ContentPanel" Grid.Row="1"
                 d:DataContext="{d:DesignInstance Type=model:Transaction}">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="date:" 
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="date:" 
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
+                <toolkit:DatePicker x:Name="DatePicker" Grid.Row="0" Grid.Column="1" 
                                 Value="{Binding Date, Mode=TwoWay}"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="from account:"
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="from account:"
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" 
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" 
                      Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}" 
                      InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" 
                      Visibility="Collapsed"/>
-            <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
+                <toolkit:ListPicker Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
                                 Height="60" FontSize="24"
                                 SelectionChanged="AccountListPicker_SelectionChanged"
                                 FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
                                 ExpansionMode="FullScreenOnly" />
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="to account:"
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="to account:"
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="PayeeTextBox" 
                      Text="{Binding Payee, Mode=TwoWay, StringFormat=\{0:#\}}" 
                      InputScope="Text" TabIndex="2" KeyDown="KeyDown_Typed" 
                      Visibility="Collapsed" />
-            <toolkit:ListPicker Name="PayeeListPicker" Grid.Row="2" Grid.Column="1" 
+                <toolkit:ListPicker Name="PayeeListPicker" Grid.Row="2" Grid.Column="1" 
                                 Height="60" FontSize="24"
                                 SelectionChanged="PayeeListPicker_SelectionChanged"
                                 FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
                                 ExpansionMode="FullScreenOnly" />
-            <TextBlock Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Text="memo:" 
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Text="memo:" 
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
+                <TextBox Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" x:Name="MemoTextBox" 
                      InputScope="Text" Text="{Binding Memo, Mode=TwoWay}" KeyDown="KeyDown_Typed" />
-            <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="5" Grid.Column="1"
+                <RadioButton x:Name="OutflowButton" Content="Outflow" Grid.Row="5" Grid.Column="1"
                          HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Outflow, Mode=TwoWay}" Height="72" />
-            <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="5"  Grid.Column="1"
+                <RadioButton x:Name="InflowButton" Content="Inflow" Grid.Row="5"  Grid.Column="1"
                          HorizontalAlignment="Right" VerticalAlignment="Top" Height="72" IsChecked="{Binding Inflow, Mode=TwoWay}" Checked="Checked_Event"/>
-            <TextBlock Grid.Row="6" Grid.Column="0" Text="amount:" 
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="amount:" 
                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="6" Grid.Column="1" x:Name="AmountTextBox" 
+                <TextBox Grid.Row="6" Grid.Column="1" x:Name="AmountTextBox" 
                      InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" 
                      TabIndex="5" KeyDown="KeyDown_Typed" />
-        </Grid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
     
     <!-- Application Bar -->

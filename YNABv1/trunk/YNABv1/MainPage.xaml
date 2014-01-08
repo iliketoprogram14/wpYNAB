@@ -68,11 +68,15 @@
             <controls:PivotItem Header="transactions" Margin="0,0,0,0" >
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Grid.Resources>
                         <Style x:Key="SummaryStyle" TargetType="TextBlock">
                             <Setter Property="Margin" Value="5" />
@@ -94,23 +98,25 @@
                         </Style>
                     </Grid.Resources>
 
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Grid.Column="0" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Grid.Column="1" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="category" Grid.Column="2" />
-                        <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" Grid.Column="3" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="01/01/2014" Visibility="Visible" Foreground="{StaticResource PhoneBackgroundBrush}" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="date" Grid.Column="0" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="payee" Grid.Column="1" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="category" Grid.Column="2" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="($100.00)" Grid.Column="3" Foreground="{StaticResource PhoneBackgroundBrush}" />
+                    <TextBlock Style="{StaticResource SummaryStyle}" Text="amount" Grid.Column="3" />
 
                     <ListBox ItemContainerStyle="{StaticResource ListBoxStyle}" Name="TransactionListBox"
                              HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                             Margin="0,35,0,0" Grid.ColumnSpan="4" Grid.Column="0"
+                             Margin="0,0,0,0" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1"
                              ItemsSource="{Binding TransactionHistory}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu>
@@ -118,18 +124,14 @@
                                             <toolkit:MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
-                                    <TextBlock Style="{StaticResource SummaryStyle}" 
-                                               Grid.Column="0"
-                                               Text="{Binding Date, StringFormat=\{0:d\} }" 
+                                    <TextBlock Style="{StaticResource SummaryStyle}" Grid.Column="0"
+                                               Text="{Binding Date, StringFormat=\{0:MM/dd/yyyy\} }" 
                                                TextWrapping="Wrap" />
-                                    <TextBlock Style="{StaticResource SummaryStyle}"
-                                               Grid.Column="1"
+                                    <TextBlock Style="{StaticResource SummaryStyle}" Grid.Column="1"
                                                Text="{Binding Payee}" TextWrapping="Wrap" />
-                                    <TextBlock Style="{StaticResource SummaryStyle}"
-                                               Grid.Column="2"
+                                    <TextBlock Style="{StaticResource SummaryStyle}" Grid.Column="2"
                                                Text="{Binding FullCategory}" />
-                                    <TextBlock Style="{StaticResource SummaryStyle}"
-                                               Grid.Column="3"
+                                    <TextBlock Style="{StaticResource SummaryStyle}" Grid.Column="3"
                                                Text="{Binding SignedAmount, StringFormat=\{0:C\}}"
                                                TextWrapping="Wrap"  />
                                 </Grid>

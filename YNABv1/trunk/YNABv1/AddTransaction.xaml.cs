@@ -277,8 +277,11 @@ namespace YNABv1
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
+            if (!hasUnsavedChanges) {
+                var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                    NavigationService.GoBack();
+            } else
                 NavigationService.GoBack();
         }
 
@@ -297,7 +300,10 @@ namespace YNABv1
                     break;
 
                 case "PayeeTextBox":
-                    CategoryTextBox.Focus();
+                    if (CategoryTextBox.Visibility == Visibility.Visible)
+                        CategoryTextBox.Focus();
+                    else
+                        CategoryListPicker.Focus();
                     break;
 
                 case "CategoryTextBox":
@@ -310,13 +316,13 @@ namespace YNABv1
 
                 case "MemoTextBox":
                     OutflowButton.Focus();
-                    ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 75);
                     break;
 
                 case "AmountTextBox":
                     AmountTextBox.Focus();
                     break;
             }
+            CommitItemWithFocus();
         }
 
         /// <summary>
@@ -327,7 +333,7 @@ namespace YNABv1
         private void Checked_Event(object sender, RoutedEventArgs e)
         {
             AmountTextBox.Focus();
-            ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 40);
+            //ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 40);
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
         }

@@ -260,8 +260,11 @@ namespace YNABv1
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
+            if (!hasUnsavedChanges) {
+                var result = MessageBox.Show("You are about to discard your changes. Continue?", "Warning", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                    NavigationService.GoBack();
+            } else
                 NavigationService.GoBack();
         }
 
@@ -301,6 +304,7 @@ namespace YNABv1
                     AmountTextBox.Focus();
                     break;
             }
+            CommitItemWithFocus();
         }
 
         /// <summary>

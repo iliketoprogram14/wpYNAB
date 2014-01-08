@@ -19,9 +19,9 @@
     <Tokens>
       <PrimaryToken TokenID="YNABv1Token" TaskName="_default">
         <TemplateIconic>
-          <SmallImageURI IsRelative="true" IsResource="false">YnabCompanionSmallColor.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">YnabCompanionSmall.png</SmallImageURI>
           <Count>0</Count>
-          <IconImageURI IsRelative="true" IsResource="false">YnabCompanionMediumColor.png</IconImageURI>
+          <IconImageURI IsRelative="true" IsResource="false">YnabCompanionMedium.png</IconImageURI>
           <Title>YNABcompanion</Title>
           <Message>
           </Message>

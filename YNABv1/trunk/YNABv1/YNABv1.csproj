@@ -163,8 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="YNABcompanionListSmall.png" />
-    <Content Include="YnabCompanionMediumColor.png" />
-    <Content Include="YnabCompanionSmallColor.png" />
+    <Content Include="YnabCompanionMedium.png" />
+    <Content Include="YnabCompanionSmall.png" />
     <Resource Include="Assets\DropboxIcons\excel48.gif" />
     <Resource Include="Assets\DropboxIcons\folder48.gif" />
     <Resource Include="Assets\DropboxIcons\folder_app48.gif" />

@@ -40,7 +40,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <ProgressBar Name="ProgressBar" IsIndeterminate="False" 
+            <ProgressBar Name="ProgressBar" IsIndeterminate="False" Visibility="Collapsed"
                      Height="10" Margin="0,0,0,0">
                 <ProgressBar.Foreground>
                     <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>

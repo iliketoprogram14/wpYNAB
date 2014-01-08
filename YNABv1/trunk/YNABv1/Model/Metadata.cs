@@ -89,7 +89,13 @@ namespace YNABv1.Model
 
         public String IconPath
         {
-            get { return "Assets/DropboxIcons/" + Icon + "48.gif"; }
+            get {
+                if (Icon == "folder_photos")
+                    return "Assets/DropboxIcons/folder_camera48.gif";
+                else if (Icon == "page_white_word")
+                    return "Assets/DropboxIcons/word48.gif";
+                return "Assets/DropboxIcons/" + Icon + "48.gif";
+            }
             set { }
         }
 

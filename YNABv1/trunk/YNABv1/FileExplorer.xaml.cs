@@ -41,6 +41,7 @@ namespace YNABv1
             if (DropboxListBox.Items.Count > 0)
                 DropboxListBox.ScrollIntoView(DropboxListBox.Items[0]);
 
+            ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.IsIndeterminate = true;
 
             String jsonMetadata = await DropboxHelper.GetMetaData(path);
@@ -49,6 +50,7 @@ namespace YNABv1
 
             ParentFolderTextBox.Visibility = (meta.Path != "/") ? Visibility.Visible : Visibility.Collapsed;
             ProgressBar.IsIndeterminate = false;
+            ProgressBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -57,12 +59,14 @@ namespace YNABv1
         /// <param name="path"></param>
         private async void ImportCsvAndPopulateDataStructures(String path)
         {
+            ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.IsIndeterminate = true;
             String csvString = await DropboxHelper.ImportTextFile(path);
             if (csvString != "")
                 Datastore.Parse(csvString);
             else
                 MessageBox.Show("Import failed.  Please close the app and try again in a bit.");
+            ProgressBar.Visibility = Visibility.Collapsed;
             ProgressBar.IsIndeterminate = false;
             NavigationService.GoBack();
         }

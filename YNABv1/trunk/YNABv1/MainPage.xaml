@@ -53,8 +53,8 @@
         <!-- Miscellaneous -->
         <phone:WebBrowser Name="MainBrowser" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="1" 
                           Visibility="Collapsed" />
-        <ProgressBar Name="ProgressBar" IsIndeterminate="False" Grid.Row="0"
-                     Height="10" HorizontalAlignment="Center">
+        <ProgressBar Name="ProgressBar" IsIndeterminate="False" Grid.Row="0" Visibility="Collapsed"
+                     Height="10" HorizontalAlignment="Stretch">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             </ProgressBar.Foreground>

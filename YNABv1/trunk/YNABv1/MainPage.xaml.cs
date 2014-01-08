@@ -15,6 +15,7 @@ using Microsoft.Phone.Shell;
 using YNABv1.Resources;
 using YNABv1.Model;
 using YNABv1.Helpers;
+using System.Threading;
 
 namespace YNABv1
 {
@@ -70,6 +71,7 @@ namespace YNABv1
             Deployment.Current.Dispatcher.BeginInvoke(() => {
                 Datastore.ClearAllTransactions();
                 ProgressBar.IsIndeterminate = false;
+                ProgressBar.Visibility = Visibility.Collapsed;
                 MessageBox.Show("Export(s) complete to the YNABcompanion folder!");
             });
         }
@@ -133,8 +135,10 @@ namespace YNABv1
         /// <param name="e"></param>
         private void ImportButton_Click(object sender, EventArgs e)
         {
+            ProgressBar.Visibility = Visibility.Collapsed;
             ProgressBar.IsIndeterminate = false;
             if (!DropboxHelper.IsSetup()) {
+                ProgressBar.Visibility = Visibility.Visible;
                 ProgressBar.IsIndeterminate = true;
                 DropboxHelper.Setup(this, delegate { ImportButton_Click(sender, e); });
             } else
@@ -153,17 +157,20 @@ namespace YNABv1
                 return;
             }
 
+            ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.IsIndeterminate = true;
 
             if (!DropboxHelper.IsSetup())
                 DropboxHelper.Setup(this, delegate { ExportButton_Click(sender, e); });
             else {
-                int i = 0;
-                Dictionary<String, String> csvStrings = GetCsvStrings();
-                foreach (KeyValuePair<String, String> pair in csvStrings)
-                    DropboxHelper.ExportTextFile(
-                        "YNABcompanion", pair.Key + ".csv", pair.Value, 
-                        delegate { ExportCompleted(); }, ++i == csvStrings.Count);
+                ThreadPool.QueueUserWorkItem(context => {
+                    int i = 0;
+                    Dictionary<String, String> csvStrings = GetCsvStrings();
+                    foreach (KeyValuePair<String, String> pair in csvStrings)
+                        DropboxHelper.ExportTextFile(
+                            "YNABcompanion", pair.Key + ".csv", pair.Value,
+                            delegate { ExportCompleted(); }, ++i == csvStrings.Count);
+                });
             }
         }
 

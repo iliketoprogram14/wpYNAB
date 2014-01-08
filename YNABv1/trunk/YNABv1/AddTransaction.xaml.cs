@@ -86,6 +86,8 @@ namespace YNABv1
         {
             base.OnNavigatedTo(e);
 
+            UpdateAd();
+
             if (PhoneApplicationService.Current.State.ContainsKey(Constants.NAV_PARAM_TRANSACTION)) {
                 transactionToEdit = phoneState[Constants.NAV_PARAM_TRANSACTION] as Transaction;
                 phoneState.Remove(Constants.NAV_PARAM_TRANSACTION);
@@ -399,5 +401,13 @@ namespace YNABv1
             }
         }
         #endregion UI events
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void UpdateAd()
+        {
+            Ad.Visibility = Utils.ShowAds ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }

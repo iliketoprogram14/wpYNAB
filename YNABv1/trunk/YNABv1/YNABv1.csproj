@@ -107,6 +107,7 @@
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DropboxHelper.cs" />
+    <Compile Include="Helpers\Utils.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

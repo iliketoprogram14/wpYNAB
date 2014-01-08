@@ -10,6 +10,7 @@ using System.Windows.Input;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Model;
+using YNABv1.Helpers;
 
 namespace YNABv1
 {
@@ -77,6 +78,8 @@ namespace YNABv1
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            UpdateAd();
 
             if (PhoneApplicationService.Current.State.ContainsKey("AddTransferParam")) {
                 transferToEdit = PhoneApplicationService.Current.State["AddTransferParam"] as Transaction;
@@ -190,6 +193,14 @@ namespace YNABv1
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void UpdateAd()
+        {
+            Ad.Visibility = Utils.ShowAds ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #region UI events

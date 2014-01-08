@@ -53,6 +53,9 @@ namespace YNABv1
         {
             base.OnNavigatedTo(e);
 
+            if (!Utils.ShowAds && ApplicationBar.MenuItems.Count > 1)
+                ApplicationBar.MenuItems.RemoveAt(1);
+
             if (DataContext == null)
                 InitializePageState();
             if (TransactionListBox.Items.Count > 0) {
@@ -254,9 +257,28 @@ namespace YNABv1
             AppSettings.Save();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Help_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("//Help.xaml", UriKind.Relative));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RemoveAds_Click(object sender, EventArgs e)
+        {
+            try {
+                await Windows.ApplicationModel.Store.CurrentApp.RequestProductPurchaseAsync("NoAds", false);
+            } catch (Exception) {
+                // oh well
+            }
         }
         #endregion
     }

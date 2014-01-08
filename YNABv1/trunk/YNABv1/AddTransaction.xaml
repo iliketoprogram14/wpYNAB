@@ -44,8 +44,8 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -137,11 +137,12 @@
 					InputScope="Number" Text="{Binding Amount, Mode=TwoWay}" TabIndex="5" KeyDown="KeyDown_Typed" />
             </Grid>
         </ScrollViewer>
-        <UI:AdControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                      Visibility="Visible"
+        <UI:AdControl Name="Ad" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                      IsAutoRefreshEnabled="True"
+                      Height="80" Width="480"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      Height="100"
-                      ApplicationId="test_client" AdUnitId="Image640_100"/>
+                      ApplicationId="a7badbb0-5d06-4f69-8d6e-99a28814f1aa"
+                      AdUnitId="157330" IsAutoCollapseEnabled="True"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

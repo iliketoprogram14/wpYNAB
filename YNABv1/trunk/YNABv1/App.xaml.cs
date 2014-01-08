@@ -8,6 +8,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Resources;
 using YNABv1.Model;
+using YNABv1.Helpers;
 
 namespace YNABv1
 {
@@ -61,6 +62,7 @@ namespace YNABv1
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            Utils.UpdateInAppPurchases();
             Datastore.Init();
         }
 
@@ -68,6 +70,7 @@ namespace YNABv1
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            Utils.UpdateInAppPurchases();
             Datastore.Init();
         }
 

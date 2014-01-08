@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using YNABv1.Model;
+using YNABv1.Helpers;
 
 namespace YNABv1
 {

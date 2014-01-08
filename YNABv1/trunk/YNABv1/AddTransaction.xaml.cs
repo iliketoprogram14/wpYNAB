@@ -53,6 +53,7 @@ namespace YNABv1
                 AccountListPicker.Visibility = Visibility.Collapsed;
             } else {
                 List<String> accounts = new List<String>(Datastore.Accounts);
+                accounts.Sort();
                 accounts.Add("New...");
                 AccountListPicker.ItemsSource = accounts;
                 AccountListPicker.Visibility = Visibility.Visible;
@@ -67,6 +68,7 @@ namespace YNABv1
                 SubCategoryListPicker.Visibility = Visibility.Collapsed;
             } else {
                 List<String> masterCategories = new List<String>(Datastore.MasterCategories());
+                masterCategories.Sort();
                 masterCategories.Add("New...");
                 CategoryListPicker.ItemsSource = masterCategories;
                 CategoryListPicker.Visibility = Visibility.Visible;
@@ -369,6 +371,7 @@ namespace YNABv1
                 SubCategoryTextBox.Visibility = Visibility.Visible;
             } else if (item != "") {
                 List<String> subcats = new List<String>(Datastore.SubCategories(item));
+                subcats.Sort();
                 subcats.Add("New...");
                 SubCategoryListPicker.ItemsSource = subcats;
             }

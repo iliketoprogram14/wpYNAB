@@ -58,6 +58,7 @@ namespace YNABv1
                 PayeeListPicker.Visibility = Visibility.Collapsed;
             } else {
                 List<String> accts = new List<String>(Datastore.Accounts);
+                accts.Sort();
                 accts.Add("New...");
                 AccountListPicker.ItemsSource = accts;
                 PayeeListPicker.ItemsSource = accts;

@@ -160,6 +160,7 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="YNABv1_2014_01_08_04_34_05.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="YNABcompanionListSmall.png" />

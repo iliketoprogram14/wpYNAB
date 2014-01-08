@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace YNABv1.Helpers
 {
@@ -44,6 +45,11 @@ namespace YNABv1.Helpers
             if (IsSetup())
                 return;
 
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
+                return;
+            }
+
             string url = "https://www.dropbox.com/1/oauth2/authorize?response_type=code&client_id=jybzacqc9ldijvb";
             p.DefaultPivot.Visibility = System.Windows.Visibility.Collapsed;
 
@@ -65,6 +71,11 @@ namespace YNABv1.Helpers
         /// <returns></returns>
         public async static Task<String> ImportTextFile(String path)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
+                return "";
+            }
+
             String url = "https://api-content.dropbox.com/1/files/dropbox/" + path;
             String result = await MakeRequest(url, HttpMethod.Get, true);            
             return result;
@@ -78,12 +89,18 @@ namespace YNABv1.Helpers
         /// <param name="data"></param>
         /// <param name="callback"></param>
         /// <param name="last"></param>
-        public async static void ExportTextFile(String path, String filename, String data, Action callback, bool last)
+        public async static Task<bool> ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
+                return false;
+            }
+
             String url = "https://api-content.dropbox.com/1/files_put/dropbox/" + path + "/" + filename + "?overwrite=false";
             await MakeRequest(url, HttpMethod.Put, true, data);
             if (last)
                 callback();
+            return true;
         }
 
         /// <summary>
@@ -93,6 +110,11 @@ namespace YNABv1.Helpers
         /// <returns></returns>
         public async static Task<String> GetMetaData(string path)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
+                return "";
+            }
+
             String url = "https://api.dropbox.com/1/metadata/dropbox/" + path;
             String result = await MakeRequest(url, HttpMethod.Get, true);
             return result;
@@ -130,6 +152,11 @@ namespace YNABv1.Helpers
         /// <returns></returns>
         private async static Task GetAccessToken(string code)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
+                return;
+            }
+
             String url = "https://api.dropbox.com/1/oauth2/token";
             string postData = "code=" + code + "&grant_type=authorization_code&client_id=" +
                 Constants.DROPBOX_KEY + "&client_secret=" + Constants.DROPBOX_SECRET;
@@ -167,8 +194,15 @@ namespace YNABv1.Helpers
             if (contentTypeUrl == true)
                 request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-            var response = await c.SendAsync(request);
-            return response.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage response = null;
+            try {
+                response = await c.SendAsync(request);
+            } catch (Exception e) {
+                MessageBox.Show("Request timed out. Please try again with better connectivity.");
+                Debug.WriteLine(e);
+            }
+
+            return (response == null) ? "" : response.Content.ReadAsStringAsync().Result;
         }
         #endregion
     }

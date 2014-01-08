@@ -177,13 +177,14 @@ namespace YNABv1
             if (!DropboxHelper.IsSetup())
                 DropboxHelper.Setup(this, delegate { ExportButton_Click(sender, e); });
             else {
-                ThreadPool.QueueUserWorkItem(context => {
+                ThreadPool.QueueUserWorkItem(async context => {
                     int i = 0;
                     Dictionary<String, String> csvStrings = GetCsvStrings();
-                    foreach (KeyValuePair<String, String> pair in csvStrings)
-                        DropboxHelper.ExportTextFile(
+                    foreach (KeyValuePair<String, String> pair in csvStrings) {
+                        bool success = await DropboxHelper.ExportTextFile(
                             "YNABcompanion", pair.Key + ".csv", pair.Value,
                             delegate { ExportCompleted(); }, ++i == csvStrings.Count);
+                    }
                 });
             }
         }

@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using YNABv1.Model;
 using YNABv1.Helpers;
+using System.Diagnostics;
+using GoogleAds;
 
 namespace YNABv1
 {
@@ -82,6 +84,8 @@ namespace YNABv1
                     SubCategoryListPicker.SelectedItem = transactionToEdit.Subcategory;
                 }
             }
+
+            Ad.Refresh();
         }
 
         #region Navigation Events
@@ -417,6 +421,27 @@ namespace YNABv1
         public void UpdateAd()
         {
             Ad.Visibility = Utils.ShowAds ? Visibility.Visible : Visibility.Collapsed;
+            Ad.IsAutoRefreshEnabled = false;
+        }
+
+        private void Ad_ErrorOccurred(object sender, Microsoft.Advertising.AdErrorEventArgs e)
+        {
+            String msg = e.Error.Message;
+            if (msg.Equals("No ad available.")) {
+                Ad.Visibility = Visibility.Collapsed;
+                Ad.IsAutoRefreshEnabled = false;
+                GoogleAd.Visibility = Visibility.Visible;
+                AdRequest adRequest = new AdRequest();
+#if DEBUG
+                adRequest.ForceTesting = true;
+#endif
+                GoogleAd.LoadAd(adRequest);
+            }
+        }
+
+        private void AdView_FailedToReceiveAd(object sender, GoogleAds.AdErrorEventArgs e)
+        {
+            Debug.WriteLine(e);
         }
     }
 }

@@ -16,6 +16,7 @@ using YNABv1.Resources;
 using YNABv1.Model;
 using YNABv1.Helpers;
 using System.Threading;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace YNABv1
 {
@@ -83,13 +84,20 @@ namespace YNABv1
         /// <summary>
         /// Callback when all exports have completed
         /// </summary>
-        private void ExportCompleted()
+        private void ExportCompleted(List<String> acctList)
         {
+            String accts = "";
+            if (acctList.Count == 1)
+                accts = "\n" + acctList.ElementAt(0);
+            else
+                for (int i = 0; i < acctList.Count; i++)
+                    accts += "\n" + acctList.ElementAt(i);
+
             Deployment.Current.Dispatcher.BeginInvoke(() => {
                 Datastore.ClearAllTransactions();
                 ProgressBar.IsIndeterminate = false;
                 ProgressBar.Visibility = Visibility.Collapsed;
-                MessageBox.Show("Export(s) complete to the YNABcompanion folder!");
+                MessageBox.Show("These accounts were exported to the YNABcompanion Dropbox folder: " + accts);
             });
         }
 
@@ -158,8 +166,12 @@ namespace YNABv1
                 ProgressBar.Visibility = Visibility.Visible;
                 ProgressBar.IsIndeterminate = true;
                 DropboxHelper.Setup(this, delegate { ImportButton_Click(sender, e); });
-            } else
-                NavigationService.Navigate(new Uri("//FileExplorer.xaml", UriKind.Relative));
+            } else {
+                if (!NetworkInterface.GetIsNetworkAvailable())
+                    MessageBox.Show("You can not import YNAB data without network connectivity.");
+                else
+                    NavigationService.Navigate(new Uri("//FileExplorer.xaml", UriKind.Relative));
+            }
         }
 
         /// <summary>
@@ -174,19 +186,31 @@ namespace YNABv1
                 return;
             }
 
+            var result = MessageBox.Show("Exporting transactions to Dropbox will clear all transactions in YNABcompanion. Are you sure you want to proceed?", "", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+
             ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.IsIndeterminate = true;
 
             if (!DropboxHelper.IsSetup())
                 DropboxHelper.Setup(this, delegate { ExportButton_Click(sender, e); });
             else {
+                bool success = true;
                 ThreadPool.QueueUserWorkItem(async context => {
                     int i = 0;
                     Dictionary<String, String> csvStrings = GetCsvStrings();
                     foreach (KeyValuePair<String, String> pair in csvStrings) {
-                        bool success = await DropboxHelper.ExportTextFile(
-                            "YNABcompanion", pair.Key + ".csv", pair.Value,
-                            delegate { ExportCompleted(); }, ++i == csvStrings.Count);
+                        success = await DropboxHelper.ExportTextFile("YNABcompanion", pair.Key + ".csv", pair.Value, 
+                            delegate { ExportCompleted(new List<String>(csvStrings.Keys)); }, ++i == csvStrings.Count);
+                        if (!success) {
+                            Deployment.Current.Dispatcher.BeginInvoke(() => {
+                                MessageBox.Show("You cannot export transactions without network connectivity.");
+                                ProgressBar.IsIndeterminate = false;
+                                ProgressBar.Visibility = Visibility.Collapsed;
+                            });
+                            break;
+                        }
                     }
                 });
             }

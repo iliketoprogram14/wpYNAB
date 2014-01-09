@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:YNABv1.Model"
     xmlns:UI="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"
+    xmlns:GoogleAds="clr-namespace:GoogleAds;assembly=GoogleAds"
     x:Class="YNABv1.AddTransaction"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d"
@@ -138,11 +139,17 @@
             </Grid>
         </ScrollViewer>
         <UI:AdControl Name="Ad" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                      IsAutoRefreshEnabled="True"
+                      IsAutoRefreshEnabled="True" ErrorOccurred="Ad_ErrorOccurred"
                       Height="80" Width="480" Visibility="Visible"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       ApplicationId="a7badbb0-5d06-4f69-8d6e-99a28814f1aa"
-                      AdUnitId="157330" IsAutoCollapseEnabled="True"/>
+                      AdUnitId="157330" />
+        <GoogleAds:AdView Name="GoogleAd" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                          AdUnitID="ca-app-pub-4477015698800481/1553127057"
+                          Format="Banner"
+                          Visibility="Collapsed"
+                          FailedToReceiveAd="AdView_FailedToReceiveAd"
+                          VerticalAlignment="Bottom"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

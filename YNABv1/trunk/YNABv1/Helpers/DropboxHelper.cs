@@ -92,7 +92,6 @@ namespace YNABv1.Helpers
         public async static Task<bool> ExportTextFile(String path, String filename, String data, Action callback, bool last)
         {
             if (!NetworkInterface.GetIsNetworkAvailable()) {
-                MessageBox.Show("You cannot log into Dropbox without network connectivity.");
                 return false;
             }
 

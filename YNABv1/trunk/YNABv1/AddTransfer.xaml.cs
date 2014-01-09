@@ -11,6 +11,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using YNABv1.Model;
 using YNABv1.Helpers;
+using GoogleAds;
 
 namespace YNABv1
 {
@@ -42,6 +43,8 @@ namespace YNABv1
         /// </summary>
         private void InitializePageState() 
         {
+            Ad.Refresh();
+            
             if (State.ContainsKey(CURRENT_TRANSFER_KEY))
                 currentTransfer = State[CURRENT_TRANSFER_KEY] as Transaction;
             else if (transferToEdit != null)
@@ -206,6 +209,7 @@ namespace YNABv1
         public void UpdateAd()
         {
             Ad.Visibility = Utils.ShowAds ? Visibility.Visible : Visibility.Collapsed;
+            Ad.IsAutoRefreshEnabled = false;
         }
 
         #region UI events
@@ -363,5 +367,24 @@ namespace YNABv1
             }
         }
         #endregion
+
+        private void Ad_ErrorOccurred(object sender, Microsoft.Advertising.AdErrorEventArgs e)
+        {
+            String msg = e.Error.Message;
+            if (msg.Equals("No ad available.")) {
+                Ad.Visibility = Visibility.Collapsed;
+                Ad.IsAutoRefreshEnabled = false;
+                GoogleAd.Visibility = Visibility.Visible;
+                AdRequest adRequest = new AdRequest();
+#if DEBUG
+                adRequest.ForceTesting = true;
+#endif
+                GoogleAd.LoadAd(adRequest);
+            }
+        }
+
+        private void AdView_FailedToReceiveAd(object sender, GoogleAds.AdErrorEventArgs e)
+        {
+        }
     }
 }

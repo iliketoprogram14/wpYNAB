@@ -23,17 +23,12 @@
           <Count>0</Count>
           <IconImageURI IsRelative="true" IsResource="false">YnabCompanionMedium.png</IconImageURI>
           <Title>YNABcompanion</Title>
-          <Message>
-          </Message>
-          <BackgroundColor>
-          </BackgroundColor>
+          <Message></Message>
+          <BackgroundColor>#3B91FB</BackgroundColor>
           <HasLarge>false</HasLarge>
-          <LargeContent1>
-          </LargeContent1>
-          <LargeContent2>
-          </LargeContent2>
-          <LargeContent3>
-          </LargeContent3>
+          <LargeContent1></LargeContent1>
+          <LargeContent2></LargeContent2>
+          <LargeContent3></LargeContent3>
           <DeviceLockImageURI IsRelative="true" IsResource="false">
           </DeviceLockImageURI>
         </TemplateIconic>

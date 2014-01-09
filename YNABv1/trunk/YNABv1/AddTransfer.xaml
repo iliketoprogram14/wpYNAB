@@ -20,7 +20,7 @@
     <!-- Resources -->
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Name="PickerFullModeItemTemplate">
-            <TextBlock Text="{Binding}" Margin="16 0 0 0" FontSize="28" />
+            <TextBlock Text="{Binding}" Margin="16 5 0 0" FontSize="32" />
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 

@@ -180,7 +180,7 @@ namespace YNABv1.Model
                 return inverse;
 
             String fromAccount = inverse.Account;
-            String toAccount = inverse.Account.Replace("Transfer : ", "");
+            String toAccount = inverse.Payee.Replace("Transfer : ", "");
             inverse.Account = toAccount;
             inverse.Payee = "Transfer : " + fromAccount;
             inverse.Outflow = !Outflow;
@@ -195,7 +195,7 @@ namespace YNABv1.Model
         public String GetCsv()
         {
             // Structure: Date,Payee,Category,Memo,Outflow,Inflow
-            String dateStr = String.Format("{0:d}", Date.ToString());
+            String dateStr = String.Format("{0:d}", Date);
             String fullCategory = this.FullCategory;
             String outflowStr = this.Outflow ? Amount.ToString() : "";
             String inflowStr = this.Inflow ? Amount.ToString() : "";

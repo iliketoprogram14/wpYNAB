@@ -21,7 +21,7 @@ namespace YNABv1
         private bool hasUnsavedChanges;
         private TextBox textboxWithFocus;
         private RadioButton buttonWithFocus;
-        private Transaction transactionToEdit;
+        private Transaction transactionToEdit = null;
         private IDictionary<string, object> phoneState = PhoneApplicationService.Current.State;
 
         /// <summary>
@@ -58,6 +58,8 @@ namespace YNABv1
                 AccountListPicker.ItemsSource = accounts;
                 AccountListPicker.Visibility = Visibility.Visible;
                 AccountTextBox.Visibility = Visibility.Collapsed;
+                if (transactionToEdit != null)
+                    AccountListPicker.SelectedItem = currentTransaction.Account;
             }
 
             List<String> masterCats = Datastore.MasterCategories();
@@ -75,6 +77,10 @@ namespace YNABv1
                 SubCategoryListPicker.Visibility = Visibility.Visible;
                 CategoryTextBox.Visibility = Visibility.Collapsed;
                 SubCategoryTextBox.Visibility = Visibility.Collapsed;
+                if (transactionToEdit != null) {
+                    CategoryListPicker.SelectedItem = transactionToEdit.Category;
+                    SubCategoryListPicker.SelectedItem = transactionToEdit.Subcategory;
+                }
             }
         }
 
@@ -94,8 +100,7 @@ namespace YNABv1
             if (PhoneApplicationService.Current.State.ContainsKey(Constants.NAV_PARAM_TRANSACTION)) {
                 transactionToEdit = phoneState[Constants.NAV_PARAM_TRANSACTION] as Transaction;
                 phoneState.Remove(Constants.NAV_PARAM_TRANSACTION);
-            } else
-                transactionToEdit = null;
+            } 
 
             // Initialize the page state only if it is not already initialized,
             // and not when the application was deactivated but not tombstoned

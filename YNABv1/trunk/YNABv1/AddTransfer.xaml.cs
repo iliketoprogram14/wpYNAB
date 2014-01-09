@@ -68,6 +68,11 @@ namespace YNABv1
                 PayeeListPicker.Visibility = Visibility.Visible;
                 AccountTextBox.Visibility = Visibility.Collapsed;
                 PayeeTextBox.Visibility = Visibility.Collapsed;
+
+                if (transferToEdit != null) {
+                    AccountListPicker.SelectedItem = currentTransfer.Account;
+                    PayeeListPicker.SelectedItem = currentTransfer.Payee.Replace("Transfer : ", "");
+                }
             }
         }
 
@@ -85,8 +90,7 @@ namespace YNABv1
             if (PhoneApplicationService.Current.State.ContainsKey("AddTransferParam")) {
                 transferToEdit = PhoneApplicationService.Current.State["AddTransferParam"] as Transaction;
                 PhoneApplicationService.Current.State.Remove("AddTransferParam");
-            } else
-                transferToEdit = null;
+            } 
 
             if (DataContext == null)
                 InitializePageState();

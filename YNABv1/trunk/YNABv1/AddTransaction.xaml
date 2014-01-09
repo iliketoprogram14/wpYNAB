@@ -17,7 +17,7 @@
     <!-- Resources -->
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Name="PickerFullModeItemTemplate">
-            <TextBlock Text="{Binding}" Margin="16 0 0 0" FontSize="28" />
+            <TextBlock Text="{Binding}" Margin="16 5 0 0" FontSize="32" />
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
@@ -139,7 +139,7 @@
         </ScrollViewer>
         <UI:AdControl Name="Ad" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                       IsAutoRefreshEnabled="True"
-                      Height="80" Width="480"
+                      Height="80" Width="480" Visibility="Visible"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       ApplicationId="a7badbb0-5d06-4f69-8d6e-99a28814f1aa"
                       AdUnitId="157330" IsAutoCollapseEnabled="True"/>

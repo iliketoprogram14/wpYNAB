@@ -10,6 +10,7 @@
     xmlns:model="clr-namespace:YNABv1.Model"
     xmlns:UI="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"
     xmlns:GoogleAds="clr-namespace:GoogleAds;assembly=GoogleAds"
+    xmlns:adduplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
     x:Class="YNABv1.AddTransaction"
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d"
@@ -150,6 +151,11 @@
                           Visibility="Collapsed"
                           FailedToReceiveAd="AdView_FailedToReceiveAd"
                           VerticalAlignment="Bottom"/>
+        <adduplex:AdControl x:Name="adDuplexAd" 
+                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Visibility="Collapsed"
+                            AppId="78275" />
     </Grid>
 
 </phone:PhoneApplicationPage>

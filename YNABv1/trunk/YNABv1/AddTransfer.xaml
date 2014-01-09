@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:UI="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"
     xmlns:GoogleAds="clr-namespace:GoogleAds;assembly=GoogleAds"
+    xmlns:adduplex="clr-namespace:AdDuplex;assembly=AdDuplex.WindowsPhone"
     xmlns:model="clr-namespace:YNABv1.Model" 
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -112,6 +113,11 @@
                           Visibility="Collapsed"
                           FailedToReceiveAd="AdView_FailedToReceiveAd"
                           VerticalAlignment="Bottom"/>
+        <adduplex:AdControl x:Name="adDuplexAd" 
+                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            AppId="78275" />
     </Grid>
     
     <!-- Application Bar -->

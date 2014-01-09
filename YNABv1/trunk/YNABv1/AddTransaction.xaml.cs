@@ -441,7 +441,11 @@ namespace YNABv1
 
         private void AdView_FailedToReceiveAd(object sender, GoogleAds.AdErrorEventArgs e)
         {
-            Debug.WriteLine(e);
+            adDuplexAd.Visibility = Visibility.Visible;
+#if DEBUG
+            adDuplexAd.IsTest = true;
+#endif
+            GoogleAd.Visibility = Visibility.Collapsed;
         }
     }
 }

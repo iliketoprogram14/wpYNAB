@@ -362,13 +362,17 @@ namespace YNABv1
         /// <param name="e"></param>
         private void CategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Category item = (Category)CategoryListPicker.SelectedItem;
-            if (item.MasterCategory == "New...") {
-                CategoryListPicker.Visibility = Visibility.Collapsed;
-                CategoryTextBox.Visibility = Visibility.Visible;
-                SubCategoryTextBlock.Visibility = Visibility.Visible;
-                SubCategoryTextBox.Visibility = Visibility.Visible;
-            } 
+            if (e.RemovedItems != null && e.RemovedItems.Count > 0) {
+                if (AccountListPicker.SelectedItem != null) {
+                    Category item = (Category)CategoryListPicker.SelectedItem;
+                    if (item.MasterCategory == "New...") {
+                        CategoryListPicker.Visibility = Visibility.Collapsed;
+                        CategoryTextBox.Visibility = Visibility.Visible;
+                        SubCategoryTextBlock.Visibility = Visibility.Visible;
+                        SubCategoryTextBox.Visibility = Visibility.Visible;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -378,26 +382,16 @@ namespace YNABv1
         /// <param name="e"></param>
         private void AccountListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            String item = (String)AccountListPicker.SelectedItem;
-            if (item == "New...") {
-                AccountListPicker.Visibility = Visibility.Collapsed;
-                AccountTextBox.Visibility = Visibility.Visible;
+            if (e.RemovedItems != null && e.RemovedItems.Count > 0) {
+                if (AccountListPicker.SelectedItem != null) {
+                    String item = (String)AccountListPicker.SelectedItem;
+                    if (item == "New...") {
+                        AccountListPicker.Visibility = Visibility.Collapsed;
+                        AccountTextBox.Visibility = Visibility.Visible;
+                    }
+                }
             }
         }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /*private void SubCategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            String item = (String)SubCategoryListPicker.SelectedItem;
-            if (item == "New...") {
-                SubCategoryListPicker.Visibility = Visibility.Collapsed;
-                SubCategoryTextBox.Visibility = Visibility.Visible;
-            }
-        }*/
         #endregion UI events
 
         #region Ads

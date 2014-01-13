@@ -103,7 +103,7 @@
                 <toolkit:ListPicker x:Name="AccountListPicker" Grid.Row="1" Grid.Column="1"
 					FontSize="24" SelectionChanged="AccountListPicker_SelectionChanged"
 					FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}"
-					ExpansionMode="FullScreenOnly"/>
+					ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="AccountTextBox" Visibility="Collapsed"
 					Text="{Binding Account, Mode=TwoWay, StringFormat=\{0:#\}}"
 					InputScope="Text" TabIndex="1" KeyDown="KeyDown_Typed" />

@@ -182,10 +182,12 @@ namespace YNABv1.Model
                 var subcategory = reader.GetField("Sub Category");
                 var payee = reader.GetField("Payee");
 
-                categories.AddFullCategory(category, subcategory);
-                payees.AddFullCategory(payee, category, subcategory);
+                if (category != "")
+                    categories.AddFullCategory(category, subcategory);
+                if (payee != "")
+                    payees.AddFullCategory(payee, category, subcategory);
 
-                if (!Accounts.Contains(account))
+                if (account != "" && !Accounts.Contains(account))
                     Accounts.Add(account);
             } while (reader.Read());
         }
@@ -196,7 +198,8 @@ namespace YNABv1.Model
                 var category = reader.GetField("Master Category");
                 var subcategory = reader.GetField("Sub Category");
 
-                categories.AddFullCategory(category, subcategory);
+                if (category != "")
+                    categories.AddFullCategory(category, subcategory);
             } while (reader.Read());
         }
 

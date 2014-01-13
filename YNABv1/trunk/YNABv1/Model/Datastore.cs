@@ -79,6 +79,22 @@ namespace YNABv1.Model
             return categories.SubCategories(category);
         }
 
+        public static List<Category> TieredCategories()
+        {
+            List<Category> catList = new List<Category>();
+            categories.Sort();
+
+            foreach (String cat in categories.CategoryList) {
+                catList.Add(new Category(cat));
+                List<String> subcats = categories.SubCategories(cat);
+                subcats.Sort();
+
+                foreach (String subcat in subcats)
+                    catList.Add(new Category(cat, subcat));
+            }
+            return catList;
+        }
+
         public static void AddCategory(String category)
         {
             categories.AddCategory(category);

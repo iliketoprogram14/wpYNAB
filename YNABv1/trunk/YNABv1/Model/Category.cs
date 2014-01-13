@@ -49,6 +49,39 @@ namespace YNABv1.Model
         public String MasterCategory { get; set; }
 
         public List<String> SubCategories { get; set;  }
+
+        public String SubCategory
+        {
+            get {
+                if (SubCategories.Count > 0)
+                    return SubCategories.ElementAt(0);
+                return "";
+            }
+            set { }
+        }
+
+        public String TieredCategory
+        {
+            get {
+                if (SubCategories.Count > 0)
+                    return "    " + SubCategories.ElementAt(0);
+                else
+                    return MasterCategory;
+            }
+            set { }
+        }
+
+        public String FullCategory
+        {
+            get {
+                if (MasterCategory == "")
+                    return "";
+                if (SubCategory == "")
+                    return MasterCategory;
+                return SubCategories.ElementAt(0) + " (" + MasterCategory + ")";
+            }
+            set { }
+        }
         #endregion
 
         #region Public Interface
@@ -66,11 +99,26 @@ namespace YNABv1.Model
         {
             SubCategories.Remove(subCategory);
         }
+
+        public Category DeepCopy()
+        {
+            Category c = new Category(MasterCategory);
+            foreach (String subcat in c.SubCategories)
+                c.AddSubCategory(subcat);
+            return c;
+        }
         #endregion
 
         public Boolean Equals(Category c)
         {
-            return MasterCategory.Equals(c.MasterCategory);
+            if (!MasterCategory.Equals(c.MasterCategory))
+                return false;
+            if (SubCategories.Count != c.SubCategories.Count)
+                return false;
+            for (int i = 0; i < SubCategories.Count; i++)
+                if (!SubCategories[i].Equals(c.SubCategories[i]))
+                    return false;
+            return true;
         }
 
         #region INotifyPropertyChanged

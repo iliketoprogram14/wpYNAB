@@ -43,8 +43,6 @@ namespace YNABv1
         /// </summary>
         private void InitializePageState() 
         {
-            Ad.Refresh();
-            
             if (State.ContainsKey(CURRENT_TRANSFER_KEY))
                 currentTransfer = State[CURRENT_TRANSFER_KEY] as Transaction;
             else if (transferToEdit != null)
@@ -77,6 +75,8 @@ namespace YNABv1
                     PayeeListPicker.SelectedItem = currentTransfer.Payee.Replace("Transfer : ", "");
                 }
             }
+
+            Ad.Refresh();
         }
 
         #region Navigation Events
@@ -209,7 +209,6 @@ namespace YNABv1
         public void UpdateAd()
         {
             Ad.Visibility = Utils.ShowAds ? Visibility.Visible : Visibility.Collapsed;
-            Ad.IsAutoRefreshEnabled = false;
         }
 
         #region UI events

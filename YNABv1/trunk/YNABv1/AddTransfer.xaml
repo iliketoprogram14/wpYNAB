@@ -102,7 +102,7 @@
             </Grid>
         </ScrollViewer>
         <UI:AdControl Name="Ad" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                      IsAutoRefreshEnabled="True" ErrorOccurred="Ad_ErrorOccurred"
+                      IsAutoRefreshEnabled="False" ErrorOccurred="Ad_ErrorOccurred"
                       Height="80" Width="480"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       ApplicationId="a7badbb0-5d06-4f69-8d6e-99a28814f1aa"

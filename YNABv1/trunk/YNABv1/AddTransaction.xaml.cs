@@ -68,20 +68,20 @@ namespace YNABv1
             if (Datastore.MasterCategories().Count == 0) {
                 CategoryTextBox.Visibility = Visibility.Visible;
                 SubCategoryTextBox.Visibility = Visibility.Visible;
+                SubCategoryTextBlock.Visibility = Visibility.Visible;
                 CategoryListPicker.Visibility = Visibility.Collapsed;
-                SubCategoryListPicker.Visibility = Visibility.Collapsed;
             } else {
-                List<String> masterCategories = new List<String>(Datastore.MasterCategories());
-                masterCategories.Sort();
-                masterCategories.Add("New...");
-                CategoryListPicker.ItemsSource = masterCategories;
+                List<Category> cats = Datastore.TieredCategories();
+                cats.Add(new Category("New..."));
+                CategoryListPicker.ItemsSource = cats;
                 CategoryListPicker.Visibility = Visibility.Visible;
-                SubCategoryListPicker.Visibility = Visibility.Visible;
                 CategoryTextBox.Visibility = Visibility.Collapsed;
                 SubCategoryTextBox.Visibility = Visibility.Collapsed;
+                SubCategoryTextBlock.Visibility = Visibility.Collapsed;
+
                 if (transactionToEdit != null) {
-                    CategoryListPicker.SelectedItem = transactionToEdit.Category;
-                    SubCategoryListPicker.SelectedItem = transactionToEdit.Subcategory;
+                    Category c = transactionToEdit.CategoryObj;
+                    CategoryListPicker.SelectedIndex = cats.IndexOf(c);
                 }
             }
 
@@ -200,12 +200,11 @@ namespace YNABv1
                     return false;
                 }
             } else {
-                if (((String)CategoryListPicker.SelectedItem).Equals("")) {
+                if (((Category)CategoryListPicker.SelectedItem).MasterCategory.Equals("")) {
                     MessageBox.Show("The category is required.");
                     return false;
                 }
-                currentTransaction.Category = (String)CategoryListPicker.SelectedItem;
-                currentTransaction.Subcategory = (String)SubCategoryListPicker.SelectedItem;
+                currentTransaction.CategoryObj = (Category)CategoryListPicker.SelectedItem;
             }
 
             bool outflow = (bool)OutflowButton.IsChecked;
@@ -312,26 +311,18 @@ namespace YNABv1
                 case "AccountTextBox":
                     PayeeTextBox.Focus();
                     break;
-
                 case "PayeeTextBox":
                     if (CategoryTextBox.Visibility == Visibility.Visible)
                         CategoryTextBox.Focus();
                     else
                         CategoryListPicker.Focus();
                     break;
-
                 case "CategoryTextBox":
-                    SubCategoryTextBox.Focus();
-                    break;
-
-                case "SubCategoryTextBox":
                     MemoTextBox.Focus();
                     break;
-
                 case "MemoTextBox":
                     OutflowButton.Focus();
                     break;
-
                 case "AmountTextBox":
                     AmountTextBox.Focus();
                     break;
@@ -347,7 +338,6 @@ namespace YNABv1
         private void Checked_Event(object sender, RoutedEventArgs e)
         {
             AmountTextBox.Focus();
-            //ScrollViewerGrid.ScrollToVerticalOffset(ScrollViewerGrid.Height - 40);
             if (AmountTextBox.Text == "0")
                 AmountTextBox.Text = "";
         }
@@ -372,18 +362,13 @@ namespace YNABv1
         /// <param name="e"></param>
         private void CategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            String item = (String)CategoryListPicker.SelectedItem;
-            if (item == "New...") {
+            Category item = (Category)CategoryListPicker.SelectedItem;
+            if (item.MasterCategory == "New...") {
                 CategoryListPicker.Visibility = Visibility.Collapsed;
                 CategoryTextBox.Visibility = Visibility.Visible;
-                SubCategoryListPicker.Visibility = Visibility.Collapsed;
+                SubCategoryTextBlock.Visibility = Visibility.Visible;
                 SubCategoryTextBox.Visibility = Visibility.Visible;
-            } else if (item != "") {
-                List<String> subcats = new List<String>(Datastore.SubCategories(item));
-                subcats.Sort();
-                subcats.Add("New...");
-                SubCategoryListPicker.ItemsSource = subcats;
-            }
+            } 
         }
 
         /// <summary>
@@ -405,16 +390,17 @@ namespace YNABv1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SubCategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /*private void SubCategoryListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String item = (String)SubCategoryListPicker.SelectedItem;
             if (item == "New...") {
                 SubCategoryListPicker.Visibility = Visibility.Collapsed;
                 SubCategoryTextBox.Visibility = Visibility.Visible;
             }
-        }
+        }*/
         #endregion UI events
 
+        #region Ads
         /// <summary>
         /// 
         /// </summary>
@@ -447,5 +433,6 @@ namespace YNABv1
 #endif
             GoogleAd.Visibility = Visibility.Collapsed;
         }
+        #endregion
     }
 }

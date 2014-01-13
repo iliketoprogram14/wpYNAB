@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{f8db8fe4-8de2-414f-8c1e-5c8e27fc5b03}" Title="YNABcompanion" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Randy Miller" Description="" Publisher="Randy Miller" PublisherID="{ab86e9ba-c58b-4fe3-b64a-c7fcecfebedd}">
+  <App xmlns="" ProductID="{f8db8fe4-8de2-414f-8c1e-5c8e27fc5b03}" Title="YNABcompanion" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Randy Miller" Description="YNABcompanion allows you to track your transactions on the go and sync them with YNAB with a few taps.  Although this isn't a fully-featured YNAB app for Windows Phone 8, YNABcompanion makes it easy to keep track of your transactions on your phone." Publisher="Randy Miller" PublisherID="{ab86e9ba-c58b-4fe3-b64a-c7fcecfebedd}">
     <IconPath IsRelative="true" IsResource="false">YNABcompanionListSmall.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
@@ -23,12 +23,16 @@
           <Count>0</Count>
           <IconImageURI IsRelative="true" IsResource="false">YnabCompanionMedium.png</IconImageURI>
           <Title>YNABcompanion</Title>
-          <Message></Message>
+          <Message>
+          </Message>
           <BackgroundColor>#3B91FB</BackgroundColor>
           <HasLarge>false</HasLarge>
-          <LargeContent1></LargeContent1>
-          <LargeContent2></LargeContent2>
-          <LargeContent3></LargeContent3>
+          <LargeContent1>
+          </LargeContent1>
+          <LargeContent2>
+          </LargeContent2>
+          <LargeContent3>
+          </LargeContent3>
           <DeviceLockImageURI IsRelative="true" IsResource="false">
           </DeviceLockImageURI>
         </TemplateIconic>

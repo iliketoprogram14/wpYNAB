@@ -21,6 +21,20 @@
         <DataTemplate x:Name="PickerFullModeItemTemplate">
             <TextBlock Text="{Binding}" Margin="16 5 0 0" FontSize="32" />
         </DataTemplate>
+        <DataTemplate x:Name="CategoryPickerItemTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding MasterCategory, Mode=TwoWay}" Name="MasterCategoryBlock" Visibility="Collapsed" />
+                <TextBlock Text="{Binding SubCategory, Mode=TwoWay}"  Name="SubCategoryBlock" Visibility="Collapsed" />
+                <TextBlock Text="{Binding FullCategory, Mode=TwoWay}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Name="CategoryPickerFullModeItemTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding MasterCategory, Mode=TwoWay}" Name="MasterCategoryBlock" Visibility="Collapsed" />
+                <TextBlock Text="{Binding SubCategory, Mode=TwoWay}"  Name="SubCategoryBlock" Visibility="Collapsed" />
+                <TextBlock Text="{Binding TieredCategory, Mode=TwoWay}" Margin="16 5 0 0" FontSize="32" />
+            </StackPanel>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
     <phone:PhoneApplicationPage.FontFamily>
@@ -103,20 +117,17 @@
 					Text="category:"
 					HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <toolkit:ListPicker x:Name="CategoryListPicker" Grid.Row="3" Grid.Column="1"
-					FontSize="24"
-					SelectionChanged="CategoryListPicker_SelectionChanged"
-					FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" ExpansionMode="FullScreenOnly" />
+                                    FontSize="24"
+                                    SelectionChanged="CategoryListPicker_SelectionChanged"
+                                    ItemTemplate="{StaticResource CategoryPickerItemTemplate}"
+                                    FullModeItemTemplate="{StaticResource CategoryPickerFullModeItemTemplate}"
+                                    ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="CategoryTextBox"
 					Visibility="Collapsed"
 					InputScope="Text" Text="{Binding Category, Mode=TwoWay}" TabIndex="4" KeyDown="KeyDown_Typed" />
-                <TextBlock Grid.Row="4" Grid.Column="0"
+                <TextBlock Grid.Row="4" Grid.Column="0" Name="SubCategoryTextBlock"
 					Text="subcategory:"
 					HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <toolkit:ListPicker x:Name="SubCategoryListPicker" Grid.Row="4" Grid.Column="1"
-					FontSize="24"
-					SelectionChanged="SubCategoryListPicker_SelectionChanged"
-					FullModeItemTemplate="{StaticResource PickerFullModeItemTemplate}" 
-					ExpansionMode="FullScreenOnly" />
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="SubCategoryTextBox"
 					InputScope="Text" Text="{Binding Subcategory, Mode=TwoWay}"
 					TabIndex="3" KeyDown="KeyDown_Typed" Visibility="Collapsed" />
@@ -140,7 +151,7 @@
             </Grid>
         </ScrollViewer>
         <UI:AdControl Name="Ad" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                      IsAutoRefreshEnabled="True" ErrorOccurred="Ad_ErrorOccurred"
+                      IsAutoRefreshEnabled="False" ErrorOccurred="Ad_ErrorOccurred"
                       Height="80" Width="480" Visibility="Visible"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       ApplicationId="a7badbb0-5d06-4f69-8d6e-99a28814f1aa"

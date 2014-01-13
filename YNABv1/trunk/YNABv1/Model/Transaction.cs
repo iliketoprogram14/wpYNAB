@@ -25,8 +25,7 @@ namespace YNABv1.Model
         {
             Date = DateTime.Now;
             Payee = "";
-            Category = "";
-            Subcategory = "";
+            CategoryObj = new Category();
             Memo = "";
             Account = "";
             Amount = 0.0;
@@ -42,8 +41,7 @@ namespace YNABv1.Model
         {
             Date = DateTime.Now;
             Payee = "";
-            Category = "";
-            Subcategory = "";
+            CategoryObj = new Category();
             Memo = "";
             Account = "";
             Amount = 0.0;
@@ -63,33 +61,30 @@ namespace YNABv1.Model
             get; set;
         }
 
-        public String Category
-        {
-            get; set;
-        }
-
-        public String Subcategory
+        public Category CategoryObj
         {
             get; set;
         }
 
         public String FullCategory
         {
-            get { return (Category == "") ? "" : Category + ": " + Subcategory; }
+            get {
+                return (CategoryObj.MasterCategory == "") ? "" :
+                    CategoryObj.MasterCategory + ": " + CategoryObj.SubCategory;
+            }
             set {
-                String fullCategory = Category + ": " + Subcategory;
+                String fullCategory = CategoryObj.MasterCategory + ": " + CategoryObj.SubCategory;
                 if (fullCategory.Equals(value))
                     return;
-                if (value == "") {
-                    Category = "";
-                    Subcategory = "";
-                } else {
+                if (value == "")
+                    CategoryObj = new Category();
+                else {
                     String[] splitString = value.Split(':');
-                    Category = splitString[0].Trim(' ');
-                    Subcategory = splitString[1].Trim(' ');
+                    String category = splitString[0].Trim(' ');
+                    String subcategory = splitString[1].Trim(' ');
+                    CategoryObj = new Category(category, subcategory);
                 }
-                NotifyPropertyChanged("Category");
-                NotifyPropertyChanged("SubCategory");
+                NotifyPropertyChanged("CategoryObj");
             }
         }
 
@@ -156,8 +151,7 @@ namespace YNABv1.Model
             t.dir = dir;
             t.Date = Date;
             t.Payee = Payee;
-            t.Category = Category;
-            t.Subcategory = Subcategory;
+            t.CategoryObj = CategoryObj.DeepCopy();
             t.Memo = Memo;
             t.Amount = Amount;
             t.Account = Account;
@@ -207,7 +201,7 @@ namespace YNABv1.Model
         public Boolean Equals(Transaction t2)
         {
             return (Outflow == t2.Outflow) && (Date.Equals(t2.Date)) && (Payee.Equals(t2.Payee)) &&
-                (Category.Equals(t2.Category)) && (Subcategory.Equals(t2.Subcategory)) &&
+                CategoryObj.Equals(t2.CategoryObj) &&
                 (Memo.Equals(t2.Memo)) && (Amount == t2.Amount) && (Account.Equals(t2.Account)) &&
                 (Transfer == t2.Transfer);
         }

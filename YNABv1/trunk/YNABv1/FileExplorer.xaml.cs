@@ -65,7 +65,7 @@ namespace YNABv1
             if (csvString != "")
                 Datastore.Parse(csvString);
             else
-                MessageBox.Show("Import failed.  Please close the app and try again in a bit.");
+                MessageBox.Show("Import failed. The csv file may not be valid. Please export the budget and/or register again.");
             ProgressBar.Visibility = Visibility.Collapsed;
             ProgressBar.IsIndeterminate = false;
             NavigationService.GoBack();

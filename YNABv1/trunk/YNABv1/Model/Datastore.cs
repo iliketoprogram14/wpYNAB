@@ -120,10 +120,32 @@ namespace YNABv1.Model
                 bool isBudget = true; // false if isRegister
                 bool hasAccount = headers.Contains("Account");
                 bool hasMasterCategory = headers.Contains("Master Category");
-                if (hasAccount && hasMasterCategory) {
+                bool hasAllBudgetHeaders =
+                    headers.Contains("Month") &&
+                    headers.Contains("Category") &&
+                    headers.Contains("Master Category") &&
+                    headers.Contains("Sub Category") &&
+                    headers.Contains("Budgeted") &&
+                    headers.Contains("Outflows") &&
+                    headers.Contains("Category Balance");
+                bool hasAllRegisterHeaders = 
+                    headers.Contains("Account") &&
+                    headers.Contains("Flag") &&
+                    headers.Contains("Check Number") &&
+                    headers.Contains("Date") &&
+                    headers.Contains("Payee") &&
+                    headers.Contains("Category") &&
+                    headers.Contains("Master Category") &&
+                    headers.Contains("Sub Category") &&
+                    headers.Contains("Memo") &&
+                    headers.Contains("Outflow") &&
+                    headers.Contains("Inflow") &&
+                    headers.Contains("Cleared") &&
+                    headers.Contains("Running Balance");
+                if (hasAllRegisterHeaders) {
                     ParseRegister(reader);
                     isBudget = false;
-                } else if (hasMasterCategory) {
+                } else if (hasAllBudgetHeaders) {
                     ParseBudget(reader);
                     isBudget = true;
                 } else {

@@ -201,7 +201,17 @@ namespace YNABv1.Helpers
                 Debug.WriteLine(e);
             }
 
-            return (response == null) ? "" : response.Content.ReadAsStringAsync().Result;
+            if (response == null)
+                return "";
+
+            String stringResult = "";
+            try {
+                stringResult = response.Content.ReadAsStringAsync().Result;
+            } catch (Exception e) {
+                stringResult = "";
+            }
+
+            return stringResult;
         }
         #endregion
     }

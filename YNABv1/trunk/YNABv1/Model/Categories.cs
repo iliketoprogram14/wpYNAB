@@ -53,17 +53,22 @@ namespace YNABv1.Model
         {
             CategoryObjList[category] = new Category(category);
             CategoryList.Add(category);
+            Sort();
         }
 
         public void AddFullCategory(String category, String subcategory)
         {
             if (!ContainsCategory(category))
                 AddCategory(category);
+
             Category c = CategoryObjList[category];
             if (!c.HasSubCategory(subcategory)) {
                 c.AddSubCategory(subcategory);
+                c.SubCategories.Sort();
                 CategoryObjList[category] = c;
             }
+
+            Sort();
         }
 
         public void Sort()

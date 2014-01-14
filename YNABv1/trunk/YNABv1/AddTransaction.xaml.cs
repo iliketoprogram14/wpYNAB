@@ -99,8 +99,6 @@ namespace YNABv1
         {
             base.OnNavigatedTo(e);
 
-            UpdateAd();
-
             if (PhoneApplicationService.Current.State.ContainsKey(Constants.NAV_PARAM_TRANSACTION)) {
                 transactionToEdit = phoneState[Constants.NAV_PARAM_TRANSACTION] as Transaction;
                 phoneState.Remove(Constants.NAV_PARAM_TRANSACTION);
@@ -109,8 +107,10 @@ namespace YNABv1
             // Initialize the page state only if it is not already initialized,
             // and not when the application was deactivated but not tombstoned
             // (returning from being dormant).
-            if (DataContext == null)
+            if (DataContext == null) {
                 InitializePageState();
+                UpdateAd();
+            }
 
             // Delete temporary storage to avoid unnecessary storage costs.
             State.Clear();

@@ -296,6 +296,16 @@ namespace YNABv1
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("//Settings.xaml", UriKind.Relative));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RemoveAds_Click(object sender, EventArgs e)
         {
             try {

@@ -153,6 +153,7 @@
             <shell:ApplicationBarIconButton IconUri="/Assets/upload.png" Text="export" Click="ExportButton_Click" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="help" Click="Help_Click" />
+                <shell:ApplicationBarMenuItem Text="settings" Click="Settings_Click" />
                 <shell:ApplicationBarMenuItem Text="remove ads" Click="RemoveAds_Click" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>

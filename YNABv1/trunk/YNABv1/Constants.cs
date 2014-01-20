@@ -22,6 +22,7 @@
         public const string DROPBOX_UID = "DropboxUID";
 
         public const string SYNC_KEY = "YnabCompanion.SyncKey";
+        public const string YNAB_DATA_PATH = "YnabCompanion.DataPathKey";
 
         // For passing params while navigating
         public const string NAV_PARAM_TRANSACTION = "AddTransactionParam";

@@ -10,11 +10,14 @@ using Microsoft.Phone.Shell;
 using YNABv1.Model;
 using YNABv1.Helpers;
 using Newtonsoft.Json;
+using System.IO.IsolatedStorage;
 
 namespace YNABv1
 {
     public partial class FileExplorer : PhoneApplicationPage
     {
+        private IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
+
         /// <summary>
         /// 
         /// </summary>
@@ -61,11 +64,25 @@ namespace YNABv1
         {
             ProgressBar.Visibility = Visibility.Visible;
             ProgressBar.IsIndeterminate = true;
+
             String csvString = await DropboxHelper.ImportTextFile(path);
             if (csvString != "")
                 Datastore.Parse(csvString);
             else
                 MessageBox.Show("Import failed. The csv file may not be valid. Please export the budget and/or register again.");
+
+            ProgressBar.Visibility = Visibility.Collapsed;
+            ProgressBar.IsIndeterminate = false;
+            NavigationService.GoBack();
+        }
+
+        private void ImportBudget(String path)
+        {
+            ProgressBar.Visibility = Visibility.Visible;
+            ProgressBar.IsIndeterminate = true;
+
+            Ynab4Helper.ImportBudget(path);
+
             ProgressBar.Visibility = Visibility.Collapsed;
             ProgressBar.IsIndeterminate = false;
             NavigationService.GoBack();
@@ -82,12 +99,19 @@ namespace YNABv1
         {
             Metadata m = DropboxListBox.SelectedItem as Metadata;
             if (m != null) {
-                if (m.IsDir)
-                    FillPage(m.Path);
-                else if (m.Name.Contains("csv"))
+                if (m.IsDir) {
+                    if ((bool)AppSettings[Constants.SYNC_KEY] && m.Name.Contains(".ynab4"))
+                        ImportBudget(m.Path);
+                    else
+                        FillPage(m.Path);
+                } else if (m.Name.Contains(".csv")) {
                     ImportCsvAndPopulateDataStructures(m.Path);
-                else
-                    MessageBox.Show("Please select a CSV file.");
+                } else {
+                    if ((bool)AppSettings[Constants.SYNC_KEY])
+                        MessageBox.Show("Please select a .ynab4 file.");
+                    else
+                        MessageBox.Show("Please select a CSV file.");
+                }
             }
         }
 

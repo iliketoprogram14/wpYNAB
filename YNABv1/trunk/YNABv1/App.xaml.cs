@@ -9,6 +9,7 @@ using Microsoft.Phone.Shell;
 using YNABv1.Resources;
 using YNABv1.Model;
 using YNABv1.Helpers;
+using System.IO.IsolatedStorage;
 
 namespace YNABv1
 {
@@ -19,6 +20,8 @@ namespace YNABv1
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        private IsolatedStorageSettings AppSettings = IsolatedStorageSettings.ApplicationSettings;
 
         /// <summary>
         /// Constructor for the Application object.
@@ -64,6 +67,11 @@ namespace YNABv1
         {
             Utils.UpdateInAppPurchases();
             Datastore.Init();
+
+            if (!AppSettings.Contains(Constants.SYNC_KEY)) {
+                AppSettings[Constants.SYNC_KEY] = true;
+                AppSettings.Save();
+            }
         }
 
         // Code to execute when the application is activated (brought to foreground)

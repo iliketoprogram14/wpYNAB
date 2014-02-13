@@ -112,9 +112,8 @@ namespace YNABv1.Model
 
         public static void Parse(String csvRegister)
         {
-            ThreadPool.QueueUserWorkItem(context => {
+            Task.Run(() => {
                 CsvReader reader = new CsvReader(new StringReader(csvRegister));
-
                 reader.Read();
                 List<String> headers = new List<String>(reader.FieldHeaders);
                 bool isBudget = true; // false if isRegister

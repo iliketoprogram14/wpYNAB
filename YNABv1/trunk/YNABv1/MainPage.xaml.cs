@@ -17,6 +17,7 @@ using YNABv1.Model;
 using YNABv1.Helpers;
 using System.Threading;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 namespace YNABv1
 {
@@ -197,7 +198,7 @@ namespace YNABv1
                 DropboxHelper.Setup(this, delegate { ExportButton_Click(sender, e); });
             else {
                 bool success = true;
-                ThreadPool.QueueUserWorkItem(async context => {
+                Task.Run(async () => {
                     int i = 0;
                     Dictionary<String, String> csvStrings = GetCsvStrings();
                     foreach (KeyValuePair<String, String> pair in csvStrings) {

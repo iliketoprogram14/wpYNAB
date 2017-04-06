@@ -29,18 +29,4 @@ YNABcompanion is not officially associated or licensed with YNAB in any way.
 
 ## Screenshots ##
 
-Main page
-
-![Main screen](assets/main.png)
-
-Dropbox support
-
-![Dropbox support](assets/dropbox.png)
-
-Executing a transaction
-
-![Transaction](assets/transaction.png)
-
-Executing a transfer
-
-![Transfer](assets/transfer.png)
+![Main screen](assets/main.png) ![Dropbox support](assets/dropbox.png) ![Transaction](assets/transaction.png) ![Transfer](assets/transfer.png)

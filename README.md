@@ -26,3 +26,21 @@ Features to be included in future versions include:
 Users can also remove ads with an in-app purchase. 
 
 YNABcompanion is not officially associated or licensed with YNAB in any way.
+
+## Screenshots ##
+
+Main page
+
+![Main screen](assets/main.png)
+
+Dropbox support
+
+![Dropbox support](assets/dropbox.png)
+
+Executing a transaction
+
+![Transaction](assets/transaction.png)
+
+Executing a transfer
+
+![Transfer](assets/transfer.png)
